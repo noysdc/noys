@@ -1,37 +1,22 @@
-# Flexible-Jekyll is a simple and clean theme for Jekyll
+🔗 نویز | در شبکه‌های اجتماعی:
 
-![](https://github.com/artemsheludko/flexible-jekyll/blob/master/assets/img/promo-img.jpg?raw=true)
+🟡🎙 Castbox
+https://castbox.fm/ch/7361321
 
-## Demo
+🟡🌐 Website
+https://noysdc.ir
 
-Check the theme in action [Demo](https://artemsheludko.github.io/flexible-jekyll/)
+🟡🔗 YouTube
+https://www.youtube.com/@NOYS-DC/videos
 
-The main page would look like this:
+🟡📸 Instagram
+https://instagram.com/noysdc
 
-![Main page preview](https://github.com/artemsheludko/flexible-jekyll/blob/master/assets/img/home-page.jpg?raw=true)
+🟡⌨️ Threads
+https://www.threads.com/@noysdc
 
-The post page would look like this:
+🟡📰 Newsletter
+https://noysdc.substack.com/embed
 
-![Post page preview](https://github.com/artemsheludko/flexible-jekyll/blob/master/assets/img/post-example.jpg?raw=true)
 
-## Features
-
-- [Google Fonts](https://fonts.google.com/)
-- [Font Awesome](http://fontawesome.io/)
-- [Disqus](https://disqus.com/)
-- [Analytics](https://analytics.google.com/analytics/web/)
-- Support Emoji
-
-## Installation:
-
-Fork the ``master`` branch and follow the [Jekyll Installation Documentation](https://jekyllrb.com/docs/installation/).
-
-## License
-
-GNU General Public License v3.0
-
-## Premium Themes by Artem
-
-| [![Coderon Jekyll Theme](https://github.com/artemsheludko/artemsheludko.github.io/raw/master/assets/preview/coderon-preview.png?raw=true)](https://jekyllthemes.io/theme/coderon-blog-jekyll-theme) | [![Renva Portfolio Jekyll Theme](https://github.com/artemsheludko/artemsheludko.github.io/raw/master/assets/preview/renva-preview.png?raw=true)](https://jekyllthemes.io/theme/renva-portfolio-jekyll-theme) | [![Nomod](https://github.com/artemsheludko/artemsheludko.github.io/raw/master/assets/preview/nomod-preview.png?raw=true)](https://jekyllthemes.io/theme/nomod-blog-jekyll-theme) |
-|:---:|:---:|:---:|
-| **Coderon** | **Renva** | **Nomod** |
+NOYS | روایت‌های واقعی از گوشه‌و کنار دنیا
