@@ -4,6 +4,7 @@
   و کدهای قبلی (تم، اندازه فونت، حالت ریدینگ، جستجو) بدون تغییر روی آیدی‌های زیر کار می‌کنند:
   noysSearchPanel / noysSearchInput / noysSearchResults / noysFontMinus / noysFontPlus / noysReadMode / .noys-theme-toggle
 {% endcomment %}
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/noys-header.css?v=3">
 {% assign noys_folder_categories = "magazine,podcast" | split: "," %}
 {% capture noys_cat_str %}{% for cat in site.categories %}{% unless noys_folder_categories contains cat[0] %},{{ cat | first }}{% endunless %}{% endfor %}{% endcapture %}
 {% assign noys_cat_words = noys_cat_str | split: ',' | uniq | sort %}
