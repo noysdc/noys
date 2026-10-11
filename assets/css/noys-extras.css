@@ -513,6 +513,23 @@
 
 /* ---------- هیروی صفحه‌ی اصلی (وسط‌چین) ---------- */
 
+/* قفل وسط‌چین: بعضی استایل‌های قالب (main.css) روی موبایل متن‌ها رو راست‌چین می‌کنن؛
+   این قاعده با !important همیشه برنده‌ست. */
+.noys-hero,
+.noys-hero *,
+.noys-start,
+.noys-start * {
+  text-align: center !important;
+}
+
+.noys-hero-text,
+.noys-hero-text h1,
+.noys-hero-text p {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+
 .noys-hero {
   display: flex;
   flex-direction: column;
