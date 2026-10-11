@@ -3,7 +3,7 @@ layout: podcast-post
 title: "
 نویز | اپیزود 01 : کانتری کلاب بغداد (بارِ ممنوعه ای در دل جنگ)"
 date: 2026-09-02 00:47:00 +0330
-img: podcast/EP-01.jpg
+img: podcast/EP-01.webp
 fig-caption: "نویز | اپیزود 01 : کانتری کلاب بغداد (بارِ ممنوعه ای در دل جنگ)"
 podcast_channel_id: "7361321"
 podcast_episode_id: "983635911"

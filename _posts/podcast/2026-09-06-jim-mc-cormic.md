@@ -3,7 +3,7 @@ layout: podcast-post
 title: "
 نویز | اپیزود 02 : تجارت با مرگ (بمب یاب های تقلبی جیم مک کورمیک)"
 date: 2026-09-06 00:47:00 +0330
-img: podcast/EP-02.jpg
+img: podcast/EP-02.webp
 fig-caption: "نویز | اپیزود 02 : تجارت با مرگ (بمب یاب های تقلبی جیم مک کورمیک)"
 podcast_channel_id: "7361321"
 podcast_episode_id: "984910278"

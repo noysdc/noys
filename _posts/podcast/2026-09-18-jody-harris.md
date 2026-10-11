@@ -3,7 +3,7 @@ layout: podcast-post
 title: "
 نویز | اپیزود 03 : شبحی به نام جودی (پرونده کلاه‌برداری جودی هریس)"
 date: 2026-09-19 00:47:00 +0330
-img: podcast/EP-03.jpg
+img: podcast/EP-03.webp
 fig-caption: "نویز | اپیزود 03 : شبحی به نام جودی (پرونده کلاه‌برداری جودی هریس)"
 podcast_channel_id: "7361321"
 podcast_episode_id: "999626138"
