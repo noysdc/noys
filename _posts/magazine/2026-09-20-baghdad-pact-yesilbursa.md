@@ -3,7 +3,7 @@ layout: post
 title: "پیمان بغداد: اتحادی که هرگز به پیمانی واقعی بدل نشد"
 subtitle: "خوانشی تحلیلی از کتاب «پیمان بغداد: سیاست‌های دفاعی انگلیس و آمریکا در خاورمیانه، ۱۹۵۰–۱۹۵۹» نوشتهٔ بهجت کمال یشیل‌بورسا"
 date: 2026-09-20
-img: magazine/2026-09-20-baghdad-pact-yesilbursa.jpg
+img: magazine/2026-09-20-baghdad-pact-yesilbursa.webp
 fig-caption: پیمان بغداد, سنتو
 categories: [مجله, معرفی کتاب]
 tags: [پیمان بغداد, سنتو, جنگ سرد, خاورمیانه, ایران, ترکیه, عراق, پاکستان, بریتانیا, آمریکا]
@@ -230,5 +230,11 @@ excerpt: "پیمان بغداد قرار بود سپر غرب در برابر ش
 - Persson, Magnus. *Great Britain, the United States, and the Security of the Middle East: The Formation of the Baghdad Pact.*
 
 *تمام آثار فوق در پیشگفتار کتاب به‌عنوان پژوهش‌های پیشین معرفی شده‌اند.*
+
+**پیوندهای آنلاین مرتبط:**
+
+- [UK Defence Journal — مقدمه‌ای کوتاه بر پیمان بغداد](https://ukdefencejournal.org.uk/a-short-introduction-to-the-baghdad-pact-when-britain-and-iran-were-allies/)
+- [Yeşilbursa — «CENTO: the forgotten alliance in the Middle East (1959–1979)»](https://avesis.uludag.edu.tr/yayin/d39cf845-0b3e-4c71-948f-41ec331e54a0/cento-the-forgotten-alliance-in-the-middle-east-1959-1979)
+- [DVIDS — تاریخ‌نگاری ارتش آمریکا درباره‌ی پیمان بغداد و CENTO](https://www.dvidshub.net/news/printable/489899)
 
 </div>
