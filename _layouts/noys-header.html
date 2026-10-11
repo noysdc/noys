@@ -1,65 +1,71 @@
-<script>
-/* جلوگیری از پرش تم و اندازه فونت قبل از لود شدن صفحه */
-(function(){try{var r=document.documentElement,t=localStorage.getItem('noys-theme')||'dark',f=localStorage.getItem('noys-fs');r.setAttribute('data-theme',t);if(f)r.style.fontSize=f+'%';if(localStorage.getItem('noys-reading')==='1')r.classList.add('nh-reading')}catch(e){}})();
-</script>
-<link rel="stylesheet" href="{{ '/assets/css/noys-header.css' | relative_url }}">
+{% comment %}
+  NOYS - هدر جدید (الهام‌گرفته از پرشین‌پاد)
+  این include بیرون از #noysWrapper قرار می‌گیرد، پس هنگام جابه‌جایی بین صفحات (pjax) دست‌نخورده می‌ماند
+  و کدهای قبلی (تم، اندازه فونت، حالت ریدینگ، جستجو) بدون تغییر روی آیدی‌های زیر کار می‌کنند:
+  noysSearchPanel / noysSearchInput / noysSearchResults / noysFontMinus / noysFontPlus / noysReadMode / .noys-theme-toggle
+{% endcomment %}
+{% assign noys_folder_categories = "magazine,podcast" | split: "," %}
+{% capture noys_cat_str %}{% for cat in site.categories %}{% unless noys_folder_categories contains cat[0] %},{{ cat | first }}{% endunless %}{% endfor %}{% endcapture %}
+{% assign noys_cat_words = noys_cat_str | split: ',' | uniq | sort %}
 
-<header class="nh" id="nh" data-index="{{ '/search-index.json' | relative_url }}">
+<header class="nh" id="nh">
 
-  <a class="nh-logo" href="{{ '/' | relative_url }}" aria-label="NOYS">
-    <img src="{{ '/assets/img/template/noys-avatar.png' | relative_url }}" alt="NOYS" width="112" height="112">
+  <a class="nh-logo" href="{{ site.baseurl }}/" aria-label="{{ site.author }}">
+    <img src="{{ site.baseurl }}/assets/img/{% if site.author-img %}{{ site.author-img }}{% endif %}" alt="{{ site.author }}" width="112" height="112">
   </a>
 
-  <a class="nh-name" href="{{ '/' | relative_url }}">یونس شجاعی</a>
-  <p class="nh-tag">روایت‌هایی درباره پرونده‌های واقعی، کسب‌وکارهای سایه و بازارهای سیاه</p>
+  <a class="nh-name" href="{{ site.baseurl }}/">{{ site.author }}</a>
+  {% if site.about-author %}<p class="nh-tag">{{ site.about-author }}</p>{% endif %}
 
   <div class="nh-divider" aria-hidden="true"></div>
 
   <!-- باکس منو -->
-  <div class="nh-box nh-menu">
+  <div class="nh-box nh-menu" id="noysFloatNav">
     <div class="nh-row">
-      <div class="nh-search">
-        <svg class="nh-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-        <input id="nh-q" type="search" placeholder="جستجوی مطلب" autocomplete="off" aria-label="جستجوی مطلب" aria-controls="nh-results">
-        <ul id="nh-results" class="nh-results" role="listbox" hidden></ul>
+
+      <div class="nh-search" id="noysSearchPanel">
+        <i class="fa fa-search nh-search-ico" aria-hidden="true"></i>
+        <input type="text" id="noysSearchInput" placeholder="جستجو در مجله و پادکست..." autocomplete="off" aria-label="جستجو">
+        <div class="nh-results" id="noysSearchResults"></div>
       </div>
+      <!-- دکمه‌ی قدیمیِ باز/بسته کردن جستجو؛ مخفی است ولی برای کدهای قبلی لازم است -->
+      <button type="button" id="noysSearchToggle" class="nh-hidden" aria-label="جستجو" tabindex="-1"></button>
+
       <div class="nh-tools">
-        <button class="nh-btn" id="nh-theme" type="button" aria-label="تغییر تم">
-          <svg class="nh-ico nh-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-          <svg class="nh-ico nh-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg>
+        <button type="button" class="nh-btn noys-theme-toggle" aria-label="تغییر حالت روشن/تاریک">
+          <i class="fa fa-sun-o noys-icon-light" aria-hidden="true"></i>
+          <i class="fa fa-moon-o noys-icon-dark" aria-hidden="true"></i>
         </button>
-        <button class="nh-btn" id="nh-fs-down" type="button" aria-label="کوچک‌تر کردن متن">A-</button>
-        <button class="nh-btn" id="nh-fs-up" type="button" aria-label="بزرگ‌تر کردن متن">A+</button>
-        <button class="nh-btn" id="nh-reading" type="button" aria-label="حالت مطالعه" aria-pressed="false">
-          <svg class="nh-ico" viewBox="0 0 24 24"><path d="M3 5h6a3 3 0 013 3v12a2 2 0 00-2-2H3zM21 5h-6a3 3 0 00-3 3v12a2 2 0 012-2h7z"/></svg>
+        <button type="button" class="nh-btn" id="noysFontMinus" aria-label="کوچک‌تر کردن فونت">A-</button>
+        <button type="button" class="nh-btn" id="noysFontPlus" aria-label="بزرگ‌تر کردن فونت">A+</button>
+        <button type="button" class="nh-btn" id="noysReadMode" aria-label="حالت ریدینگ">
+          <i class="fa fa-book" aria-hidden="true"></i>
         </button>
       </div>
+
     </div>
+
     <nav class="nh-nav" aria-label="منوی اصلی">
-      <a href="{{ '/' | relative_url }}" data-path="/">مجله</a>
-      <a href="{{ '/podcast/' | relative_url }}" data-path="/podcast/">پادکست</a>
+      <a href="{{ site.baseurl }}/" class="{% if page.url == '/' or page.url contains '/page/' %}is-active{% endif %}">مجله</a>
+      <a href="{{ site.baseurl }}/podcast/" class="{% if page.url contains '/podcast/' %}is-active{% endif %}">پادکست</a>
+      <a href="{{ site.baseurl }}/series/" class="{% if page.url contains '/series/' %}is-active{% endif %}">پرونده‌ها</a>
     </nav>
   </div>
 
   <!-- باکس طبقه‌بندی‌ها -->
-  <div class="nh-box nh-cats" aria-label="موضوعات">
-    <button class="nh-arrow" id="nh-right" type="button" aria-label="قبلی">
-      <svg class="nh-ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
-    </button>
-    <div class="nh-scroll" id="nh-scroll">
-      {% assign nh_cats = site.categories | sort %}
-      {% for category in nh_cats %}
-        <a class="nh-chip" href="{{ '/categories/' | relative_url }}#{{ category[0] | url_encode }}">
-          <span>{{ category[0] }}</span><b>{{ category[1].size }}</b>
-        </a>
-      {% endfor %}
+  {% if noys_cat_words.size > 0 %}
+  <div class="nh-box nh-cats" role="group" aria-label="موضوعات">
+    <button class="nh-arrow" id="nhRight" type="button" aria-label="قبلی"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+    <div class="nh-scroll" id="nhScroll">
+      {% for this_word in noys_cat_words %}{% if this_word != "" %}
+      <a class="nh-chip" href="{{ site.baseurl }}/categories/#{{ this_word | cgi_escape }}"><span>{{ this_word }}</span><b>{{ site.categories[this_word].size }}</b></a>
+      {% endif %}{% endfor %}
     </div>
-    <button class="nh-arrow" id="nh-left" type="button" aria-label="بعدی">
-      <svg class="nh-ico" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
-    </button>
+    <button class="nh-arrow" id="nhLeft" type="button" aria-label="بعدی"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
   </div>
+  {% endif %}
 
   <div class="nh-divider" aria-hidden="true"></div>
 </header>
 
-<script src="{{ '/assets/js/noys-header.js' | relative_url }}" defer></script>
+<script src="{{ site.baseurl }}/assets/js/noys-header.js" defer></script>

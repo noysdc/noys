@@ -1,25 +1,33 @@
+{% comment %} NOYS - فوتر جدید: لوگوی سفید + ارتباط با من + کپی‌رایت (با دیوایدر هم‌رنگ سایت) {% endcomment %}
 <footer class="nf">
   <div class="nh-divider" aria-hidden="true"></div>
 
   <div class="nf-contact">
-    <img class="nf-logo" src="{{ '/assets/img/template/noys-logo-wordmark.png' | relative_url }}" alt="NOYS" width="180" height="60" loading="lazy">
+    <img class="nf-logo" src="{{ site.baseurl }}/assets/img/template/noys-logo-wordmark.png" alt="NOYS" height="56" loading="lazy">
     <h2 class="nf-title">ارتباط با من</h2>
 
     <ul class="nf-links">
-      <li><a href="https://www.youtube.com/@NOYS-DC/videos" target="_blank" rel="noopener">یوتیوب</a></li>
-      <li><a href="https://instagram.com/noysdc" target="_blank" rel="noopener">اینستاگرام</a></li>
-      <li><a href="https://castbox.fm/vh/7361321" target="_blank" rel="noopener">کست‌باکس</a></li>
-      <li><a href="https://t.me/NOYSDC" target="_blank" rel="noopener">تلگرام</a></li>
-      {% if site.email %}<li><a href="mailto:{{ site.email }}">ایمیل</a></li>{% endif %}
-      <li><a class="nf-support" href="https://daramet.com/NOYS" target="_blank" rel="noopener" title="حمایت مالی از NOYS">❤️ حمایت مالی</a></li>
+      {% if site.social-youtube %}<li><a href="{{ site.social-youtube }}" target="_blank" rel="noopener" aria-label="یوتیوب" title="یوتیوب"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>{% endif %}
+      {% if site.social-instagram %}<li><a href="{{ site.social-instagram }}" target="_blank" rel="noopener" aria-label="اینستاگرام" title="اینستاگرام"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>{% endif %}
+      {% if site.social-castbox %}<li><a href="{{ site.social-castbox }}" target="_blank" rel="noopener" aria-label="کست‌باکس" title="کست‌باکس"><i class="fa fa-podcast" aria-hidden="true"></i></a></li>{% endif %}
+      {% if site.social-telegram %}<li><a href="{{ site.social-telegram }}" target="_blank" rel="noopener" aria-label="تلگرام" title="تلگرام"><i class="fa fa-paper-plane" aria-hidden="true"></i></a></li>{% endif %}
+      {% if site.social-twitter %}<li><a href="https://twitter.com/{{ site.social-twitter }}" target="_blank" rel="noopener" aria-label="توییتر" title="توییتر"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>{% endif %}
+      {% if site.social-github %}<li><a href="https://github.com/{{ site.social-github }}" target="_blank" rel="noopener" aria-label="گیت‌هاب" title="گیت‌هاب"><i class="fa fa-github" aria-hidden="true"></i></a></li>{% endif %}
+      {% if site.social-email %}<li><a href="mailto:{{ site.social-email }}" aria-label="ایمیل" title="ایمیل"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>{% endif %}
     </ul>
+
+    {% if site.social-donate %}
+    <a class="nf-support" href="{{ site.social-donate }}" target="_blank" rel="noopener">❤️ حمایت مالی از NOYS</a>
+    {% endif %}
   </div>
 
   <div class="nh-divider" aria-hidden="true"></div>
 
   <p class="nf-copy">
-    © {{ 'now' | date: '%Y' }} NOYS ·
-    <a href="{{ '/disclaimer/' | relative_url }}">سلب مسئولیت</a> ·
-    <a href="{{ '/feed.xml' | relative_url }}">فید RSS</a>
+    &copy; {{ site.time | date: '%Y' }} NOYS
+    <span aria-hidden="true">·</span>
+    <a href="{{ site.baseurl }}/disclaimer/">سلب مسئولیت</a>
+    <span aria-hidden="true">·</span>
+    <a href="{{ site.baseurl }}/feed.xml" target="_blank" rel="noopener">فید RSS</a>
   </p>
 </footer>

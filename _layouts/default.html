@@ -4,38 +4,7 @@
 <body class="{% if page.url == '/podcast/' %}page-podcast{% endif %}">
   <script>window.NOYS_BASEURL = "{{ site.baseurl }}";</script>
 
-  <nav class="noys-floatnav" id="noysFloatNav">
-    <div class="noys-floatnav-inner">
-      <button type="button" class="noys-nav-search-btn" id="noysSearchToggle" aria-label="جستجو">
-        <i class="fa fa-search" aria-hidden="true"></i>
-      </button>
-      <div class="noys-nav-links">
-        <a href="{{ site.baseurl }}/" class="{% if page.layout == 'main' and page.title == nil %}is-active{% endif %}">مجله</a>
-        <a href="{{ site.baseurl }}/podcast/" class="{% if page.url == '/podcast/' %}is-active{% endif %}">پادکست</a>
-      </div>
-      <button type="button" class="noys-theme-toggle" aria-label="تغییر حالت روشن/تاریک">
-        <i class="fa fa-sun-o noys-icon-light" aria-hidden="true"></i>
-        <i class="fa fa-moon-o noys-icon-dark" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="noys-reader-btn" id="noysFontMinus" aria-label="کوچک‌تر کردن فونت">A-</button>
-      <button type="button" class="noys-reader-btn" id="noysFontPlus" aria-label="بزرگ‌تر کردن فونت">A+</button>
-      <button type="button" class="noys-reader-btn noys-read-mode-btn" id="noysReadMode" aria-label="حالت ریدینگ">
-        <i class="fa fa-book" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="noys-search-panel" id="noysSearchPanel" hidden>
-      <div class="noys-search-input-wrap">
-        <i class="fa fa-search" aria-hidden="true"></i>
-        <input
-          type="text"
-          id="noysSearchInput"
-          placeholder="جستجو در مجله و پادکست..."
-          autocomplete="off"
-        >
-      </div>
-      <div class="noys-search-results" id="noysSearchResults" data-noys-scrollbar></div>
-    </div>
-  </nav>
+  {% include noys-header.html %}
 
   <!-- پخش‌کننده‌ی شناور — عمداً بیرون از wrapper، تا موقع تعویض صفحه دست‌نخورده بمونه -->
   <div class="noys-floating-player" id="noysFloatingPlayer" hidden>
@@ -54,6 +23,8 @@
   <div class="wrapper" id="noysWrapper">
     {{ content }}
   </div>
+
+  {% include noys-footer.html %}
 
   {% include analytics.html %}
   {% include javascripts.html %}
@@ -480,14 +451,18 @@
     }
 
     function noysSetActiveNav(url) {
-      document.querySelectorAll('.noys-nav-links a').forEach(function (a) {
-        var isPodcast = url.indexOf('/podcast/') !== -1;
-        var isHome = url === (window.NOYS_BASEURL + '/') || url === window.NOYS_BASEURL;
-        if (a.getAttribute('href').indexOf('/podcast/') !== -1) {
-          a.classList.toggle('is-active', isPodcast);
+      var path = new URL(url, window.location.href).pathname;
+      var base = window.NOYS_BASEURL || '';
+      document.querySelectorAll('.nh-nav a').forEach(function (a) {
+        var p = new URL(a.getAttribute('href'), window.location.href).pathname;
+        var on;
+        if (p === base + '/' || p === '/') {
+          on = path === p || /\/page\/\d+\/?$/.test(path);
         } else {
-          a.classList.toggle('is-active', isHome && !isPodcast);
+          on = path.indexOf(p) === 0;
         }
+        a.classList.toggle('is-active', on);
+        if (on) { a.setAttribute('aria-current', 'page'); } else { a.removeAttribute('aria-current'); }
       });
     }
 
