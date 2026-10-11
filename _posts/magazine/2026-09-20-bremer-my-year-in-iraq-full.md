@@ -200,9 +200,12 @@ tags:
 - [۸۵ میلیون دلار برای یک آهن‌پاره: شبکه‌ی رشوه‌ی ژنرال‌های عراقی](https://noysdc.ir/ade651-baghdad-network/)
 - [چرا یک آنتنِ خالی «کار می‌کرد»؟ کالبدشکافیِ کمبریج](https://noysdc.ir/ade651-cambridge-science/)
 
-### کتاب نسخه انگلیسی رو از اینجا دانلود کنید
+### منبع اصلی این مطلب
 
-**[📥 دانلود فایل PDF کتاب (سال من در عراق)](/assets/pdf/23116439-My-Year-in-Iraq-The-Struggle-to-Build-a-Future-of-Hope-L-Paul Bremer-III-Malcolm-McConnell-git.ir.pdf){: download }**
+این مطلب معرفی و تحلیل کتاب زیر است. حقوق متن کامل کتاب متعلق به نویسنده و ناشر است و در این سایت منتشر نشده؛ برای خواندن آن، نسخه‌ی رسمی را از ناشر یا کتابخانه‌ها تهیه کنید.
+
+> Bremer, L. Paul, III, with Malcolm McConnell. *My Year in Iraq: The Struggle to Build a Future of Hope.* New York: Simon & Schuster, 2006.
+
 ---
 
 ### 🔗 منابع و لینک‌های مرتبط

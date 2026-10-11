@@ -105,9 +105,14 @@ tags:
 
 ---
 
+### منبع اصلی این مطلب
+
+این مطلب معرفی و تحلیل کتاب زیر است. حقوق متن کامل کتاب متعلق به نویسنده و ناشر است و در این سایت منتشر نشده؛ برای خواندن آن، نسخه‌ی رسمی را از ناشر یا کتابخانه‌ها تهیه کنید.
+
+> Poole, Oliver. *Red Zone: Five Bloody Years in Baghdad.* London: Reportage Press, 2008.
+
 ### منابع
-- Oliver Poole, *Red Zone: Five Bloody Years in Baghdad*, Reportage Press, London, 2008
-- Oliver Poole, *Black Knights: On the Bloody Road to Baghdad*, HarperCollins, 2004
+- Oliver Poole, *Black Knights: On the Bloody Road to Baghdad*, HarperCollins, 2003
 - [گورکاها در خاورمیانه؛ سربازانی که در سکوت می‌جنگند](https://noysdc.ir/gurkhas-in-iraq-and-afghanistan/) — نوشته‌ی پیشین مجله
 - [Johns Hopkins — مطالعه‌ی لنست ۲۰۰۶ درباره‌ی مرگ‌ومیر پس از حمله به عراق](https://publichealth.jhu.edu/2006/burnham-iraq-2006)
 - [NPR — مطالعه‌ی لنست: بیش از ۶۵۰ هزار عراقی](https://www.npr.org/transcripts/6248509)

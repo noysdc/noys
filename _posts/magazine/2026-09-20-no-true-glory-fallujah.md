@@ -75,9 +75,11 @@ tags: [کتاب, تاریخ نظامی, عراق, فلوجه]
 
 
 
-### کتاب نسخه انگلیسی رو از اینجا دانلود کنید
+### منبع اصلی این مطلب
 
-**[📥 دانلود فایل PDF کتاب (بدون افتخار واقعی-روایت نبردی از فلوجه)](/assets/pdf/No-True-Glory-A-Frontline-Account-of-the-Battle-for-Fallujah-Bing-West.epub){: download }**
+این مطلب معرفی و تحلیل کتاب زیر است. حقوق متن کامل کتاب متعلق به نویسنده و ناشر است و در این سایت منتشر نشده؛ برای خواندن آن، نسخه‌ی رسمی را از ناشر یا کتابخانه‌ها تهیه کنید.
+
+> West, Bing. *No True Glory: A Frontline Account of the Battle for Fallujah.* New York: Bantam Books, 2005.
 
 ---
 

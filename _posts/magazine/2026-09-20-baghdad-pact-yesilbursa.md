@@ -212,13 +212,11 @@ excerpt: "پیمان بغداد قرار بود سپر غرب در برابر ش
 
 ---
 
-## دانلود کتاب
+## منبع اصلی این مطلب
 
-> ⚠️ **(© ۲۰۰۵ بهجت کمال یشیل‌بورسا / Frank Cass – Taylor & Francis)
+این مطلب معرفی و تحلیل کتاب زیر است. حقوق متن کامل کتاب متعلق به نویسنده و ناشر است و در این سایت منتشر نشده؛ برای خواندن آن، نسخه‌ی رسمی را از ناشر یا کتابخانه‌ها تهیه کنید.
 
-**[📥 دانلود فایل PDF کتاب (حدود ۲٫۳ مگابایت)](/assets/pdf/baghdad-pact-yesilbursa.pdf){: download }**
-
-*مشخصات فایل:* ۳۰۴ صفحه · زبان انگلیسی · فرمت PDF
+> Yeşilbursa, Behçet Kemal. *The Baghdad Pact: Anglo-American Defence Policies in the Middle East, 1950–1959.* London: Frank Cass, 2005. (© Behçet Kemal Yeşilbursa / Frank Cass – Taylor & Francis)
 
 ---
 
