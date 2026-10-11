@@ -1,4 +1,6 @@
 <head>
+	<meta charset="utf-8">
+
 	<script>
 	  /* NOYS: قبل از رندر صفحه، حالت روشن/تاریک ذخیره‌شده رو اعمال کن
 	     تا صفحه یک لحظه با تم اشتباه چشمک نزنه */
@@ -14,12 +16,8 @@
 	  })();
 	</script>
 
-	<meta charset="utf-8">
-
-	<!-- SEO: عنوان صفحه اصلی جدا از بقیه صفحاته (کامل‌تر و شامل کلمات کلیدی هدف)
-	     چون صفحه اصلی مهم‌ترین صفحه برای رتبه گرفتن روی «پادکست فارسی» و مشابه‌شه.
-	     برای پست‌ها و صفحات دیگه، فقط «عنوان پست - NOYS» نشون داده میشه تا کوتاه و
-	     خوانا بمونه و توی نتایج گوگل قطع نشه. -->
+	<!-- SEO: عنوان صفحه اصلی جدا از بقیه صفحاته (کامل‌تر و شامل کلمات کلیدی هدف).
+	     برای پست‌ها و صفحات دیگه فقط «عنوان - NOYS» نشون داده میشه. -->
 	{% if page.url == "/" %}
 	<title>{{ site.home-title | default: site.title }}</title>
 	{% elsif page.title %}
@@ -28,16 +26,26 @@
 	<title>{{ site.title }}</title>
 	{% endif %}
 
-	<!-- SEO: توضیح متا. اگه پست خودش description نداشته باشه، به‌جای توضیح
-	     تکراری کل سایت، از خلاصه (excerpt) همون پست استفاده می‌کنیم؛ یعنی
-	     همه‌ی پست‌های مجله بدون نیاز به ویرایش دستی، توضیح منحصربه‌فرد خودشون
-	     رو می‌گیرن. اگه پستی هم excerpt نداشت، توضیح کلی سایت جایگزین میشه. -->
-	{% assign page-desc = page.description | default: page.excerpt | strip_html | strip_newlines | truncate: 160 %}
-	{% assign meta-desc = page-desc | default: site.description %}
+	<!-- SEO: توضیح متا.
+	     اولویت ۱: فیلد description در فرانت‌متر پست (توصیه‌شده، دست‌نویس)
+	     اولویت ۲: خلاصه‌ی خودکار پست؛ اگه خلاصه با تیتر شروع بشه، تیتر از اولش حذف میشه
+	     (قبلاً تیتر دو بار توی توضیح گوگل می‌اومد)
+	     اولویت ۳: توضیح کلی سایت -->
+	{% assign noys_desc = page.description | default: page.excerpt | strip_html | strip_newlines | strip %}
+	{% if page.title and noys_desc contains page.title %}
+	  {% assign noys_desc = noys_desc | remove_first: page.title | strip %}
+	{% endif %}
+	{% assign noys_desc = noys_desc | truncate: 160 %}
+	{% assign meta-desc = noys_desc | default: site.description %}
+
+	{% assign noys_is_article = false %}
+	{% if page.layout == 'post' or page.layout == 'podcast-post' %}{% assign noys_is_article = true %}{% endif %}
+
+	{% capture noys_og_image %}{% if page.img %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img | uri_escape }}{% elsif site.author-img %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.author-img | uri_escape }}{% endif %}{% endcapture %}
 
 	<meta content="{{ site.title }}" property="og:site_name">
 	<meta content="{% if page.url == '/' %}{{ site.home-title | default: site.title }}{% elsif page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}" property="og:title">
-	<meta content="{% if page.title %}article{% else %}website{% endif %}" property="og:type">
+	<meta content="{% if noys_is_article %}article{% else %}website{% endif %}" property="og:type">
 	<meta content="{{ meta-desc }}" property="og:description">
 	<meta content="fa_IR" property="og:locale">
 	{% if page.url %}
@@ -46,19 +54,33 @@
 	{% if page.date %}
 		<meta content="{{ page.date | date_to_xmlschema }}" property="article:published_time">
 	{% endif %}
-	{% if page.img %}
-		<meta content="{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img }}" property="og:image">
-	{% elsif site.author-img %}
-		<meta content="{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.author-img }}" property="og:image">
+	{% if noys_og_image != "" %}
+		<meta content="{{ noys_og_image }}" property="og:image">
 	{% endif %}
 
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
 	<meta name="twitter:description" content="{{ meta-desc }}">
+	{% if noys_og_image != "" %}
+		<meta name="twitter:image" content="{{ noys_og_image }}">
+	{% endif %}
 
 	<meta name="description" content="{{ meta-desc }}">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<!-- دسترس‌پذیری: maximum-scale=1 حذف شد تا کاربر بتونه با دو انگشت زوم کنه -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	{% if page.noindex %}
+	<meta name="robots" content="noindex, follow">
+	{% endif %}
+
+	<!-- تایید مالکیت در ابزارهای وب‌مستر (مقدارها رو توی _config.yml بذار) -->
+	{% if site.google_site_verification %}
+	<meta name="google-site-verification" content="{{ site.google_site_verification }}">
+	{% endif %}
+	{% if site.bing_site_verification %}
+	<meta name="msvalidate.01" content="{{ site.bing_site_verification }}">
+	{% endif %}
 
 	<!-- SEO: canonical - جلوگیری از محتوای تکراری در چشم گوگل -->
 	{% if page.url %}
@@ -66,6 +88,8 @@
 	{% else %}
 	<link rel="canonical" href="{{ site.url }}{{ site.baseurl }}/">
 	{% endif %}
+
+	<link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.baseurl }}/feed.xml">
 
 	<link rel="shortcut icon" href="{{ site.baseurl }}/assets/img/template/favicon/favicon.ico" type="image/x-icon">
 	<link rel="apple-touch-icon" href="{{ site.baseurl }}/assets/img/template/favicon/apple-touch-icon.png">
@@ -81,8 +105,15 @@
 	<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/curved-scrollbar.css">
 	<!-- Custom Overrides (رنگ سایه + ویجت موضوعات) -->
 	<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/custom.css">
+	<!-- NOYS extras: جست‌وجو، سری‌ها، مطالب مرتبط، هیرو صفحه‌ی اصلی -->
+	<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/noys-extras.css">
 
-	<!-- Structured Data (JSON-LD) برای صفحه پست، برای بهبود نمایش در گوگل -->
+	{% assign noys_same_as = "" | split: "" %}
+	{% if site.social-instagram %}{% assign noys_same_as = noys_same_as | push: site.social-instagram %}{% endif %}
+	{% if site.social-youtube %}{% assign noys_same_as = noys_same_as | push: site.social-youtube %}{% endif %}
+	{% if site.social-telegram %}{% assign noys_same_as = noys_same_as | push: site.social-telegram %}{% endif %}
+
+	<!-- Structured Data (JSON-LD) برای صفحه پست -->
 	{% if page.layout == 'post' %}
 	<script type="application/ld+json">
 	{
@@ -91,30 +122,42 @@
 	  "headline": {{ page.title | jsonify }},
 	  "datePublished": "{{ page.date | date_to_xmlschema }}",
 	  "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
+	  "inLanguage": "fa",
 	  "author": {
 	    "@type": "Person",
 	    "name": {{ site.author | jsonify }},
-	    "sameAs": [
-	      "{{ site.social-instagram }}",
-	      "{{ site.social-youtube }}",
-	      "{{ site.social-telegram }}"
-	    ]
+	    "url": "{{ site.url }}{{ site.baseurl }}/",
+	    "sameAs": {{ noys_same_as | jsonify }}
 	  },
 	  "publisher": {
 	    "@type": "Organization",
-	    "name": {{ site.brand | default: site.title | jsonify }}
+	    "name": {{ site.brand | default: site.title | jsonify }},
+	    "url": "{{ site.url }}{{ site.baseurl }}/"{% if site.author-img %},
+	    "logo": {
+	      "@type": "ImageObject",
+	      "url": "{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.author-img | uri_escape }}"
+	    }{% endif %}
 	  },
 	  "description": {{ meta-desc | jsonify }},
+	  {% if page.img %}"image": ["{{ noys_og_image }}"],{% endif %}
 	  "mainEntityOfPage": "{{ site.url }}{{ site.baseurl }}{{ page.url }}"
-	  {% if page.img %}
-	  ,"image": "{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img }}"
-	  {% endif %}
+	}
+	</script>
+
+	<!-- مسیر ناوبری (Breadcrumb) برای نمایش بهتر در نتایج گوگل -->
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "BreadcrumbList",
+	  "itemListElement": [
+	    { "@type": "ListItem", "position": 1, "name": {{ site.title | jsonify }}, "item": "{{ site.url }}{{ site.baseurl }}/" },
+	    { "@type": "ListItem", "position": 2, "name": {{ page.title | jsonify }}, "item": "{{ site.url }}{{ site.baseurl }}{{ page.url }}" }
+	  ]
 	}
 	</script>
 	{% endif %}
 
-	<!-- Structured Data (JSON-LD) برای صفحه اصلی: به گوگل مستقیم می‌گه
-	     این سایت یک پادکسته، تا شانس نمایش توی نتایج مخصوص پادکست رو داشته باشه. -->
+	<!-- Structured Data (JSON-LD) برای صفحه اصلی: پادکست + باکس جست‌وجوی سایت -->
 	{% if page.url == "/" %}
 	<script type="application/ld+json">
 	{
@@ -128,15 +171,25 @@
 	  "author": {
 	    "@type": "Person",
 	    "name": {{ site.author | jsonify }},
-	    "sameAs": [
-	      "{{ site.social-instagram }}",
-	      "{{ site.social-youtube }}",
-	      "{{ site.social-telegram }}"
-	    ]
+	    "sameAs": {{ noys_same_as | jsonify }}
 	  },
 	  "publisher": {
 	    "@type": "Organization",
 	    "name": {{ site.brand | default: site.title | jsonify }}
+	  }
+	}
+	</script>
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "WebSite",
+	  "name": {{ site.title | jsonify }},
+	  "url": "{{ site.url }}{{ site.baseurl }}/",
+	  "inLanguage": "fa",
+	  "potentialAction": {
+	    "@type": "SearchAction",
+	    "target": "{{ site.url }}{{ site.baseurl }}/search/?q={search_term_string}",
+	    "query-input": "required name=search_term_string"
 	  }
 	}
 	</script>

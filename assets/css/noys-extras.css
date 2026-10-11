@@ -1,0 +1,685 @@
+/* =========================================================
+   NOYS EXTRAS
+   جست‌وجو، سری‌ها، مطالب مرتبط، هیروی صفحه‌ی اصلی
+   عمداً بدون وابستگی به رنگ‌های قالب نوشته شده (از رنگ متن ارث می‌بره
+   و برای پس‌زمینه‌ها از شفافیت استفاده می‌کنه) تا در حالت روشن و
+   تاریک هر دو درست دیده بشه.
+   ========================================================= */
+
+.noys-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- دکمه‌ها ---------- */
+
+.noys-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.noys-btn:hover {
+  background: rgba(128, 128, 128, 0.12);
+  transform: translateY(-1px);
+}
+
+.noys-btn-primary {
+  background: #263959;
+  border-color: #263959;
+  color: #fff;
+}
+
+.noys-btn-primary:hover {
+  background: #1d2c46;
+}
+
+[data-theme="dark"] .noys-btn-primary {
+  background: #fff200;
+  border-color: #fff200;
+  color: #111;
+}
+
+[data-theme="dark"] .noys-btn-primary:hover {
+  background: #f2e600;
+}
+
+/* ---------- باکس جست‌وجوی سایدبار ---------- */
+
+.noys-search-form {
+  display: flex;
+  align-items: stretch;
+  margin: 0 0 12px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.noys-search-form input[type="search"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+}
+
+.noys-search-form button {
+  flex: 0 0 auto;
+  padding: 0 12px;
+  border: 0;
+  background: rgba(128, 128, 128, 0.12);
+  color: inherit;
+  cursor: pointer;
+}
+
+.noys-search-form button:hover {
+  background: rgba(128, 128, 128, 0.22);
+}
+
+.noys-search-form:focus-within {
+  border-color: #fff200;
+  box-shadow: 0 0 0 2px rgba(255, 242, 0, 0.35);
+}
+
+.noys-quick-links {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 13px;
+}
+
+.noys-quick-links a {
+  color: inherit;
+  opacity: 0.8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.noys-quick-links a:hover {
+  opacity: 1;
+}
+
+/* ---------- صفحه‌ی جست‌وجو ---------- */
+
+.noys-search-page {
+  max-width: 760px;
+}
+
+.noys-search-page h1 {
+  font-size: 26px;
+  margin: 0 0 16px;
+}
+
+.noys-search-page-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.noys-search-page-form input[type="search"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+}
+
+.noys-search-page-form input[type="search"]:focus {
+  outline: 0;
+  border-color: #fff200;
+  box-shadow: 0 0 0 2px rgba(255, 242, 0, 0.35);
+}
+
+.noys-search-status {
+  min-height: 24px;
+  margin: 8px 0 16px;
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+.noys-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.noys-search-result {
+  margin: 0 0 14px;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 12px;
+  background: rgba(128, 128, 128, 0.06);
+  transition: background 0.15s ease;
+}
+
+.noys-search-result:hover {
+  background: rgba(128, 128, 128, 0.12);
+}
+
+.noys-search-result a {
+  display: flex;
+  gap: 14px;
+  padding: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.noys-search-result img {
+  flex: 0 0 120px;
+  width: 120px;
+  height: 68px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.noys-search-result-body {
+  min-width: 0;
+}
+
+.noys-search-result-title {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.noys-search-result-meta {
+  display: block;
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+.noys-search-result-snippet {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.9;
+  opacity: 0.85;
+}
+
+.noys-search-page mark,
+.noys-search-result mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: #fff200;
+  color: #111;
+}
+
+.noys-search-help {
+  font-size: 14px;
+  line-height: 2;
+  opacity: 0.8;
+}
+
+/* ---------- سری‌ها ---------- */
+
+.noys-series-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 0 0 22px;
+  padding: 10px 14px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-inline-start: 4px solid #fff200;
+  border-radius: 10px;
+  background: rgba(128, 128, 128, 0.07);
+  font-size: 14px;
+}
+
+.noys-series-label {
+  opacity: 0.7;
+}
+
+.noys-series-link {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.noys-series-pos {
+  margin-inline-start: auto;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.noys-series-nav {
+  margin: 34px 0 10px;
+  padding: 14px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 12px;
+  background: rgba(128, 128, 128, 0.06);
+}
+
+.noys-series-nav-head {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.noys-series-nav-head a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.noys-series-nav-head span {
+  opacity: 0.65;
+}
+
+.noys-series-nav-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.noys-series-nav-btn {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.noys-series-nav-btn:hover {
+  background: rgba(128, 128, 128, 0.14);
+}
+
+.noys-series-nav-btn small {
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+.noys-series-nav-btn strong {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.noys-series-nav-next {
+  text-align: left;
+}
+
+/* صفحه‌ی سری‌ها */
+
+.noys-series-page {
+  max-width: 820px;
+}
+
+.noys-series-page > h1 {
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+
+.noys-series-page-lead {
+  margin: 0 0 26px;
+  font-size: 15px;
+  line-height: 2;
+  opacity: 0.8;
+}
+
+.noys-series-card {
+  margin: 0 0 30px;
+  padding: 18px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 14px;
+  background: rgba(128, 128, 128, 0.05);
+}
+
+.noys-series-card-head h1,
+.noys-series-card-head h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  line-height: 1.7;
+}
+
+.noys-series-card-head h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.noys-series-card-head h2 a:hover {
+  text-decoration: underline;
+}
+
+.noys-series-card-desc {
+  margin: 0 0 6px;
+  font-size: 14px;
+  line-height: 2;
+  opacity: 0.8;
+}
+
+.noys-series-card-count {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #fff200;
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.noys-series-card-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: noys-series;
+}
+
+.noys-series-card-list li {
+  counter-increment: noys-series;
+  margin: 0 0 10px;
+}
+
+.noys-series-card-list li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.noys-series-card-list li a::before {
+  content: counter(noys-series);
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.2);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.noys-series-card-list img {
+  flex: 0 0 120px;
+  width: 120px;
+  height: 68px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.noys-series-card-item-title {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.noys-series-card-list li a:hover .noys-series-card-item-title {
+  text-decoration: underline;
+}
+
+.noys-series-card.is-compact .noys-series-card-list li {
+  margin-bottom: 4px;
+}
+
+.noys-series-card-more {
+  display: inline-block;
+  margin-top: 10px;
+  color: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- مطالب مرتبط ---------- */
+
+.noys-related {
+  margin: 34px 0 26px;
+}
+
+.noys-related-title {
+  margin: 0 0 14px;
+  font-size: 20px;
+}
+
+.noys-related-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.noys-related-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(128, 128, 128, 0.05);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.noys-related-card:hover {
+  transform: translateY(-3px);
+  background: rgba(128, 128, 128, 0.12);
+}
+
+.noys-related-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.noys-related-card-title {
+  padding: 2px 12px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+/* ---------- هیروی صفحه‌ی اصلی ---------- */
+
+.noys-hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  align-items: stretch;
+  margin: 0 0 34px;
+  padding: 22px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 16px;
+  background: rgba(128, 128, 128, 0.06);
+}
+
+.noys-hero-text {
+  flex: 1 1 320px;
+}
+
+.noys-hero-text h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  line-height: 1.7;
+}
+
+.noys-hero-text p {
+  margin: 0 0 16px;
+  font-size: 15px;
+  line-height: 2;
+  opacity: 0.85;
+}
+
+.noys-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.noys-hero-episode {
+  flex: 1 1 320px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 14px;
+  background: rgba(128, 128, 128, 0.07);
+}
+
+.noys-hero-episode-cover {
+  flex: 0 0 110px;
+}
+
+.noys-hero-episode-cover img {
+  display: block;
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.noys-hero-episode-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.noys-hero-episode-label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.noys-hero-episode-title {
+  color: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.8;
+  text-decoration: none;
+}
+
+.noys-hero-episode-title:hover {
+  text-decoration: underline;
+}
+
+.noys-start {
+  margin: 0 0 40px;
+}
+
+.noys-start h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+.noys-start-sub {
+  margin: 0 0 14px;
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+.noys-start-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.noys-start-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(128, 128, 128, 0.05);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.noys-start-card:hover {
+  transform: translateY(-3px);
+  background: rgba(128, 128, 128, 0.12);
+}
+
+.noys-start-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.noys-start-card-title {
+  padding: 4px 12px 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.noys-start-card-count {
+  padding: 0 12px 12px;
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+/* ---------- موبایل ---------- */
+
+@media (max-width: 768px) {
+  .noys-related-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .noys-start-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .noys-hero {
+    padding: 16px;
+  }
+
+  .noys-hero-text h1 {
+    font-size: 22px;
+  }
+
+  .noys-search-result img {
+    flex-basis: 84px;
+    width: 84px;
+    height: 56px;
+  }
+
+  .noys-series-card-list img {
+    flex-basis: 96px;
+    width: 96px;
+    height: 54px;
+  }
+}

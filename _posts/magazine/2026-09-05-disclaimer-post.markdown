@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "سلب مسئولیت و درباره‌ی رسانه NOYS"
+description: "سلب مسئولیت سایت و پادکست نویز؛ توضیح درباره‌ی ماهیت محتوا، منابع و حدود مسئولیت."
 date: 2026-09-05 12:00:00 +0330
 img: magazine/stop-road-sign-at-urban-intersection-shallow-depth-of_81647922_medium.webp
 hide-newsletter: true

@@ -1,0 +1,31 @@
+---
+layout: main
+title: جست‌وجو
+description: جست‌وجو در مطالب و اپیزودهای نویز
+permalink: /search/
+noindex: true
+sitemap: false
+---
+
+<div class="noys-search-page" id="noysSearchApp" data-search-json="{{ '/search.json' | relative_url }}" data-baseurl="{{ site.baseurl }}">
+
+  <h1>جست‌وجو در نویز</h1>
+
+  <form class="noys-search-page-form" id="noysSearchPageForm" role="search">
+    <label class="noys-sr-only" for="noysSearchPageInput">عبارت جست‌وجو</label>
+    <input id="noysSearchPageInput" type="search" name="q" placeholder="مثلاً: بلک‌واتر، ال ماکابلیکو، ADE 651…" autocomplete="off">
+    <button class="noys-btn noys-btn-primary" type="submit">جست‌وجو</button>
+  </form>
+
+  <div class="noys-search-status" id="noysSearchStatus" role="status" aria-live="polite"></div>
+
+  <ul class="noys-search-results" id="noysSearchResults"></ul>
+
+  <div class="noys-search-help" id="noysSearchHelp">
+    <p>اسم آدم‌ها، شرکت‌ها، کارتل‌ها، کشورها یا هر کلمه‌ای از متن مطالب رو بنویس. اگه چند کلمه بنویسی، فقط مطلب‌هایی نشون داده میشن که همه‌ی کلمه‌ها رو داشته باشن.</p>
+    <p>یا از <a href="{{ '/series/' | relative_url }}">پرونده‌های چندقسمتی</a> شروع کن.</p>
+  </div>
+
+</div>
+
+<script src="{{ site.baseurl }}/assets/js/noys-search.js" defer></script>

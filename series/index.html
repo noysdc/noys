@@ -1,0 +1,15 @@
+---
+layout: main
+title: پرونده‌ها و سری‌های نویز
+description: پرونده‌های چندقسمتی نویز؛ ADE 651، کارتل‌های مکزیک و پشت‌صحنه‌ی جنگ عراق، هر کدام با ترتیب خواندن.
+permalink: /series/
+---
+
+<div class="noys-series-page">
+  <h1>پرونده‌ها و سری‌ها</h1>
+  <p class="noys-series-page-lead">بعضی داستان‌ها توی یک مطلب جا نمی‌شن. این‌جا پرونده‌های چندقسمتی نویز رو به ترتیب پیدا می‌کنی.</p>
+
+  {% for s in site.data.series %}
+    {% include series-list.html series=s compact=true %}
+  {% endfor %}
+</div>

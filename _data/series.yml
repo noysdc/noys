@@ -1,0 +1,34 @@
+# NOYS - سری‌ها (پرونده‌های چندقسمتی)
+# هر سری یک صفحه‌ی اختصاصی در /series/<id>/ داره و بالای هر پستش «قسمت X از Y» نشون داده میشه.
+# آدرس پست‌ها باید دقیقاً همون آدرس واقعی پست باشه (با اسلش اول و آخر)، به ترتیب خوندن.
+
+- id: ade651
+  title: "پرونده‌ی ADE 651؛ بمب‌یابی که هیچ‌وقت بمبی پیدا نکرد"
+  desc: "چهار قسمت درباره‌ی بزرگ‌ترین کلاهبرداری امنیتی عراق: از توپ‌یاب گلف تا ۸۵ میلیون دلار رشوه، آزمایش‌های دانشگاه کمبریج و انفجار کراده."
+  posts:
+    - /ade651-origin/
+    - /ade651-baghdad-network/
+    - /ade651-cambridge-science/
+    - /ade651-legacy/
+
+- id: mexican-cartels
+  title: "کارتل‌های مکزیک و موسیقی نارکو"
+  desc: "از کماندوهای فراری ارتش مکزیک و ظهور لوس زتاس تا کارتل دل نورسته، تحریم ال ماکابلیکو، نارکو رپ و بحران فنتانیل."
+  posts:
+    - /los-zetas-cartel/
+    - /cartel-del-noreste-cdn/
+    - /el-makabelico-narcorapper/
+    - /narco-rap-narcocorrido/
+    - /fentanyl-crisis-world/
+
+- id: iraq-war
+  title: "عراق؛ پشت‌صحنه‌ی جنگ"
+  desc: "حاکم آمریکایی بغداد، نبرد فلوجه، ارتش‌های خصوصی، قراردادهای بی‌سقف، بار مخفی منطقه‌ی سبز و سربازان گورکا؛ روایت‌هایی از آن‌سوی خط مقدم."
+  posts:
+    - /bremer-my-year-in-iraq-full/
+    - /no-true-glory-fallujah/
+    - /blackwater/
+    - /kbr/
+    - /bcc01/
+    - /red-zone-five-bloody-years-baghdad/
+    - /gurkhas-in-iraq-and-afghanistan/

@@ -1,0 +1,37 @@
+{% comment %}
+  NOYS - نمایش یک سری (کارت)
+  استفاده:  {% include series-list.html series=s %}            ← فهرست کامل با عکس (صفحه‌ی خود سری)
+            {% include series-list.html series=s compact=true %} ← فهرست خلاصه (صفحه‌ی همه‌ی سری‌ها)
+{% endcomment %}
+{% assign noys_s = include.series %}
+{% assign noys_count = noys_s.posts | size %}
+<section class="noys-series-card{% if include.compact %} is-compact{% endif %}">
+  <header class="noys-series-card-head">
+    {% if include.compact %}
+    <h2><a href="{{ '/series/' | append: noys_s.id | append: '/' | relative_url }}">{{ noys_s.title }}</a></h2>
+    {% else %}
+    <h1>{{ noys_s.title }}</h1>
+    {% endif %}
+    <p class="noys-series-card-desc">{{ noys_s.desc }}</p>
+    <span class="noys-series-card-count">{{ noys_count }} مطلب</span>
+  </header>
+  <ol class="noys-series-card-list">
+    {% for u in noys_s.posts %}
+      {% assign noys_sp = "" %}
+      {% for p in site.posts %}{% if p.url == u %}{% assign noys_sp = p %}{% break %}{% endif %}{% endfor %}
+      {% if noys_sp != "" %}
+      <li>
+        <a href="{{ noys_sp.url | relative_url }}">
+          {% unless include.compact %}
+            {% if noys_sp.img %}<img src="{{ noys_sp.img | prepend: '/assets/img/' | relative_url }}" alt="" loading="lazy" width="160" height="90">{% endif %}
+          {% endunless %}
+          <span class="noys-series-card-item-title">{{ noys_sp.title }}</span>
+        </a>
+      </li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+  {% if include.compact %}
+  <a class="noys-series-card-more" href="{{ '/series/' | append: noys_s.id | append: '/' | relative_url }}">مشاهده‌ی کل پرونده ←</a>
+  {% endif %}
+</section>

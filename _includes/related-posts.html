@@ -1,0 +1,49 @@
+{% comment %}
+  NOYS - «بیشتر بخوانید»: مطالب مرتبط به‌صورت خودکار
+  امتیازدهی: هر تگِ مشترک (غیر کلی) ۳ امتیاز، هر دسته‌ی مشترک ۱ امتیاز، هم‌سری بودن ۶ امتیاز.
+  اگه امتیازی نبود، جدیدترین مطالب نشون داده میشن. اپیزودهای پادکست (پوشه‌ی podcast) نمایش داده نمی‌شن.
+  تگ‌های کلی که نباید امتیاز بدن رو توی noys_generic_tags بنویس.
+{% endcomment %}
+{% assign noys_folder_cats = "magazine,podcast" | split: "," %}
+{% assign noys_generic_tags = "نویز,NOYS,PODCAST,پادکست,مستند_روایی,کسب_و_کار_سایه,کتاب,معرفی_کتاب" | split: "," %}
+{% assign noys_my_series = "" | split: "" %}
+{% for s in site.data.series %}
+  {% if s.posts contains page.url %}{% assign noys_my_series = s.posts %}{% endif %}
+{% endfor %}
+
+{% assign noys_scored = "" | split: "" %}
+{% for p in site.posts %}
+  {% if p.url == page.url %}{% continue %}{% endif %}
+  {% if p.categories contains "podcast" %}{% continue %}{% endif %}
+  {% assign noys_score = 0 %}
+  {% for t in page.tags %}
+    {% unless noys_generic_tags contains t %}
+      {% if p.tags contains t %}{% assign noys_score = noys_score | plus: 3 %}{% endif %}
+    {% endunless %}
+  {% endfor %}
+  {% for c in page.categories %}
+    {% unless noys_folder_cats contains c %}
+      {% if p.categories contains c %}{% assign noys_score = noys_score | plus: 1 %}{% endif %}
+    {% endunless %}
+  {% endfor %}
+  {% if noys_my_series contains p.url %}{% assign noys_score = noys_score | plus: 6 %}{% endif %}
+  {% capture noys_key %}{{ noys_score | plus: 1000 }}{{ p.date | date: "%Y%m%d" }}|{{ forloop.index0 }}{% endcapture %}
+  {% assign noys_scored = noys_scored | push: noys_key %}
+{% endfor %}
+{% assign noys_scored = noys_scored | sort | reverse %}
+
+<section class="noys-related" aria-labelledby="noys-related-title">
+  <h3 id="noys-related-title" class="noys-related-title">بیشتر بخوانید</h3>
+  <div class="noys-related-grid">
+    {% for item in noys_scored limit: 4 %}
+      {% assign noys_idx = item | split: "|" | last | plus: 0 %}
+      {% assign rp = site.posts[noys_idx] %}
+      <a class="noys-related-card" href="{{ rp.url | relative_url }}">
+        {% if rp.img %}
+        <img src="{{ rp.img | prepend: '/assets/img/' | relative_url }}" alt="" loading="lazy" width="320" height="180">
+        {% endif %}
+        <span class="noys-related-card-title">{{ rp.title }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>

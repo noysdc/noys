@@ -1,0 +1,10 @@
+{% comment %} NOYS - باکس جست‌وجو و لینک‌های سریع (سایدبار) {% endcomment %}
+<form class="noys-search-form" role="search" action="{{ '/search/' | relative_url }}" method="get">
+  <label class="noys-sr-only" for="noysSearchInput">جست‌وجو در نویز</label>
+  <input id="noysSearchInput" type="search" name="q" placeholder="جست‌وجو در مطالب…" autocomplete="off">
+  <button type="submit" aria-label="جست‌وجو"><i class="fa fa-search" aria-hidden="true"></i></button>
+</form>
+<ul class="noys-quick-links">
+  <li><a href="{{ '/series/' | relative_url }}">پرونده‌ها (سری‌ها)</a></li>
+  <li><a href="{{ '/podcast/' | relative_url }}">همه‌ی اپیزودها</a></li>
+</ul>

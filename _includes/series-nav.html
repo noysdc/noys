@@ -1,0 +1,49 @@
+{% comment %}
+  NOYS - ناوبری «قسمت قبلی / قسمت بعدی» پایین پست‌های هر سری
+{% endcomment %}
+{% assign noys_series = "" %}
+{% assign noys_pos = 0 %}
+{% for s in site.data.series %}
+  {% assign noys_i = 0 %}
+  {% for u in s.posts %}
+    {% assign noys_i = noys_i | plus: 1 %}
+    {% if u == page.url %}
+      {% assign noys_series = s %}
+      {% assign noys_pos = noys_i %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+{% if noys_series != "" %}
+  {% assign noys_total = noys_series.posts | size %}
+  {% assign noys_prev = nil %}
+  {% assign noys_next = nil %}
+  {% if noys_pos > 1 %}
+    {% assign noys_pi = noys_pos | minus: 2 %}
+    {% assign noys_prev_url = noys_series.posts[noys_pi] %}
+    {% for p in site.posts %}{% if p.url == noys_prev_url %}{% assign noys_prev = p %}{% break %}{% endif %}{% endfor %}
+  {% endif %}
+  {% if noys_pos < noys_total %}
+    {% assign noys_next_url = noys_series.posts[noys_pos] %}
+    {% for p in site.posts %}{% if p.url == noys_next_url %}{% assign noys_next = p %}{% break %}{% endif %}{% endfor %}
+  {% endif %}
+<nav class="noys-series-nav" aria-label="ناوبری سری">
+  <div class="noys-series-nav-head">
+    سری: <a href="{{ '/series/' | append: noys_series.id | append: '/' | relative_url }}">{{ noys_series.title }}</a>
+    <span>({{ noys_pos }} از {{ noys_total }})</span>
+  </div>
+  <div class="noys-series-nav-row">
+    {% if noys_prev %}
+    <a class="noys-series-nav-btn noys-series-nav-prev" href="{{ noys_prev.url | relative_url }}" rel="prev">
+      <small>→ قسمت قبلی</small>
+      <strong>{{ noys_prev.title }}</strong>
+    </a>
+    {% endif %}
+    {% if noys_next %}
+    <a class="noys-series-nav-btn noys-series-nav-next" href="{{ noys_next.url | relative_url }}" rel="next">
+      <small>قسمت بعدی ←</small>
+      <strong>{{ noys_next.title }}</strong>
+    </a>
+    {% endif %}
+  </div>
+</nav>
+{% endif %}

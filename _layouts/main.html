@@ -34,6 +34,9 @@ layout: default
 
 <aside class="sidebar sidebar-bottom" data-noys-scrollbar data-noys-scrollbar-side="right">
 
+  {% include search-box.html %}
+
+
   {% comment %}
     نکته‌ی فنی: از جکیل ۳ به بعد، وقتی پست‌ها رو داخل زیرپوشه‌های
     _posts (مثل magazine/ یا podcast/) می‌ذاری، خودِ جکیل اسم اون
@@ -210,6 +213,10 @@ layout: default
 
 
 <div class="content-box clearfix">
+
+  {% if page.url == "/" %}
+  {% include home-hero.html %}
+  {% endif %}
 
   {{ content }}
 

@@ -1,0 +1,67 @@
+{% comment %}
+  NOYS - بخش بالای صفحه‌ی اصلی: معرفی کوتاه + دکمه‌های دنبال‌کردن + آخرین اپیزود + «از اینجا شروع کن»
+  فقط روی صفحه‌ی اول ("/") نشون داده میشه (شرطش توی main.html هست).
+{% endcomment %}
+{% assign noys_ep = "" %}
+{% for p in site.posts %}
+  {% if p.categories contains "podcast" %}{% assign noys_ep = p %}{% break %}{% endif %}
+{% endfor %}
+
+<section class="noys-hero">
+  <div class="noys-hero-text">
+    <h1>نویز؛ پادکست فارسی جنایی و بیزینس‌های ممنوعه</h1>
+    <p>{{ site.description }}</p>
+    <div class="noys-hero-cta">
+      {% if site.social-youtube %}<a class="noys-btn noys-btn-primary" href="{{ site.social-youtube }}" target="_blank" rel="noopener"><i class="fa fa-youtube-play" aria-hidden="true"></i> یوتیوب</a>{% endif %}
+      {% if site.social-castbox %}<a class="noys-btn" href="{{ site.social-castbox }}" target="_blank" rel="noopener"><i class="fa fa-podcast" aria-hidden="true"></i> کست‌باکس</a>{% endif %}
+      {% if site.social-telegram %}<a class="noys-btn" href="{{ site.social-telegram }}" target="_blank" rel="noopener"><i class="fa fa-paper-plane" aria-hidden="true"></i> تلگرام</a>{% endif %}
+      {% if site.social-instagram %}<a class="noys-btn" href="{{ site.social-instagram }}" target="_blank" rel="noopener"><i class="fa fa-instagram" aria-hidden="true"></i> اینستاگرام</a>{% endif %}
+    </div>
+  </div>
+
+  {% if noys_ep != "" %}
+  {% assign noys_ep_channel = noys_ep.podcast_channel_id | default: noys_ep.podcast_id %}
+  <div class="noys-hero-episode">
+    {% if noys_ep.img %}
+    <a class="noys-hero-episode-cover" href="{{ noys_ep.url | relative_url }}">
+      <img src="{{ noys_ep.img | prepend: '/assets/img/' | relative_url }}" alt="{{ noys_ep.title }}" width="160" height="160">
+    </a>
+    {% endif %}
+    <div class="noys-hero-episode-body">
+      <span class="noys-hero-episode-label">🎧 آخرین اپیزود</span>
+      <a class="noys-hero-episode-title" href="{{ noys_ep.url | relative_url }}">{{ noys_ep.title }}</a>
+      {% if noys_ep.podcast_episode_id %}
+      <button class="noys-btn noys-btn-primary" type="button"
+        onclick='NOYS_PLAY_PODCAST({
+          channelId: {{ noys_ep_channel | jsonify }},
+          episodeId: {{ noys_ep.podcast_episode_id | jsonify }},
+          title: {{ noys_ep.title | jsonify }},
+          cover: {{ noys_ep.img | prepend: "/assets/img/" | relative_url | jsonify }}
+        })'>▶ پخش اپیزود</button>
+      {% endif %}
+      <a class="noys-btn" href="{{ '/podcast/' | relative_url }}">همه‌ی اپیزودها</a>
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+{% if site.data.series.size > 0 %}
+<section class="noys-start" aria-labelledby="noys-start-title">
+  <h2 id="noys-start-title">از اینجا شروع کن</h2>
+  <p class="noys-start-sub">پرونده‌های چندقسمتی؛ هر کدوم رو از قسمت اول بخون یا گوش بده.</p>
+  <div class="noys-start-grid">
+    {% for s in site.data.series %}
+      {% assign noys_first_url = s.posts | first %}
+      {% assign noys_first = "" %}
+      {% for p in site.posts %}{% if p.url == noys_first_url %}{% assign noys_first = p %}{% break %}{% endif %}{% endfor %}
+      <a class="noys-start-card" href="{{ '/series/' | append: s.id | append: '/' | relative_url }}">
+        {% if noys_first != "" and noys_first.img %}
+        <img src="{{ noys_first.img | prepend: '/assets/img/' | relative_url }}" alt="" loading="lazy" width="320" height="180">
+        {% endif %}
+        <span class="noys-start-card-title">{{ s.title }}</span>
+        <span class="noys-start-card-count">{{ s.posts | size }} مطلب</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

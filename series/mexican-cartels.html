@@ -1,0 +1,14 @@
+---
+layout: main
+title: "کارتل‌های مکزیک و موسیقی نارکو"
+description: "از کماندوهای فراری ارتش مکزیک و ظهور لوس زتاس تا کارتل دل نورسته، تحریم ال ماکابلیکو، نارکو رپ و بحران فنتانیل."
+permalink: /series/mexican-cartels/
+series_id: mexican-cartels
+---
+
+<div class="noys-series-page">
+  <p class="noys-series-page-lead"><a href="{{ '/series/' | relative_url }}">← همه‌ی پرونده‌ها</a></p>
+
+  {% assign noys_this_series = site.data.series | where: "id", page.series_id | first %}
+  {% include series-list.html series=noys_this_series %}
+</div>

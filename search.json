@@ -1,0 +1,19 @@
+---
+layout: null
+sitemap: false
+---
+{%- assign noys_docs = site.posts | where_exp: "p", "p.search != false" -%}
+[
+{%- for p in noys_docs %}
+  {
+    "title": {{ p.title | jsonify }},
+    "url": {{ p.url | jsonify }},
+    "date": {{ p.date | date: "%Y/%m/%d" | jsonify }},
+    "img": {{ p.img | default: "" | jsonify }},
+    "desc": {{ p.description | default: p.excerpt | strip_html | normalize_whitespace | truncate: 220 | jsonify }},
+    "cats": {{ p.categories | jsonify }},
+    "tags": {{ p.tags | jsonify }},
+    "content": {{ p.content | markdownify | strip_html | normalize_whitespace | truncate: 6000 | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor %}
+]

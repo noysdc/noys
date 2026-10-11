@@ -1,0 +1,14 @@
+---
+layout: main
+title: "عراق؛ پشت‌صحنه‌ی جنگ"
+description: "حاکم آمریکایی بغداد، نبرد فلوجه، ارتش‌های خصوصی، قراردادهای بی‌سقف، بار مخفی منطقه‌ی سبز و سربازان گورکا؛ روایت‌هایی از آن‌سوی خط مقدم."
+permalink: /series/iraq-war/
+series_id: iraq-war
+---
+
+<div class="noys-series-page">
+  <p class="noys-series-page-lead"><a href="{{ '/series/' | relative_url }}">← همه‌ی پرونده‌ها</a></p>
+
+  {% assign noys_this_series = site.data.series | where: "id", page.series_id | first %}
+  {% include series-list.html series=noys_this_series %}
+</div>

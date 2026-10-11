@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "بدون افتخار حقیقی: روایتی از قلب نبرد فلوجه"
+description: "بدون افتخار حقیقی؛ معرفی کتابی درباره‌ی نبرد فلوجه، شهری که تا ۲۰۰۳ گمنام بود و بعد به «جهنم زمینی» معروف شد."
 date: 2026-09-22
 img: magazine/No-True-Glory-Fallujah-Frontline.webp
 fig-caption: روایتی از قلب نبرد فلوجه
