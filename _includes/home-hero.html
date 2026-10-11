@@ -23,23 +23,30 @@
   {% assign noys_ep_channel = noys_ep.podcast_channel_id | default: noys_ep.podcast_id %}
   <div class="noys-hero-episode">
     {% if noys_ep.img %}
-    <a class="noys-hero-episode-cover" href="{{ noys_ep.url | relative_url }}">
-      <img src="{{ noys_ep.img | prepend: '/assets/img/' | relative_url }}" alt="{{ noys_ep.title }}" width="160" height="160">
+    {% comment %}
+      alt خالیه چون عنوان کنارش نوشته شده؛ اگه عکس لود نشد، اول نسخه‌ی .webp همون اسم امتحان میشه
+      (برای وقتی که عکس رو تبدیل کردی ولی img توی فرانت‌متر هنوز jpg/png هست) و اگه اون هم نبود، کاور مخفی میشه.
+    {% endcomment %}
+    <a class="noys-hero-episode-cover" href="{{ noys_ep.url | relative_url }}" tabindex="-1" aria-hidden="true">
+      <img src="{{ noys_ep.img | prepend: '/assets/img/' | relative_url }}" alt="" width="140" height="140"
+        onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.src.replace(/\.(jpe?g|png)$/i,'.webp');}else{this.parentNode.style.display='none';}">
     </a>
     {% endif %}
     <div class="noys-hero-episode-body">
       <span class="noys-hero-episode-label">🎧 آخرین اپیزود</span>
       <a class="noys-hero-episode-title" href="{{ noys_ep.url | relative_url }}">{{ noys_ep.title }}</a>
-      {% if noys_ep.podcast_episode_id %}
-      <button class="noys-btn noys-btn-primary" type="button"
-        onclick='NOYS_PLAY_PODCAST({
-          channelId: {{ noys_ep_channel | jsonify }},
-          episodeId: {{ noys_ep.podcast_episode_id | jsonify }},
-          title: {{ noys_ep.title | jsonify }},
-          cover: {{ noys_ep.img | prepend: "/assets/img/" | relative_url | jsonify }}
-        })'>▶ پخش اپیزود</button>
-      {% endif %}
-      <a class="noys-btn" href="{{ '/podcast/' | relative_url }}">همه‌ی اپیزودها</a>
+      <div class="noys-hero-episode-actions">
+        {% if noys_ep.podcast_episode_id %}
+        <button class="noys-btn noys-btn-primary" type="button"
+          onclick='NOYS_PLAY_PODCAST({
+            channelId: {{ noys_ep_channel | jsonify }},
+            episodeId: {{ noys_ep.podcast_episode_id | jsonify }},
+            title: {{ noys_ep.title | jsonify }},
+            cover: {{ noys_ep.img | prepend: "/assets/img/" | relative_url | jsonify }}
+          })'>▶ پخش اپیزود</button>
+        {% endif %}
+        <a class="noys-btn" href="{{ '/podcast/' | relative_url }}">همه‌ی اپیزودها</a>
+      </div>
     </div>
   </div>
   {% endif %}
@@ -58,8 +65,10 @@
         {% if noys_first != "" and noys_first.img %}
         <img src="{{ noys_first.img | prepend: '/assets/img/' | relative_url }}" alt="" loading="lazy" width="320" height="180">
         {% endif %}
-        <span class="noys-start-card-title">{{ s.title }}</span>
-        <span class="noys-start-card-count">{{ s.posts | size }} مطلب</span>
+        <span class="noys-start-card-body">
+          <span class="noys-start-card-title">{{ s.title }}</span>
+          <span class="noys-start-card-count">{{ s.posts | size }} مطلب</span>
+        </span>
       </a>
     {% endfor %}
   </div>
