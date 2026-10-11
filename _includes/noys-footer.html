@@ -23,11 +23,12 @@
 
   <div class="nh-divider" aria-hidden="true"></div>
 
-  <p class="nf-copy">
-    &copy; {{ site.time | date: '%Y' }} NOYS
-    <span aria-hidden="true">·</span>
-    <a href="{{ site.baseurl }}/disclaimer/">سلب مسئولیت</a>
-    <span aria-hidden="true">·</span>
-    <a href="{{ site.baseurl }}/feed.xml" target="_blank" rel="noopener">فید RSS</a>
-  </p>
+  <div class="nf-copy">
+    <p class="nf-copyright" dir="ltr">&copy; {{ site.time | date: '%Y' }} NOYS</p>
+    <p class="nf-copy-links">
+      <a href="{{ site.baseurl }}/disclaimer/">سلب مسئولیت</a>
+      <span aria-hidden="true">·</span>
+      <a href="{{ site.baseurl }}/feed.xml" target="_blank" rel="noopener">فید RSS</a>
+    </p>
+  </div>
 </footer>
