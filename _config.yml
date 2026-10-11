@@ -70,7 +70,7 @@ plugins:
   - jekyll-paginate
   - jekyll-feed
   - jemoji
-paginate: 24
+paginate: 12
 paginate_path: "/page/:num"
 
 # تنظیمات فید RSS (jekyll-feed). این‌ها باعث میشن فید توی
