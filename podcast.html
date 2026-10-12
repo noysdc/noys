@@ -190,11 +190,20 @@ permalink: /podcast/
     object-fit: cover;
     border-radius: 10px;
     display: block;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+                box-shadow 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+  }
+
+  /* موقع برگشتن به اندازه‌ی اول، z-index تا پایان انیمیشن می‌ماند
+     تا کاور وسط کوچک شدن زیر کارت‌های کناری نرود */
+  .podcast-cover-wrap {
+    transition: z-index 0s linear 0.7s;
   }
 
   .podcast-cover-wrap:hover {
     z-index: 20;
+    transition-delay: 0s;
   }
 
   .podcast-cover-wrap:hover .podcast-cover {
