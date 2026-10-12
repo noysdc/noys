@@ -6,10 +6,8 @@
 {% endcomment %}
 {% assign noys_folder_cats = "magazine,podcast" | split: "," %}
 {% assign noys_generic_tags = "نویز,NOYS,PODCAST,پادکست,مستند_روایی,کسب_و_کار_سایه,کتاب,معرفی_کتاب" | split: "," %}
-{% assign noys_my_series = "" | split: "" %}
-{% for s in site.data.series %}
-  {% if s.posts contains page.url %}{% assign noys_my_series = s.posts %}{% endif %}
-{% endfor %}
+{% include series-find.html %}
+{% assign noys_my_series = noys_series_urls %}
 
 {% assign noys_scored = "" | split: "" %}
 {% for p in site.posts %}

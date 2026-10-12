@@ -58,18 +58,20 @@
   <p class="noys-start-sub">پرونده‌های چندقسمتی؛ هر کدوم رو از قسمت اول بخون یا گوش بده.</p>
   <div class="noys-start-grid">
     {% for s in site.data.series %}
-      {% assign noys_first_url = s.posts | first %}
-      {% assign noys_first = "" %}
-      {% for p in site.posts %}{% if p.url == noys_first_url %}{% assign noys_first = p %}{% break %}{% endif %}{% endfor %}
+      {% include series-posts.html sid=s.id legacy=s.posts %}
+      {% assign noys_first = noys_sp_list | first %}
+      {% assign noys_cnt = noys_sp_list | size %}
+      {% if noys_cnt > 0 %}
       <a class="noys-start-card" href="{{ '/series/' | append: s.id | append: '/' | relative_url }}">
-        {% if noys_first != "" and noys_first.img %}
+        {% if noys_first.img %}
         <img src="{{ noys_first.img | prepend: '/assets/img/' | relative_url }}" alt="" loading="lazy" width="320" height="180">
         {% endif %}
         <span class="noys-start-card-body">
           <span class="noys-start-card-title">{{ s.title }}</span>
-          <span class="noys-start-card-count">{{ s.posts | size }} مطلب</span>
+          <span class="noys-start-card-count">{{ noys_cnt }} مطلب</span>
         </span>
       </a>
+      {% endif %}
     {% endfor %}
   </div>
 </section>

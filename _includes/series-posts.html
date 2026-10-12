@@ -1,0 +1,38 @@
+{% comment %}
+  NOYS - ساخت خودکار فهرست مطالب یک پرونده (سری)
+  ورودی:  sid    = آیدی پرونده (همان id توی _data/series.yml)
+          legacy = (اختیاری) لیست آدرس‌های قدیمیِ posts توی series.yml
+  خروجی:  متغیر noys_sp_list = مطالب پرونده، به ترتیب قسمت
+
+  یک مطلب عضو پرونده است اگر:
+    ۱) توی فرانت‌متر خودش نوشته شده باشد  series: آیدی-پرونده
+    ۲) یا آدرسش توی لیست قدیمیِ posts در series.yml باشد (سازگاری با گذشته)
+
+  ترتیب قسمت‌ها:
+    - اگه series_part داشته باشد، همان شماره
+    - مطالب قدیمیِ لیست series.yml: به ترتیب همان لیست
+    - بقیه: به ترتیب تاریخ انتشار (قدیمی‌تر = قسمت قبلی‌تر)، بعد از بقیه
+{% endcomment %}
+{% assign noys_sp_keys = "" | split: "" %}
+{% for p in site.posts %}
+  {% assign noys_in = false %}
+  {% assign noys_part = p.series_part %}
+  {% if p.series == include.sid %}{% assign noys_in = true %}{% endif %}
+  {% for u in include.legacy %}
+    {% if u == p.url %}
+      {% assign noys_in = true %}
+      {% unless p.series_part %}{% assign noys_part = forloop.index %}{% endunless %}
+    {% endif %}
+  {% endfor %}
+  {% if noys_in %}
+    {% unless noys_part %}{% assign noys_part = 900 %}{% endunless %}
+    {% capture noys_k %}{{ noys_part | plus: 1000 }}-{{ p.date | date: "%Y%m%d%H%M" }}|{{ forloop.index0 }}{% endcapture %}
+    {% assign noys_sp_keys = noys_sp_keys | push: noys_k %}
+  {% endif %}
+{% endfor %}
+{% assign noys_sp_keys = noys_sp_keys | sort %}
+{% assign noys_sp_list = "" | split: "" %}
+{% for k in noys_sp_keys %}
+  {% assign noys_ki = k | split: "|" | last | plus: 0 %}
+  {% assign noys_sp_list = noys_sp_list | push: site.posts[noys_ki] %}
+{% endfor %}

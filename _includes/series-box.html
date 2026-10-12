@@ -1,21 +1,9 @@
 {% comment %}
   NOYS - کادر کوچک بالای پست: «این مطلب بخشی از سری ... است — قسمت X از Y»
-  فقط اگه آدرس همین پست توی _data/series.yml باشه نشون داده میشه.
+  عضویت از روی series: توی فرانت‌متر پست (یا لیست قدیمیِ series.yml) تشخیص داده میشه.
 {% endcomment %}
-{% assign noys_series = "" %}
-{% assign noys_pos = 0 %}
-{% for s in site.data.series %}
-  {% assign noys_i = 0 %}
-  {% for u in s.posts %}
-    {% assign noys_i = noys_i | plus: 1 %}
-    {% if u == page.url %}
-      {% assign noys_series = s %}
-      {% assign noys_pos = noys_i %}
-    {% endif %}
-  {% endfor %}
-{% endfor %}
+{% include series-find.html %}
 {% if noys_series != "" %}
-{% assign noys_total = noys_series.posts | size %}
 <div class="noys-series-box">
   <span class="noys-series-label"><i class="fa fa-bookmark" aria-hidden="true"></i> سری</span>
   <a class="noys-series-link" href="{{ '/series/' | append: noys_series.id | append: '/' | relative_url }}">{{ noys_series.title }}</a>

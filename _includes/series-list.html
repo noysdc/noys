@@ -4,7 +4,8 @@
             {% include series-list.html series=s compact=true %} ← فهرست خلاصه (صفحه‌ی همه‌ی سری‌ها)
 {% endcomment %}
 {% assign noys_s = include.series %}
-{% assign noys_count = noys_s.posts | size %}
+{% include series-posts.html sid=noys_s.id legacy=noys_s.posts %}
+{% assign noys_count = noys_sp_list | size %}
 <section class="noys-series-card{% if include.compact %} is-compact{% endif %}">
   <header class="noys-series-card-head">
     {% if include.compact %}
@@ -16,10 +17,8 @@
     <span class="noys-series-card-count">{{ noys_count }} مطلب</span>
   </header>
   <ol class="noys-series-card-list">
-    {% for u in noys_s.posts %}
-      {% assign noys_sp = "" %}
-      {% for p in site.posts %}{% if p.url == u %}{% assign noys_sp = p %}{% break %}{% endif %}{% endfor %}
-      {% if noys_sp != "" %}
+    {% for noys_sp in noys_sp_list %}
+      {% if noys_sp %}
       <li>
         <a href="{{ noys_sp.url | relative_url }}">
           {% if noys_sp.img %}<img src="{{ noys_sp.img | prepend: '/assets/img/' | relative_url }}" alt="" loading="lazy"{% if include.compact %} width="72" height="40"{% else %} width="160" height="90"{% endif %}>{% endif %}

@@ -1,0 +1,32 @@
+{% comment %}
+  NOYS - پیدا کردن پرونده‌ی صفحه‌ی فعلی
+  خروجی: noys_series (خودِ پرونده یا خالی)، noys_pos (قسمت چندم)، noys_total،
+         noys_prev، noys_next، noys_series_urls (آدرس همه‌ی مطالب پرونده)
+{% endcomment %}
+{% assign noys_series = "" %}
+{% assign noys_pos = 0 %}
+{% assign noys_total = 0 %}
+{% assign noys_prev = nil %}
+{% assign noys_next = nil %}
+{% assign noys_series_urls = "" | split: "" %}
+{% for s in site.data.series %}
+  {% assign noys_match = false %}
+  {% if page.series and page.series == s.id %}{% assign noys_match = true %}{% endif %}
+  {% if s.posts contains page.url %}{% assign noys_match = true %}{% endif %}
+  {% if noys_match %}{% assign noys_series = s %}{% break %}{% endif %}
+{% endfor %}
+{% if noys_series != "" %}
+  {% include series-posts.html sid=noys_series.id legacy=noys_series.posts %}
+  {% assign noys_total = noys_sp_list | size %}
+  {% for q in noys_sp_list %}
+    {% assign noys_series_urls = noys_series_urls | push: q.url %}
+    {% if q.url == page.url %}{% assign noys_pos = forloop.index %}{% endif %}
+  {% endfor %}
+  {% if noys_pos > 1 %}
+    {% assign noys_pi = noys_pos | minus: 2 %}
+    {% assign noys_prev = noys_sp_list[noys_pi] %}
+  {% endif %}
+  {% if noys_pos > 0 and noys_pos < noys_total %}
+    {% assign noys_next = noys_sp_list[noys_pos] %}
+  {% endif %}
+{% endif %}
