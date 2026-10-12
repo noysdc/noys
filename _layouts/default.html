@@ -212,6 +212,34 @@
       fp.hidden = false;
       fp.classList.remove('is-minimized');
 
+      // اگه برای این اپیزود شناسه‌ی کست‌باکس نداریم ولی فایل صوتیِ فید رو داریم،
+      // مستقیم همون فایل رو پخش می‌کنیم (بدون وابستگی به کست‌باکس).
+      if (opts.audioUrl && !(opts.episodeId && opts.episodeId !== '')) {
+        var wrap = document.createElement('div');
+        wrap.style.cssText = 'padding:14px;direction:rtl;text-align:center;';
+        var audioEl = document.createElement('audio');
+        audioEl.controls = true;
+        audioEl.autoplay = true;
+        audioEl.preload = 'auto';
+        audioEl.src = opts.audioUrl;
+        audioEl.style.cssText = 'width:100%;display:block;';
+        wrap.appendChild(audioEl);
+        if (opts.castboxUrl) {
+          var cb = document.createElement('a');
+          cb.href = opts.castboxUrl;
+          cb.target = '_blank';
+          cb.rel = 'noopener';
+          cb.textContent = 'شنیدن در کست‌باکس';
+          cb.style.cssText = 'display:inline-block;margin-top:10px;font-size:12px;text-decoration:underline;';
+          wrap.appendChild(cb);
+        }
+        fpFrame.innerHTML = '';
+        fpFrame.appendChild(wrap);
+        fpReload.hidden = true;
+        requestAnimationFrame(noysRefreshFPScrollbar);
+        return;
+      }
+
       var iframe = document.createElement('iframe');
       iframe.src = src;
       iframe.setAttribute('frameborder', '0');
