@@ -11,7 +11,7 @@ permalink: /podcast/
 
   <div class="noys-arc-clock" id="noysArcClock" aria-hidden="true">
     <div class="noys-arc-clock-pill" id="noysArcClockPill">--:-- --</div>
-    <svg class="noys-arc-clock-svg" viewBox="0 0 900 260" preserveAspectRatio="xMidYMid meet">
+    <svg class="noys-arc-clock-svg" viewBox="0 0 900 80" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id="noysArcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%"   stop-color="#fff200"/>
@@ -22,7 +22,7 @@ permalink: /podcast/
       </defs>
       <path
         id="noysArcPath"
-        d="M 40 210 C 240 60, 660 60, 860 210"
+        d="M 40 40 L 860 40"
         fill="none"
         stroke="url(#noysArcGradient)"
         stroke-width="8"
@@ -243,6 +243,7 @@ permalink: /podcast/
     width: 100%;
     max-width: 760px;
     margin: 0 auto 34px;
+    padding-top: 58px; /* جای قرص ساعت بالای خط */
   }
 
   @media (min-width: 769px) {
@@ -306,7 +307,10 @@ permalink: /podcast/
 
     // موقعیت افقی قرص ساعت رو هم‌راستا با تامب می‌کنیم (به‌صورت درصد از عرض ویوباکس)
     var pctX = (point.x / 900) * 100;
-    pill.style.left = pctX + '%';
+    var wrapW = clockWrap.clientWidth;
+    var half = pill.offsetWidth / 2;
+    var leftPx = Math.min(Math.max((pctX / 100) * wrapW, half), wrapW - half);
+    pill.style.left = leftPx + 'px';
 
     var hours24 = now.getHours();
     var ampm = hours24 >= 12 ? 'PM' : 'AM';
@@ -317,5 +321,6 @@ permalink: /podcast/
 
   tick();
   setInterval(tick, 15000);
+  window.addEventListener('resize', tick);
 })();
 </script>
