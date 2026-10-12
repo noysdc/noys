@@ -13,7 +13,7 @@ permalink: /podcast/
     <div class="noys-arc-clock-pill" id="noysArcClockPill">--:-- --</div>
     <svg class="noys-arc-clock-svg" viewBox="0 0 900 80" preserveAspectRatio="xMidYMid meet">
       <defs>
-        <linearGradient id="noysArcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <linearGradient id="noysArcGradient" gradientUnits="userSpaceOnUse" x1="860" y1="0" x2="40" y2="0">
           <stop offset="0%"   stop-color="#fff200"/>
           <stop offset="35%"  stop-color="#ffd23f"/>
           <stop offset="65%"  stop-color="#8b6cf2"/>
@@ -21,8 +21,16 @@ permalink: /podcast/
         </linearGradient>
       </defs>
       <path
+        id="noysArcTrack"
+        d="M 860 40 L 40 40"
+        fill="none"
+        stroke="rgba(128,128,128,0.25)"
+        stroke-width="8"
+        stroke-linecap="round"
+      ></path>
+      <path
         id="noysArcPath"
-        d="M 40 40 L 860 40"
+        d="M 860 40 L 40 40"
         fill="none"
         stroke="url(#noysArcGradient)"
         stroke-width="8"
@@ -291,6 +299,7 @@ permalink: /podcast/
   if (!path || !thumb || !halo || !pill || !clockWrap) return;
 
   var totalLength = path.getTotalLength();
+  path.setAttribute('stroke-dasharray', '0 ' + totalLength);
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
@@ -300,6 +309,8 @@ permalink: /podcast/
     var fraction = minutesOfDay / 1440; // 0 تا 1 در طول یک شبانه‌روز
 
     var point = path.getPointAtLength(fraction * totalLength);
+    // بخش گذشته‌ی روز با گرادیان رنگی پر می‌شود و بخش باقی‌مانده خاکستری می‌ماند
+    path.setAttribute('stroke-dasharray', (fraction * totalLength) + ' ' + totalLength);
     thumb.setAttribute('cx', point.x);
     thumb.setAttribute('cy', point.y);
     halo.setAttribute('cx', point.x);
