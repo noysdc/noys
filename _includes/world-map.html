@@ -26,6 +26,8 @@
 
 <section class="noys-world-section">
 
+  <div class="nh-divider" aria-hidden="true"></div>
+
   <div class="noys-world-heading">
     <h2>نقشه‌ی جهانِ روایت‌ها</h2>
     <p>موس رو ببر روی هر کشور تا مطلب‌های مربوط به همون‌جا رو ببینی</p>
@@ -82,9 +84,9 @@
    ========================================================= */
 
 .noys-world-section {
-  margin-top: 60px;
-  padding-top: 40px;
-  border-top: 1px solid #eef2f8;
+  margin-top: 40px;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .noys-world-heading {
@@ -96,12 +98,12 @@
   font-size: 22px;
   font-weight: 700;
   margin: 0 0 6px;
-  color: #222;
+  color: var(--nh-text, #222);
 }
 
 .noys-world-heading p {
   font-size: 14px;
-  color: #888;
+  color: var(--nh-muted, #888);
   margin: 0;
 }
 
@@ -222,8 +224,8 @@
 
 @media (max-width: 768px) {
   .noys-world-section {
-    margin-top: 40px;
-    padding-top: 28px;
+    margin-top: 28px;
+    padding-top: 0;
   }
 
   .noys-world-tooltip {

@@ -46,7 +46,7 @@ main{width:100% !important;margin-right:0 !important;margin-left:0 !important;pa
 .nh-logo{display:inline-block;border-radius:50%;line-height:0;box-shadow:0 0 0 1px var(--nh-border),0 12px 40px -12px var(--nh-glow)}
 .nh .nh-logo img{width:112px;height:112px;border-radius:50%;display:block;object-fit:cover}
 .nh .nh-name{display:block;margin-top:14px;font-size:1.6rem;font-weight:800;color:var(--nh-text);text-decoration:none}
-.nh .nh-tag{margin:6px auto 0;max-width:34rem;color:var(--nh-muted);font-size:.95rem;line-height:1.9;text-align:center}
+.nh .nh-tag{margin:8px auto 0;max-width:40rem;color:var(--nh-muted);font-size:1.12rem;line-height:2;text-align:center}
 
 /* دیوایدر هم‌رنگ سایت */
 .nh-divider{height:2px;margin:22px auto;max-width:900px;background:linear-gradient(90deg,transparent,var(--nh-accent) 50%,transparent)}
@@ -127,7 +127,8 @@ body.noys-reading-mode .nf-contact{display:none}
 .nf .nf-links a:hover{border-color:var(--nh-accent)}
 .nf .nf-support{display:inline-flex;align-items:center;height:44px;padding:0 22px;border-radius:999px;background:var(--nh-accent);
   color:var(--nh-on-accent);font-weight:800;text-decoration:none;box-shadow:0 10px 30px -12px var(--nh-glow)}
-.nf .nf-copy{margin:0;color:var(--nh-muted);font-size:.85rem;line-height:2;text-align:center}
+.nf .nf-copy{display:flex;flex-direction:column;align-items:center;gap:2px;margin:0;color:var(--nh-muted);font-size:.85rem;line-height:2;text-align:center}
+.nf .nf-copy p{margin:0;text-align:center}
 .nf .nf-copy a{color:inherit;text-decoration:underline}
 .nf :focus-visible{outline:2px solid var(--nh-accent);outline-offset:2px}
 
@@ -143,7 +144,7 @@ body.noys-reading-mode .nf-contact{display:none}
   .nh{padding-top:20px}
   .nh .nh-logo img{width:88px;height:88px}
   .nh .nh-name{font-size:1.35rem}
-  .nh .nh-tag{font-size:.88rem}
+  .nh .nh-tag{font-size:1rem}
   .nh-box{border-radius:22px;padding:8px}
   .nh-row{flex-direction:column;align-items:stretch;gap:8px}
   .nh-tools{justify-content:space-between}
@@ -158,4 +159,41 @@ body.noys-reading-mode .nf-contact{display:none}
 @media (prefers-reduced-motion:reduce){
   .nh *,.nf *{transition:none !important}
   .nh-scroll{scroll-behavior:auto}
+}
+
+/* =========================================================
+   اصلاحات ۱۴۰۵/۰۷ (۲۰۲۶-۱۰-۱۲)
+   ========================================================= */
+
+/* ۱) منوی ثابت: custom.css روی html/body مقدار overflow-x:hidden گذاشته؛
+   این کار body را به یک «اسکرول‌کانتینر» تبدیل می‌کند و sticky را از کار می‌اندازد.
+   clip همان برش افقی را می‌دهد ولی اسکرول‌کانتینر نمی‌سازد. */
+html,body{overflow-x:clip !important}
+
+.nh.nh-sticky{position:sticky;top:0;z-index:50;padding-top:6px;padding-bottom:8px}
+.nh.nh-sticky .nh-box{margin:0}
+.nh.nh-more{padding-top:6px}
+
+/* موبایل: باکس منو بلند است (جستجو + دکمه‌ها + منو)؛ top منفی باعث می‌شود
+   وقتی اسکرول می‌کنی فقط ردیف «مجله / پادکست / پرونده‌ها» بچسبد. */
+@media (max-width:640px){
+  .nh.nh-sticky{top:-110px}
+}
+
+/* ۲) جمله‌ی هدر: بزرگ‌تر (بالا) + کاما/نقطه‌ی آخر خط در اسکریپت پایین حذف می‌شود */
+
+/* ۳) فوتر: ترتیب «© ۲۰۲۶ NOYS» در جهت راست‌به‌چپ (بدون جابه‌جایی) */
+.nf .nf-copyright{display:flex;flex-direction:row;direction:rtl;justify-content:center;align-items:baseline;gap:.4em;margin:0}
+.nf .nf-copyright span{unicode-bidi:isolate;direction:ltr}
+
+/* ۴) تم شب: رنگ تیترها (main.css روی تیترهای مقاله #222 ثابت کرده بود) */
+html[data-theme="dark"] .wrapper :is(h1,h2,h3,h4,h5,h6),
+html[data-theme="dark"] .article-page .post-markdown-body :is(h2,h3,h4){color:var(--nh-text) !important}
+html[data-theme="dark"] .noys-world-heading p{color:var(--nh-muted) !important}
+
+/* ۵) صفحه‌ی پرونده‌ها: کاور کوچک کنار شماره‌ی هر مطلب */
+.noys-series-card.is-compact .noys-series-card-list li{margin-bottom:8px}
+.noys-series-card.is-compact .noys-series-card-list img{flex:0 0 72px;width:72px;height:40px;object-fit:cover;border-radius:6px}
+@media (max-width:640px){
+  .noys-series-card.is-compact .noys-series-card-list img{flex-basis:56px;width:56px;height:32px}
 }
