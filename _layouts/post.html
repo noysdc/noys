@@ -56,6 +56,8 @@ layout: main
         <div class="podcast-container">
           <audio
             controls
+            controlsList="nodownload noplaybackrate"
+            oncontextmenu="return false;"
             preload="none"
             src="{{ page.podcast_audio }}"
             style="width:100%;display:block;"
@@ -149,3 +151,55 @@ layout: main
   </div>
 
 </article>
+
+<style>
+
+/* =========================================================
+   NOYS - جداکننده‌های داخل متن مجله (هم‌شکل جداکننده‌ی سربرگ، با رنگ برند)
+   ========================================================= */
+
+.post-markdown-body hr {
+  height: 2px;
+  margin: 34px auto;
+  max-width: 900px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent);
+}
+
+
+/* =========================================================
+   NOYS - نقل‌قول (Blockquote) در حالت شب
+   پس‌زمینه‌ی تیره و متن روشن تا خوانا باشه؛ حالت روز دست‌نخورده می‌مونه
+   ========================================================= */
+
+html[data-theme="dark"] .post-markdown-body blockquote {
+  background: #262a31 !important;
+  color: #e4e6ea !important;
+  border: 0 !important;
+  border-right: 4px solid var(--nh-accent, #fff200) !important;
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+html[data-theme="dark"] .post-markdown-body blockquote p,
+html[data-theme="dark"] .post-markdown-body blockquote li,
+html[data-theme="dark"] .post-markdown-body blockquote span,
+html[data-theme="dark"] .post-markdown-body blockquote em {
+  color: #e4e6ea !important;
+}
+
+html[data-theme="dark"] .post-markdown-body blockquote strong,
+html[data-theme="dark"] .post-markdown-body blockquote b {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .post-markdown-body blockquote a {
+  color: #fff200 !important;
+}
+
+html[data-theme="dark"] .post-markdown-body blockquote code {
+  background: #1a1c20 !important;
+  color: #f1f2f4 !important;
+}
+
+</style>

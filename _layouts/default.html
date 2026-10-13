@@ -125,6 +125,55 @@
         width: calc(100vw - 12px);
       }
     }
+
+    /* ===== سرعت پخش و تایمر خواب داخل پلیر شناور ===== */
+    .noys-fp-tools {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #444;
+    }
+    .noys-fp-group { display: flex; align-items: center; gap: 6px; }
+    .noys-fp-speedgroup { direction: ltr; }
+    .noys-fp-tbtn,
+    .noys-fp-speed {
+      border: 1px solid #ddd;
+      background: #f1f3f4;
+      color: #222;
+      border-radius: 999px;
+      height: 30px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .noys-fp-tbtn { width: 30px; font-size: 16px; line-height: 1; padding: 0; }
+    .noys-fp-speed { min-width: 52px; padding: 0 10px; }
+    .noys-fp-tbtn:hover,
+    .noys-fp-speed:hover { background: #fff200; border-color: #fff200; }
+    .noys-fp-select {
+      height: 30px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: #f1f3f4;
+      color: #222;
+      padding: 0 8px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .noys-fp-sleep-left {
+      min-width: 38px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      color: #3d1e8c;
+    }
+    .noys-fp-tbtn:focus-visible,
+    .noys-fp-speed:focus-visible,
+    .noys-fp-select:focus-visible { outline: 2px solid #3d1e8c; outline-offset: 2px; }
   </style>
 
   <script>
@@ -149,6 +198,139 @@
       }
     }
 
+    // ---------- سرعت پخش و تایمر خواب ----------
+    var SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+    var fpSpeed = 1;
+    try {
+      var savedSpeed = parseFloat(localStorage.getItem('noys-fp-speed'));
+      if (SPEEDS.indexOf(savedSpeed) !== -1) fpSpeed = savedSpeed;
+    } catch (e) {}
+
+    var SLEEP_OPTIONS = [
+      { v: 0,  t: 'خاموش' },
+      { v: 15, t: '۱۵ دقیقه' },
+      { v: 30, t: '۳۰ دقیقه' },
+      { v: 45, t: '۴۵ دقیقه' },
+      { v: 60, t: '۶۰ دقیقه' },
+      { v: 90, t: '۹۰ دقیقه' }
+    ];
+    var fpSleepEnd = 0, fpSleepMinutes = 0, fpSleepTick = null, fpFadeTick = null;
+    var fpSpeedLabelEl = null, fpSleepSelectEl = null, fpSleepLeftEl = null;
+
+    function fpApplySpeed() {
+      if (fpAudio) {
+        fpAudio.defaultPlaybackRate = fpSpeed;
+        fpAudio.playbackRate = fpSpeed;
+      }
+      if (fpSpeedLabelEl) fpSpeedLabelEl.textContent = String(fpSpeed) + '×';
+      try { localStorage.setItem('noys-fp-speed', String(fpSpeed)); } catch (e) {}
+    }
+
+    function fpStepSpeed(dir) {
+      var i = SPEEDS.indexOf(fpSpeed);
+      if (i < 0) i = SPEEDS.indexOf(1);
+      i = Math.min(SPEEDS.length - 1, Math.max(0, i + dir));
+      fpSpeed = SPEEDS[i];
+      fpApplySpeed();
+    }
+
+    function fpFmtClock(ms) {
+      var s = Math.max(0, Math.round(ms / 1000));
+      var m = Math.floor(s / 60), r = s % 60;
+      return m + ':' + (r < 10 ? '0' : '') + r;
+    }
+
+    function fpSleepUpdateLabel() {
+      if (fpSleepLeftEl) fpSleepLeftEl.textContent = fpSleepEnd ? fpFmtClock(fpSleepEnd - Date.now()) : '';
+    }
+
+    function fpClearSleep() {
+      fpSleepEnd = 0;
+      fpSleepMinutes = 0;
+      if (fpSleepTick) { clearInterval(fpSleepTick); fpSleepTick = null; }
+      if (fpSleepSelectEl) fpSleepSelectEl.value = '0';
+      fpSleepUpdateLabel();
+    }
+
+    // صدا در ~۳ ثانیه کم می‌شه و بعد پخش متوقف می‌شه
+    function fpFadeOutAndPause() {
+      if (!fpAudio) return;
+      var a = fpAudio, v0 = a.volume, steps = 15, n = 0;
+      if (fpFadeTick) clearInterval(fpFadeTick);
+      fpFadeTick = setInterval(function () {
+        n++;
+        a.volume = Math.max(0, v0 * (1 - n / steps));
+        if (n >= steps) {
+          clearInterval(fpFadeTick);
+          fpFadeTick = null;
+          a.pause();
+          a.volume = v0;
+        }
+      }, 200);
+    }
+
+    function fpSetSleep(minutes) {
+      fpClearSleep();
+      if (!minutes) return;
+      fpSleepMinutes = minutes;
+      fpSleepEnd = Date.now() + minutes * 60000;
+      if (fpSleepSelectEl) fpSleepSelectEl.value = String(minutes);
+      fpSleepUpdateLabel();
+      // از زمان واقعی استفاده می‌شه تا اگه تب توی پس‌زمینه کند شد، تایمر عقب نیفته
+      fpSleepTick = setInterval(function () {
+        if (Date.now() >= fpSleepEnd) {
+          fpClearSleep();
+          fpFadeOutAndPause();
+          return;
+        }
+        fpSleepUpdateLabel();
+      }, 1000);
+    }
+
+    function fpBuildTools() {
+      var row = document.createElement('div');
+      row.className = 'noys-fp-tools';
+
+      var opts = SLEEP_OPTIONS.map(function (o) {
+        return '<option value="' + o.v + '">' + o.t + '</option>';
+      }).join('');
+
+      row.innerHTML =
+        '<div class="noys-fp-group noys-fp-speedgroup" role="group" aria-label="سرعت پخش">' +
+          '<button type="button" class="noys-fp-tbtn" data-act="slower" aria-label="کندتر">−</button>' +
+          '<button type="button" class="noys-fp-speed" data-act="reset" title="بازگشت به سرعت عادی" aria-label="سرعت پخش؛ برای بازگشت به سرعت عادی بزن">1×</button>' +
+          '<button type="button" class="noys-fp-tbtn" data-act="faster" aria-label="تندتر">+</button>' +
+        '</div>' +
+        '<div class="noys-fp-group">' +
+          '<label class="noys-fp-sleep-label" for="noysFPSleep">⏲ تایمر خواب</label>' +
+          '<select id="noysFPSleep" class="noys-fp-select">' + opts + '</select>' +
+          '<span class="noys-fp-sleep-left"></span>' +
+        '</div>';
+
+      fpSpeedLabelEl = row.querySelector('.noys-fp-speed');
+      fpSleepSelectEl = row.querySelector('.noys-fp-select');
+      fpSleepLeftEl = row.querySelector('.noys-fp-sleep-left');
+
+      row.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-act]');
+        if (!btn) return;
+        var act = btn.getAttribute('data-act');
+        if (act === 'slower') fpStepSpeed(-1);
+        else if (act === 'faster') fpStepSpeed(1);
+        else if (act === 'reset') { fpSpeed = 1; fpApplySpeed(); }
+      });
+      fpSleepSelectEl.addEventListener('change', function () {
+        fpSetSleep(parseInt(fpSleepSelectEl.value, 10) || 0);
+      });
+
+      // اگه تایمر از قبل فعاله (مثلاً اپیزود عوض شده)، نمایش رو هماهنگ کن
+      if (fpSleepEnd) {
+        fpSleepSelectEl.value = String(fpSleepMinutes);
+        fpSleepUpdateLabel();
+      }
+      return row;
+    }
+
     function fpBuildAudio(src) {
       var wrap = document.createElement('div');
       wrap.style.cssText = 'padding:14px;direction:rtl;text-align:center;';
@@ -158,6 +340,9 @@
       audioEl.autoplay = true;
       audioEl.preload = 'auto';
       audioEl.src = src;
+      // حذف منوی سه‌نقطه (دانلود و سرعت پخش) و منوی راست‌کلیک روی پلیر
+      audioEl.setAttribute('controlsList', 'nodownload noplaybackrate');
+      audioEl.addEventListener('contextmenu', function (e) { e.preventDefault(); });
       audioEl.style.cssText = 'width:100%;display:block;';
 
       var msg = document.createElement('p');
@@ -169,9 +354,12 @@
 
       wrap.appendChild(audioEl);
       wrap.appendChild(msg);
+      wrap.appendChild(fpBuildTools());
       fpFrame.innerHTML = '';
       fpFrame.appendChild(wrap);
       fpAudio = audioEl;
+      audioEl.addEventListener('loadedmetadata', fpApplySpeed);
+      fpApplySpeed();
       requestAnimationFrame(noysRefreshFPScrollbar);
     }
 
@@ -206,6 +394,8 @@
     });
 
     fpClose.addEventListener('click', function () {
+      fpClearSleep();
+      if (fpFadeTick) { clearInterval(fpFadeTick); fpFadeTick = null; }
       if (fpAudio) { fpAudio.pause(); }
       fpAudio = null;
       fpCurrentSrc = '';
