@@ -5,8 +5,7 @@ title: "
 date: 2026-09-02 00:47:00 +0330
 img: podcast/EP-01.webp
 fig-caption: "نویز | اپیزود 01 : کانتری کلاب بغداد (بارِ ممنوعه ای در دل جنگ)"
-podcast_channel_id: "7361321"
-podcast_episode_id: "983635911"
+podcast_audio: "https://play.rabt.host/podcast/f341ce22-a0e2-40fe-9ae1-d53b166c753b/episode/a5766a5b-2196-4577-b645-87b77f5cec84/play.mp3"
 categories:
   - podcast
   - بیزینس های ممنوعه

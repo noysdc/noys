@@ -2,8 +2,6 @@
 layout: main
 ---
 
-{% assign noys_channel_id = page.podcast_channel_id | default: page.podcast_id %}
-
 <article class="podcast-episode-page">
 
   <div class="podcast-episode-cover-wrap">
@@ -17,16 +15,17 @@ layout: main
   <h1 class="podcast-episode-title">{{ page.title }}</h1>
   <span class="podcast-episode-date">{{ page.date | date: '%Y/%m/%d' }}</span>
 
+  {% if page.podcast_audio and page.podcast_audio != "" %}
   <button
     class="podcast-play-btn podcast-episode-play-btn"
     type="button"
     onclick='NOYS_PLAY_PODCAST({
-      channelId: {{ noys_channel_id | jsonify }},
-      episodeId: {{ page.podcast_episode_id | jsonify }},
+      audio: {{ page.podcast_audio | jsonify }},
       title: {{ page.title | jsonify }},
       cover: {{ page.img | prepend: "/assets/img/" | relative_url | jsonify }}
     })'
   >▶ پخش این اپیزود</button>
+  {% endif %}
 
   <div class="podcast-episode-shownotes">
     {{ content }}
@@ -56,11 +55,12 @@ layout: main
     "@type": "PodcastSeries",
     "name": "NOYS",
     "url": "{{ site.url }}{{ site.baseurl }}/podcast/"
-  },
+  }{% if page.podcast_audio and page.podcast_audio != "" %},
   "associatedMedia": {
     "@type": "MediaObject",
-    "contentUrl": "https://castbox.fm/vh/{{ noys_channel_id }}"
-  }
+    "contentUrl": {{ page.podcast_audio | jsonify }},
+    "encodingFormat": "audio/mpeg"
+  }{% endif %}
 }
 </script>
 

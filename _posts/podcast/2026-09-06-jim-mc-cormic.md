@@ -5,8 +5,7 @@ title: "
 date: 2026-09-06 00:47:00 +0330
 img: podcast/EP-02.webp
 fig-caption: "نویز | اپیزود 02 : تجارت با مرگ (بمب یاب های تقلبی جیم مک کورمیک)"
-podcast_channel_id: "7361321"
-podcast_episode_id: "984910278"
+podcast_audio: "https://play.rabt.host/podcast/f341ce22-a0e2-40fe-9ae1-d53b166c753b/episode/25f24e5f-4e18-49ff-9edf-fd4ea05a5f2a/play.mp3"
 categories:
   - podcast
   - کلاهبرداری‌های بزرگ

@@ -11,7 +11,6 @@
     <div class="noys-floating-player-bar">
       <img id="noysFPCover" class="noys-floating-player-cover" src="" alt="">
       <span id="noysFPTitle" class="noys-floating-player-title"></span>
-      <button type="button" id="noysFPReload" class="noys-floating-player-btn" aria-label="بارگذاری مجدد پخش‌کننده" title="اگه پخش‌کننده لود نشد، اینو بزن" hidden>⟳</button>
       <button type="button" id="noysFPMinimize" class="noys-floating-player-btn" aria-label="کوچک/بزرگ کردن">–</button>
       <button type="button" id="noysFPClose" class="noys-floating-player-btn" aria-label="بستن پخش‌کننده">✕</button>
     </div>
@@ -69,9 +68,6 @@
     .noys-floating-player.is-dragging .noys-floating-player-bar {
       cursor: grabbing;
     }
-    .noys-floating-player.is-dragging .noys-floating-player-frame iframe {
-      pointer-events: none;
-    }
     .noys-floating-player-cover {
       width: 32px;
       height: 32px;
@@ -101,21 +97,6 @@
     .noys-floating-player-btn:hover {
       background: #fff200;
     }
-    /* دکمه‌ی «بارگذاری مجدد»: همیشه وقتی چیزی در حال پخشه در دسترسه
-       (بدون نیاز به بستن/باز کردنِ کل پلیر)، و وقتی پلیر بعد از چند
-       ثانیه هنوز لود نشده (احتمالاً مشکل از کست‌باکسه)، با یه پالسِ
-       گرادیانتی چشم کاربر رو جلب می‌کنه */
-    #noysFPReload:not([hidden]) {
-      background: linear-gradient(135deg, #fff200, #8b6cf2);
-      color: #fff;
-    }
-    #noysFPReload.is-stuck {
-      animation: noysFPReloadPulse 1.2s ease-in-out infinite;
-    }
-    @keyframes noysFPReloadPulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.12); }
-    }
     .noys-floating-player-frame-wrap {
       position: relative;
     }
@@ -131,12 +112,6 @@
          assets/css/curved-scrollbar.css به‌صورت عمومی
          این کار رو برای هر باکسی با این صفت انجام می‌دن. */
     }
-    .noys-floating-player-frame iframe {
-      display: block;
-      width: 100%;
-      border: 0;
-      height: 380px;
-    }
     @media (max-width: 768px) {
       .noys-floating-player {
         inset-inline-end: 8px;
@@ -149,142 +124,78 @@
         bottom: 8px;
         width: calc(100vw - 12px);
       }
-      .noys-floating-player-frame iframe {
-        height: 320px;
-      }
     }
   </style>
 
   <script>
   (function () {
     // ---------- کنترل‌کننده‌ی سراسری پخش‌کننده‌ی پادکست ----------
+    // پخش مستقیم فایل صوتی (mp3) از فید RSS؛ بدون هیچ سرویس واسطه‌ای.
     var fp        = document.getElementById('noysFloatingPlayer');
     var fpFrame   = document.getElementById('noysFPFrame');
     var fpTitle   = document.getElementById('noysFPTitle');
     var fpCover   = document.getElementById('noysFPCover');
     var fpMin     = document.getElementById('noysFPMinimize');
     var fpClose   = document.getElementById('noysFPClose');
-    var fpReload  = document.getElementById('noysFPReload');
 
-    // آخرین اپیزودی که پخش شده، برای اینکه دکمه‌ی «بارگذاری مجدد»
-    // بدونه دقیقاً باید چه چیزی رو دوباره بسازه.
-    var fpLastOpts = null;
-    var fpStuckTimer = null;
+    var fpAudio = null;      // المنت <audio> فعلی
+    var fpCurrentSrc = '';   // آدرس فایلی که الان بارگذاری شده
 
-    // اسکرول‌بار این باکس دیگه دستی مدیریت نمی‌شه؛ چون fpFrame صفت
-    // data-noys-scrollbar داره، خودِ curved-scrollbar.js (عمومی) این
-    // کار رو انجام می‌ده. بعد از هر تغییر محتوا/نمایش، فقط باید
-    // بهش بگیم دوباره اندازه‌گیری کنه.
+    // اسکرول‌بار این باکس را curved-scrollbar.js (از روی data-noys-scrollbar)
+    // مدیریت می‌کند؛ بعد از هر تغییر محتوا فقط باید بهش بگیم دوباره اندازه بگیره.
     function noysRefreshFPScrollbar() {
       if (window.NoysCurvedScrollbar) {
         window.NoysCurvedScrollbar.init(fpFrame).refresh();
       }
     }
 
-    // می‌سازه (یا از نو می‌سازه) آی‌فریمِ کست‌باکس.
-    // cacheBust=true وقتی استفاده می‌شه که داریم به‌خاطر گیر کردنِ
-    // پلیر (لود نشدن) دوباره امتحان می‌کنیم؛ یه پارامتر بی‌ربط به
-    // انتهای آدرس اضافه می‌کنیم تا مرورگر/کست‌باکس مجبور به یه
-    // درخواستِ کاملاً تازه بشن، نه این‌که یه نسخه‌ی گیرکرده/کش‌شده
-    // رو دوباره نشون بدن.
-    function fpBuildFrame(opts, cacheBust) {
-      var src = (opts.episodeId && opts.episodeId !== '')
-        ? 'https://castbox.fm/app/castbox/player/id' + opts.channelId + '/id' + opts.episodeId + '?v=8.22.11&autoplay=1&hide_list=1'
-        : 'https://castbox.fm/app/castbox/player/id' + opts.channelId + '?v=8.22.11&autoplay=1';
+    function fpBuildAudio(src) {
+      var wrap = document.createElement('div');
+      wrap.style.cssText = 'padding:14px;direction:rtl;text-align:center;';
 
-      if (cacheBust) {
-        src += '&_r=' + Date.now();
-      }
+      var audioEl = document.createElement('audio');
+      audioEl.controls = true;
+      audioEl.autoplay = true;
+      audioEl.preload = 'auto';
+      audioEl.src = src;
+      audioEl.style.cssText = 'width:100%;display:block;';
 
-      fpReload.classList.remove('is-stuck');
-      if (fpStuckTimer) {
-        clearTimeout(fpStuckTimer);
-        fpStuckTimer = null;
-      }
+      var msg = document.createElement('p');
+      msg.style.cssText = 'margin:10px 0 0;font-size:12px;color:#c0392b;';
+      msg.hidden = true;
+      msg.textContent = 'فایل صوتی این اپیزود الان در دسترس نیست. چند لحظه دیگه دوباره امتحان کن.';
+      audioEl.addEventListener('error', function () { msg.hidden = false; });
+      audioEl.addEventListener('playing', function () { msg.hidden = true; });
 
-      // مهم: اول باکس رو نمایان می‌کنیم، بعد آی‌فریم رو می‌سازیم.
-      // اگه برعکس بشه، آی‌فریم درست همون لحظه‌ای ساخته می‌شه که
-      // والدش هنوز hidden (یعنی display:none) هست؛ مرورگر نمی‌تونه
-      // محاسبه کنه که این آی‌فریم توی دیدِ کاربره یا نه، و بعضی
-      // وقت‌ها اصلاً لودش رو شروع نمی‌کنه تا یه اسکرول/تغییر اندازه
-      // بیاد و مرورگر دوباره محاسبه کنه - همون چیزی که باعث می‌شد
-      // پلیر خالی بمونه.
-      fp.hidden = false;
-      fp.classList.remove('is-minimized');
-
-      // اگه برای این اپیزود شناسه‌ی کست‌باکس نداریم ولی فایل صوتیِ فید رو داریم،
-      // مستقیم همون فایل رو پخش می‌کنیم (بدون وابستگی به کست‌باکس).
-      if (opts.audioUrl && !(opts.episodeId && opts.episodeId !== '')) {
-        var wrap = document.createElement('div');
-        wrap.style.cssText = 'padding:14px;direction:rtl;text-align:center;';
-        var audioEl = document.createElement('audio');
-        audioEl.controls = true;
-        audioEl.autoplay = true;
-        audioEl.preload = 'auto';
-        audioEl.src = opts.audioUrl;
-        audioEl.style.cssText = 'width:100%;display:block;';
-        wrap.appendChild(audioEl);
-        if (opts.castboxUrl) {
-          var cb = document.createElement('a');
-          cb.href = opts.castboxUrl;
-          cb.target = '_blank';
-          cb.rel = 'noopener';
-          cb.textContent = 'شنیدن در کست‌باکس';
-          cb.style.cssText = 'display:inline-block;margin-top:10px;font-size:12px;text-decoration:underline;';
-          wrap.appendChild(cb);
-        }
-        fpFrame.innerHTML = '';
-        fpFrame.appendChild(wrap);
-        fpReload.hidden = true;
-        requestAnimationFrame(noysRefreshFPScrollbar);
-        return;
-      }
-
-      var iframe = document.createElement('iframe');
-      iframe.src = src;
-      iframe.setAttribute('frameborder', '0');
-      iframe.setAttribute('width', '100%');
-      iframe.setAttribute('height', '380');
-      iframe.setAttribute('allow', 'autoplay');
-      iframe.title = opts.title || '';
-
+      wrap.appendChild(audioEl);
+      wrap.appendChild(msg);
       fpFrame.innerHTML = '';
-      fpFrame.appendChild(iframe);
+      fpFrame.appendChild(wrap);
+      fpAudio = audioEl;
       requestAnimationFrame(noysRefreshFPScrollbar);
-
-      // خیلی از مرورگرها/موقعیت‌ها رویداد onload رو برای iframeهای
-      // کراس-اورجین درست شلیک نمی‌کنن، پس اینو صرفاً به‌عنوان یه
-      // نشونه‌ی «حداقل جواب اومد» می‌گیریم، نه تضمینِ کامل.
-      iframe.addEventListener('load', function () {
-        if (fpStuckTimer) {
-          clearTimeout(fpStuckTimer);
-          fpStuckTimer = null;
-        }
-      });
-
-      // دکمه‌ی «بارگذاری مجدد» از همون اول در دسترسه (بدون نیاز به
-      // بستن/باز کردنِ کل پلیر). اگه بعد از چند ثانیه هنوز خبری از
-      // لود نبود، با یه پالس چشمِ کاربر رو جلبش می‌کنیم - این دقیقاً
-      // همون حالتیه که کست‌باکس کند/معیوب جواب داده و کاربر مجبور
-      // بود دستی ببنده و دوباره باز کنه.
-      fpReload.hidden = false;
-      fpStuckTimer = setTimeout(function () {
-        fpReload.classList.add('is-stuck');
-      }, 7000);
     }
 
+    // opts: { audio: "آدرس mp3", title: "...", cover: "..." }
     window.NOYS_PLAY_PODCAST = function (opts) {
       opts = opts || {};
+      var src = opts.audio || opts.audioUrl || '';
+      if (!src) return;
+
       fpTitle.textContent = opts.title || '';
       fpCover.src = opts.cover || '';
-      fpLastOpts = opts;
-      fpBuildFrame(opts, false);
-    };
+      fp.hidden = false;
+      fp.classList.remove('is-minimized');
+      fpMin.textContent = '–';
 
-    fpReload.addEventListener('click', function () {
-      if (!fpLastOpts) return;
-      fpBuildFrame(fpLastOpts, true);
-    });
+      // اگه همین اپیزود دوباره زده شد، فقط پخشش کن
+      if (fpAudio && fpCurrentSrc === src) {
+        var p = fpAudio.play();
+        if (p && p.catch) p.catch(function () {});
+        return;
+      }
+      fpCurrentSrc = src;
+      fpBuildAudio(src);
+    };
 
     fpMin.addEventListener('click', function () {
       fp.classList.toggle('is-minimized');
@@ -295,13 +206,10 @@
     });
 
     fpClose.addEventListener('click', function () {
-      if (fpStuckTimer) {
-        clearTimeout(fpStuckTimer);
-        fpStuckTimer = null;
-      }
+      if (fpAudio) { fpAudio.pause(); }
+      fpAudio = null;
+      fpCurrentSrc = '';
       fpFrame.innerHTML = '';
-      fpReload.hidden = true;
-      fpReload.classList.remove('is-stuck');
       fp.hidden = true;
     });
 

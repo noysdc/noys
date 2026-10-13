@@ -5,8 +5,7 @@ title: "
 date: 2026-09-19 00:47:00 +0330
 img: podcast/EP-03.webp
 fig-caption: "نویز | اپیزود 03 : شبحی به نام جودی (پرونده کلاه‌برداری جودی هریس)"
-podcast_channel_id: "7361321"
-podcast_episode_id: "999626138"
+podcast_audio: "https://play.rabt.host/podcast/f341ce22-a0e2-40fe-9ae1-d53b166c753b/episode/a4d6d79e-63f1-45c0-bce6-a8d383c86319/play.mp3"
 categories:
   - podcast
   - کلاهبرداری‌های بزرگ
