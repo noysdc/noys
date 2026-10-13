@@ -10,7 +10,7 @@
     <ul class="nf-links">
       {% if site.social-youtube %}<li><a href="{{ site.social-youtube }}" target="_blank" rel="noopener" aria-label="یوتیوب" title="یوتیوب"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>{% endif %}
       {% if site.social-instagram %}<li><a href="{{ site.social-instagram }}" target="_blank" rel="noopener" aria-label="اینستاگرام" title="اینستاگرام"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>{% endif %}
-      <li><a href="{{ noys_listen_url }}" target="_blank" rel="noopener" aria-label="شنیدن پادکست" title="شنیدن پادکست"><i class="fa fa-podcast" aria-hidden="true"></i></a></li>
+      <li><a href="{{ noys_listen_url }}" target="_blank" rel="noopener" onclick="return !(window.NOYS_OPEN_PLAYLIST && NOYS_OPEN_PLAYLIST());" aria-label="شنیدن پادکست" title="شنیدن پادکست"><i class="fa fa-podcast" aria-hidden="true"></i></a></li>
       {% if site.social-telegram %}<li><a href="{{ site.social-telegram }}" target="_blank" rel="noopener" aria-label="تلگرام" title="تلگرام"><i class="fa fa-paper-plane" aria-hidden="true"></i></a></li>{% endif %}
       {% if site.social-twitter %}<li><a href="https://twitter.com/{{ site.social-twitter }}" target="_blank" rel="noopener" aria-label="توییتر" title="توییتر"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>{% endif %}
       {% if site.social-github %}<li><a href="https://github.com/{{ site.social-github }}" target="_blank" rel="noopener" aria-label="گیت‌هاب" title="گیت‌هاب"><i class="fa fa-github" aria-hidden="true"></i></a></li>{% endif %}

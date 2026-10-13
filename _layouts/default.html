@@ -19,6 +19,49 @@
     </div>
   </div>
 
+  {% comment %}
+    فهرست همه‌ی اپیزودها برای پلیر شناور (منبعش: پست‌های دسته‌ی podcast، _data/podcasts.yml و _data/podcasts_feed.json).
+    اپیزودی که قبلاً با همین عنوان یا همین آدرس صوتی اومده باشه، دوباره اضافه نمی‌شه.
+  {% endcomment %}
+  {% assign noys_pl_known = "" | split: "" %}
+  {% capture noys_eps_json %}[
+  {%- assign noys_pl_n = 0 -%}
+  {%- for p in site.posts -%}
+    {%- if p.categories contains "podcast" and p.podcast_audio and p.podcast_audio != "" -%}
+      {%- assign noys_pl_t = p.title | strip -%}
+      {%- assign noys_pl_known = noys_pl_known | push: noys_pl_t | push: p.podcast_audio -%}
+      {%- if noys_pl_n > 0 -%},{%- endif -%}
+      {%- assign noys_pl_n = noys_pl_n | plus: 1 -%}
+      {"title":{{ noys_pl_t | jsonify }},"audio":{{ p.podcast_audio | jsonify }},"cover":{% if p.img %}{{ p.img | prepend: '/assets/img/' | relative_url | jsonify }}{% else %}""{% endif %},"date":{{ p.date | date: '%Y/%m/%d' | jsonify }}}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- for ep in site.data.podcasts -%}
+    {%- assign noys_pl_t = ep.title | strip -%}
+    {%- assign noys_pl_dup = false -%}
+    {%- if noys_pl_known contains noys_pl_t -%}{%- assign noys_pl_dup = true -%}{%- endif -%}
+    {%- if noys_pl_known contains ep.audio -%}{%- assign noys_pl_dup = true -%}{%- endif -%}
+    {%- if ep.audio and ep.audio != "" and noys_pl_dup == false -%}
+      {%- assign noys_pl_known = noys_pl_known | push: noys_pl_t | push: ep.audio -%}
+      {%- if noys_pl_n > 0 -%},{%- endif -%}
+      {%- assign noys_pl_n = noys_pl_n | plus: 1 -%}
+      {"title":{{ noys_pl_t | jsonify }},"audio":{{ ep.audio | jsonify }},"cover":{% if ep.img %}{{ ep.img | prepend: '/assets/img/' | relative_url | jsonify }}{% else %}""{% endif %},"date":{{ ep.date | jsonify }}}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- for ep in site.data.podcasts_feed -%}
+    {%- assign noys_pl_t = ep.title | strip -%}
+    {%- assign noys_pl_dup = false -%}
+    {%- if noys_pl_known contains noys_pl_t -%}{%- assign noys_pl_dup = true -%}{%- endif -%}
+    {%- if noys_pl_known contains ep.audio -%}{%- assign noys_pl_dup = true -%}{%- endif -%}
+    {%- if ep.audio and ep.audio != "" and noys_pl_dup == false -%}
+      {%- assign noys_pl_known = noys_pl_known | push: noys_pl_t | push: ep.audio -%}
+      {%- if noys_pl_n > 0 -%},{%- endif -%}
+      {%- assign noys_pl_n = noys_pl_n | plus: 1 -%}
+      {"title":{{ noys_pl_t | jsonify }},"audio":{{ ep.audio | jsonify }},"cover":{{ ep.img | default: "" | jsonify }},"date":{{ ep.date | jsonify }}}
+    {%- endif -%}
+  {%- endfor -%}
+  ]{% endcapture %}
+  <script type="application/json" id="noysEpisodesData">{{ noys_eps_json | strip_newlines }}</script>
+
   <div class="wrapper" id="noysWrapper">
     {{ content }}
   </div>
@@ -174,6 +217,50 @@
     .noys-fp-tbtn:focus-visible,
     .noys-fp-speed:focus-visible,
     .noys-fp-select:focus-visible { outline: 2px solid #3d1e8c; outline-offset: 2px; }
+
+    /* ===== فهرست اپیزودها داخل پلیر شناور ===== */
+    .noys-fp-list {
+      padding: 4px 14px 14px;
+      border-top: 1px solid #eee;
+      direction: rtl;
+    }
+    .noys-fp-list-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #777;
+      margin: 10px 0 8px;
+      text-align: right;
+    }
+    .noys-fp-ep {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      margin: 0 0 4px;
+      padding: 8px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: transparent;
+      color: #222;
+      font: inherit;
+      text-align: right;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .noys-fp-ep:hover { background: #f6f6f6; }
+    .noys-fp-ep.is-active { background: #fffbd0; border-color: #fff200; }
+    .noys-fp-ep img {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .noys-fp-ep-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .noys-fp-ep-title { font-size: 12.5px; line-height: 1.7; font-weight: 600; }
+    .noys-fp-ep-date { font-size: 11px; color: #999; }
+    .noys-fp-ep-state { flex: 0 0 14px; font-size: 12px; color: #3d1e8c; text-align: center; }
+    .noys-fp-ep:focus-visible { outline: 2px solid #3d1e8c; outline-offset: 2px; }
   </style>
 
   <script>
@@ -331,6 +418,104 @@
       return row;
     }
 
+    // ---------- فهرست اپیزودها داخل پلیر شناور ----------
+    var fpEpisodes = [];
+    try {
+      var epData = document.getElementById('noysEpisodesData');
+      if (epData) fpEpisodes = JSON.parse(epData.textContent) || [];
+    } catch (e) { fpEpisodes = []; }
+
+    var fpNow = null;      // بخش پلیر فعلی (audio + کنترل‌ها)
+    var fpListEl = null;   // بخش فهرست اپیزودها
+
+    function fpMarkActive() {
+      if (!fpListEl) return;
+      var items = fpListEl.querySelectorAll('.noys-fp-ep');
+      for (var i = 0; i < items.length; i++) {
+        var on = fpCurrentSrc && items[i].getAttribute('data-audio') === fpCurrentSrc;
+        items[i].classList.toggle('is-active', !!on);
+        var st = items[i].querySelector('.noys-fp-ep-state');
+        if (st) st.textContent = on ? '▶' : '';
+      }
+    }
+
+    function fpRenderList() {
+      if (!fpListEl) return;
+      fpListEl.innerHTML = '';
+      if (!fpEpisodes.length) return;
+
+      var head = document.createElement('div');
+      head.className = 'noys-fp-list-title';
+      head.textContent = 'همه‌ی اپیزودها';
+      fpListEl.appendChild(head);
+
+      fpEpisodes.forEach(function (ep, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'noys-fp-ep';
+        b.setAttribute('data-i', i);
+        b.setAttribute('data-audio', ep.audio);
+        if (ep.cover) {
+          var im = document.createElement('img');
+          im.src = ep.cover; im.alt = ''; im.loading = 'lazy'; im.width = 44; im.height = 44;
+          b.appendChild(im);
+        }
+        var txt = document.createElement('span');
+        txt.className = 'noys-fp-ep-text';
+        var t = document.createElement('span');
+        t.className = 'noys-fp-ep-title';
+        t.textContent = ep.title;
+        txt.appendChild(t);
+        if (ep.date) {
+          var dt = document.createElement('span');
+          dt.className = 'noys-fp-ep-date';
+          dt.textContent = ep.date;
+          txt.appendChild(dt);
+        }
+        b.appendChild(txt);
+        var st = document.createElement('span');
+        st.className = 'noys-fp-ep-state';
+        b.appendChild(st);
+        fpListEl.appendChild(b);
+      });
+
+      fpListEl.addEventListener('click', function (e) {
+        var b = e.target.closest('.noys-fp-ep');
+        if (!b) return;
+        var ep = fpEpisodes[parseInt(b.getAttribute('data-i'), 10)];
+        if (!ep) return;
+        window.NOYS_PLAY_PODCAST({ audio: ep.audio, title: ep.title, cover: ep.cover });
+      });
+      fpMarkActive();
+    }
+
+    function fpEnsureLayout() {
+      if (fpNow && fpNow.parentNode === fpFrame) return;
+      fpFrame.innerHTML = '';
+      fpNow = document.createElement('div');
+      fpListEl = document.createElement('div');
+      fpListEl.className = 'noys-fp-list';
+      fpFrame.appendChild(fpNow);
+      fpFrame.appendChild(fpListEl);
+      fpRenderList();
+    }
+
+    // باز کردن پلیر با فهرست همه‌ی اپیزودها (دکمه‌ی «شنیدن پادکست»)
+    // اگه فهرستی نباشه false برمی‌گردونه تا لینک معمولی کار کنه.
+    window.NOYS_OPEN_PLAYLIST = function () {
+      if (!fpEpisodes.length) return false;
+      fpEnsureLayout();
+      if (!fpAudio) {
+        fpTitle.textContent = 'اپیزودهای نویز';
+        fpCover.style.display = 'none';
+      }
+      fp.hidden = false;
+      fp.classList.remove('is-minimized');
+      fpMin.textContent = '–';
+      requestAnimationFrame(noysRefreshFPScrollbar);
+      return true;
+    };
+
     function fpBuildAudio(src) {
       var wrap = document.createElement('div');
       wrap.style.cssText = 'padding:14px;direction:rtl;text-align:center;';
@@ -359,8 +544,10 @@
       wrap.appendChild(audioEl);
       wrap.appendChild(msg);
       wrap.appendChild(fpBuildTools());
-      fpFrame.innerHTML = '';
-      fpFrame.appendChild(wrap);
+      if (fpAudio) { fpAudio.pause(); }
+      fpEnsureLayout();
+      fpNow.innerHTML = '';
+      fpNow.appendChild(wrap);
       fpAudio = audioEl;
       audioEl.addEventListener('loadedmetadata', fpApplySpeed);
       fpApplySpeed();
@@ -375,6 +562,7 @@
 
       fpTitle.textContent = opts.title || '';
       fpCover.src = opts.cover || '';
+      fpCover.style.display = opts.cover ? '' : 'none';
       fp.hidden = false;
       fp.classList.remove('is-minimized');
       fpMin.textContent = '–';
@@ -387,6 +575,7 @@
       }
       fpCurrentSrc = src;
       fpBuildAudio(src);
+      fpMarkActive();
     };
 
     fpMin.addEventListener('click', function () {
@@ -404,6 +593,8 @@
       fpAudio = null;
       fpCurrentSrc = '';
       fpFrame.innerHTML = '';
+      fpNow = null;
+      fpListEl = null;
       fp.hidden = true;
     });
 

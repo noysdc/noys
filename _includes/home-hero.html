@@ -14,7 +14,7 @@
     <p>{{ site.description }}</p>
     <div class="noys-hero-cta">
       {% if site.social-youtube %}<a class="noys-btn noys-btn-primary" href="{{ site.social-youtube }}" target="_blank" rel="noopener"><i class="fa fa-youtube-play" aria-hidden="true"></i> یوتیوب</a>{% endif %}
-      <a class="noys-btn" href="{{ noys_listen_url }}" target="_blank" rel="noopener"><i class="fa fa-podcast" aria-hidden="true"></i> شنیدن پادکست</a>
+      <a class="noys-btn" href="{{ noys_listen_url }}" target="_blank" rel="noopener" onclick="return !(window.NOYS_OPEN_PLAYLIST && NOYS_OPEN_PLAYLIST());"><i class="fa fa-podcast" aria-hidden="true"></i> شنیدن پادکست</a>
       {% if site.social-telegram %}<a class="noys-btn" href="{{ site.social-telegram }}" target="_blank" rel="noopener"><i class="fa fa-paper-plane" aria-hidden="true"></i> تلگرام</a>{% endif %}
       {% if site.social-instagram %}<a class="noys-btn" href="{{ site.social-instagram }}" target="_blank" rel="noopener"><i class="fa fa-instagram" aria-hidden="true"></i> اینستاگرام</a>{% endif %}
     </div>
