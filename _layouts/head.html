@@ -90,6 +90,8 @@
 	{% endif %}
 
 	<link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.baseurl }}/feed.xml">
+	<!-- فید RSS خودِ پادکست (میزبانی‌شده روی ربط‌هاست) -->
+	<link rel="alternate" type="application/rss+xml" title="پادکست نویز" href="https://api.rabt.host/podcasts/f341ce22-a0e2-40fe-9ae1-d53b166c753b/rss">
 
 	<link rel="shortcut icon" href="{{ site.baseurl }}/assets/img/template/favicon/favicon.ico" type="image/x-icon">
 	<link rel="apple-touch-icon" href="{{ site.baseurl }}/assets/img/template/favicon/apple-touch-icon.png">
@@ -169,7 +171,7 @@
 	  "url": "{{ site.url }}{{ site.baseurl }}/podcast/",
 	  "description": {{ site.description | jsonify }},
 	  "inLanguage": "fa",
-	  "webFeed": "{{ site.url }}{{ site.baseurl }}/feed.xml",
+	  "webFeed": "https://api.rabt.host/podcasts/f341ce22-a0e2-40fe-9ae1-d53b166c753b/rss",
 	  "author": {
 	    "@type": "Person",
 	    "name": {{ site.author | jsonify }},
