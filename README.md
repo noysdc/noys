@@ -1,7 +1,7 @@
 🔗 نویز | در شبکه‌های اجتماعی:
 
-🟡🎙 Castbox
-https://castbox.fm/ch/7361321
+🟡🎙 شنیدن پادکست
+https://podcastindex.org/podcast/8069277
 
 🟡🌐 Website
 https://noysdc.ir
