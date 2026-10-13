@@ -16,8 +16,8 @@ permalink: /podcast/
         <linearGradient id="noysArcGradient" gradientUnits="userSpaceOnUse" x1="860" y1="0" x2="40" y2="0">
           <stop offset="0%"   stop-color="#fff200"/>
           <stop offset="35%"  stop-color="#ffd23f"/>
-          <stop offset="65%"  stop-color="#8b6cf2"/>
-          <stop offset="100%" stop-color="#3d1e8c"/>
+          <stop offset="65%"  stop-color="#d4d4d4"/>
+          <stop offset="100%" stop-color="#9a9a9a"/>
         </linearGradient>
       </defs>
       <path
@@ -37,53 +37,11 @@ permalink: /podcast/
         stroke-linecap="round"
       ></path>
       <circle id="noysArcThumbHalo" r="26" fill="#ffffff"></circle>
-      <circle id="noysArcThumb" r="15" fill="#3d1e8c"></circle>
+      <circle id="noysArcThumb" r="15" fill="#2b2b2b"></circle>
     </svg>
   </div>
 
   <div class="podcast-grid">
-
-    {% comment %}
-      اپیزودهای خودکار از فید RSS (فایل _data/podcasts_feed.json را GitHub Action هر ۶ ساعت می‌سازد).
-      این‌ها اول نشون داده می‌شن (تازه‌ترین‌ها).
-      اپیزودی که قبلاً با پست یا podcasts.yml اومده باشه (هم‌عنوان یا هم‌آدرس صوتی)، دوباره نشون داده نمی‌شه.
-    {% endcomment %}
-    {% assign noys_known = "" | split: "" %}
-    {% for p in site.posts %}{% if p.categories contains "podcast" %}{% assign noys_t = p.title | strip %}{% assign noys_known = noys_known | push: noys_t %}{% if p.podcast_audio %}{% assign noys_known = noys_known | push: p.podcast_audio %}{% endif %}{% endif %}{% endfor %}
-    {% for e in site.data.podcasts %}{% assign noys_t = e.title | strip %}{% assign noys_known = noys_known | push: noys_t %}{% if e.audio %}{% assign noys_known = noys_known | push: e.audio %}{% endif %}{% endfor %}
-
-    {% for ep in site.data.podcasts_feed %}
-      {% assign noys_t = ep.title | strip %}
-      {% assign noys_dup = false %}
-      {% if noys_known contains noys_t %}{% assign noys_dup = true %}{% endif %}
-      {% if noys_known contains ep.audio %}{% assign noys_dup = true %}{% endif %}
-      {% unless noys_dup %}
-      <div class="podcast-card">
-
-        {% if ep.img != "" %}
-        <div class="podcast-cover-wrap">
-          <img class="podcast-cover" src="{{ ep.img }}" alt="{{ ep.title }}" loading="lazy">
-        </div>
-        {% endif %}
-
-        <h3 class="podcast-card-title">{{ ep.title }}</h3>
-        <span class="podcast-card-date">{{ ep.date }}{% if ep.duration != "" %} · {{ ep.duration }}{% endif %}</span>
-
-        {% if ep.audio and ep.audio != "" %}
-        <button
-          class="podcast-play-btn"
-          type="button"
-          onclick='NOYS_PLAY_PODCAST({
-            audio: {{ ep.audio | jsonify }},
-            title: {{ ep.title | jsonify }},
-            cover: {{ ep.img | jsonify }}
-          })'
-        >▶ پخش اپیزود</button>
-        {% endif %}
-
-      </div>
-      {% endunless %}
-    {% endfor %}
 
     {% comment %}
       اپیزودهایی که از خود پست‌ها میان (خودکار).
@@ -160,6 +118,45 @@ permalink: /podcast/
       </div>
     {% endfor %}
 
+
+    {% comment %}
+      اپیزودهای خودکار از فید RSS (فایل _data/podcasts_feed.json را GitHub Action می‌سازد).
+      اگر اپیزودی قبلاً دستی (پست یا podcasts.yml) با همین عنوان آمده باشد، دوباره نشان داده نمی‌شود.
+    {% endcomment %}
+    {% assign noys_known = "" | split: "" %}
+    {% for p in site.posts %}{% if p.categories contains "podcast" %}{% assign noys_t = p.title | strip %}{% assign noys_known = noys_known | push: noys_t %}{% endif %}{% endfor %}
+    {% for e in site.data.podcasts %}{% assign noys_t = e.title | strip %}{% assign noys_known = noys_known | push: noys_t %}{% endfor %}
+
+    {% for ep in site.data.podcasts_feed %}
+      {% assign noys_t = ep.title | strip %}
+      {% unless noys_known contains noys_t %}
+      <div class="podcast-card">
+
+        {% if ep.img != "" %}
+        <div class="podcast-cover-wrap">
+          <img class="podcast-cover" src="{{ ep.img }}" alt="{{ ep.title }}" loading="lazy">
+        </div>
+        {% endif %}
+
+        <h3 class="podcast-card-title">{{ ep.title }}</h3>
+        <span class="podcast-card-date">{{ ep.date }}{% if ep.duration != "" %} · {{ ep.duration }}{% endif %}</span>
+
+        {% if ep.audio and ep.audio != "" %}
+        <button
+          class="podcast-play-btn"
+          type="button"
+          onclick='NOYS_PLAY_PODCAST({
+            audio: {{ ep.audio | jsonify }},
+            title: {{ ep.title | jsonify }},
+            cover: {{ ep.img | jsonify }}
+          })'
+        >▶ پخش اپیزود</button>
+        {% endif %}
+
+      </div>
+      {% endunless %}
+    {% endfor %}
+
   </div>
 
 </section>
@@ -221,15 +218,15 @@ permalink: /podcast/
     object-fit: cover;
     border-radius: 10px;
     display: block;
-    transition: transform 1.4s cubic-bezier(0.45, 0, 0.2, 1),
-                box-shadow 1.4s cubic-bezier(0.45, 0, 0.2, 1);
+    transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+                box-shadow 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
     will-change: transform;
   }
 
   /* موقع برگشتن به اندازه‌ی اول، z-index تا پایان انیمیشن می‌ماند
      تا کاور وسط کوچک شدن زیر کارت‌های کناری نرود */
   .podcast-cover-wrap {
-    transition: z-index 0s linear 1.4s;
+    transition: z-index 0s linear 0.7s;
   }
 
   .podcast-cover-wrap:hover {
@@ -278,12 +275,6 @@ permalink: /podcast/
     line-height: 1.7;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .podcast-cover,
-    .podcast-cover-wrap { transition: none; }
-    .podcast-cover-wrap:hover .podcast-cover { transform: none; }
-  }
-
   @media (max-width: 480px) {
     .podcast-grid {
       grid-template-columns: 1fr 1fr;
@@ -291,7 +282,7 @@ permalink: /podcast/
     }
   }
 
-  /* ===== ساعت تزئینیِ قوسی — تم رنگی هارمونیک با لوگو (زرد + بنفش) ===== */
+  /* ===== ساعت تزئینیِ قوسی — تم رنگی هارمونیک با لوگو (زرد + خاکستری خنثی) ===== */
   .noys-arc-clock {
     position: relative;
     width: 100%;

@@ -1387,3 +1387,14 @@ html[data-theme="dark"] .article-page .page-cover-image figure figcaption {
     border-radius: 0 0 14px 14px;
   }
 }
+
+
+/* ---- علامت # در تگ‌ها: رنگ لوگو؛ متن تگ دست‌نخورده ---- */
+.article-page .page-tag .tag .tag-hash {
+  color: #e6d800;
+  font-weight: 800;
+}
+
+html[data-theme="dark"] .article-page .page-tag .tag .tag-hash {
+  color: #fff200;
+}
