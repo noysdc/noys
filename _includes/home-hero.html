@@ -2,6 +2,7 @@
   NOYS - بخش بالای صفحه‌ی اصلی: معرفی کوتاه + دکمه‌های دنبال‌کردن + آخرین اپیزود + «از اینجا شروع کن»
   فقط روی صفحه‌ی اول ("/") نشون داده میشه (شرطش توی main.html هست).
 {% endcomment %}
+{% assign noys_listen_url = site.social-podcast | default: "https://podcastindex.org/podcast/8069277" %}
 {% assign noys_ep = "" %}
 {% for p in site.posts %}
   {% if p.categories contains "podcast" %}{% assign noys_ep = p %}{% break %}{% endif %}
@@ -13,14 +14,13 @@
     <p>{{ site.description }}</p>
     <div class="noys-hero-cta">
       {% if site.social-youtube %}<a class="noys-btn noys-btn-primary" href="{{ site.social-youtube }}" target="_blank" rel="noopener"><i class="fa fa-youtube-play" aria-hidden="true"></i> یوتیوب</a>{% endif %}
-      {% if site.social-castbox %}<a class="noys-btn" href="{{ site.social-castbox }}" target="_blank" rel="noopener"><i class="fa fa-podcast" aria-hidden="true"></i> کست‌باکس</a>{% endif %}
+      <a class="noys-btn" href="{{ noys_listen_url }}" target="_blank" rel="noopener"><i class="fa fa-podcast" aria-hidden="true"></i> شنیدن پادکست</a>
       {% if site.social-telegram %}<a class="noys-btn" href="{{ site.social-telegram }}" target="_blank" rel="noopener"><i class="fa fa-paper-plane" aria-hidden="true"></i> تلگرام</a>{% endif %}
       {% if site.social-instagram %}<a class="noys-btn" href="{{ site.social-instagram }}" target="_blank" rel="noopener"><i class="fa fa-instagram" aria-hidden="true"></i> اینستاگرام</a>{% endif %}
     </div>
   </div>
 
   {% if noys_ep != "" %}
-  {% assign noys_ep_channel = noys_ep.podcast_channel_id | default: noys_ep.podcast_id %}
   <div class="noys-hero-episode">
     {% if noys_ep.img %}
     {% comment %}
@@ -36,11 +36,10 @@
       <span class="noys-hero-episode-label">🎧 آخرین اپیزود</span>
       <a class="noys-hero-episode-title" href="{{ noys_ep.url | relative_url }}">{{ noys_ep.title }}</a>
       <div class="noys-hero-episode-actions">
-        {% if noys_ep.podcast_episode_id %}
+        {% if noys_ep.podcast_audio and noys_ep.podcast_audio != "" %}
         <button class="noys-btn noys-btn-primary" type="button"
           onclick='NOYS_PLAY_PODCAST({
-            channelId: {{ noys_ep_channel | jsonify }},
-            episodeId: {{ noys_ep.podcast_episode_id | jsonify }},
+            audio: {{ noys_ep.podcast_audio | jsonify }},
             title: {{ noys_ep.title | jsonify }},
             cover: {{ noys_ep.img | prepend: "/assets/img/" | relative_url | jsonify }}
           })'>▶ پخش اپیزود</button>
