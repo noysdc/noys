@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 NOYS - خواندن فید RSS پادکست و ساختن _data/podcasts_feed.json
-هر اپیزود: title, date, iso, number, duration, desc, img, audio, link,
-           channel_id, episode_id, castbox_url
+هر اپیزود: title, date, iso, number, duration, desc, img, audio, link
 فقط کتابخانه‌های استاندارد پایتون؛ نیازی به نصب چیزی نیست.
 """
 import json
@@ -15,13 +14,9 @@ from email.utils import parsedate_to_datetime
 from zoneinfo import ZoneInfo
 
 FEED_URL = "https://api.rabt.host/podcasts/f341ce22-a0e2-40fe-9ae1-d53b166c753b/rss"
-CHANNEL_ID = "7361321"                      # شناسه‌ی کانال نویز در کست‌باکس
 OUT = "_data/podcasts_feed.json"
 NS = {"itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd"}
 TZ = ZoneInfo("Asia/Tehran")
-
-CASTBOX_RE = re.compile(r"https?://(?:www\.)?castbox\.fm/\S*?id\d{4,}-id(\d{4,})[^\s\"'<>]*")
-
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; NOYS-feed-bot)"})
@@ -31,6 +26,11 @@ def fetch(url):
 
 def text(el):
     return (el.text or "").strip() if el is not None else ""
+
+
+def clean_title(s):
+    # حذف کاراکترهای نامرئی (فاصله‌ی صفر‌عرض و BOM) که گاهی اول عنوان می‌چسبن
+    return re.sub(r"[\u200b\ufeff]", "", s or "").strip()
 
 
 def strip_tags(s):
@@ -54,7 +54,7 @@ def main():
 
     episodes = []
     for it in ch.findall("item"):
-        title = text(it.find("title"))
+        title = clean_title(text(it.find("title")))
         if not title:
             continue
         pub = text(it.find("pubDate"))
@@ -68,13 +68,7 @@ def main():
         img_el = it.find("itunes:image", NS)
         img = (img_el.get("href", "") if img_el is not None else "") or ch_img
         link = text(it.find("link"))
-        guid = text(it.find("guid"))
         raw_desc = text(it.find("description"))
-
-        blob = " ".join([link, guid, raw_desc])
-        m = CASTBOX_RE.search(blob)
-        episode_id = m.group(1) if m else ""
-        castbox_url = m.group(0) if m else "https://castbox.fm/ch/" + CHANNEL_ID
 
         desc = strip_tags(raw_desc)
         if len(desc) > 220:
@@ -90,9 +84,6 @@ def main():
             "img": img,
             "audio": audio,
             "link": link,
-            "channel_id": CHANNEL_ID,
-            "episode_id": episode_id,
-            "castbox_url": castbox_url,
         })
 
     if not episodes:

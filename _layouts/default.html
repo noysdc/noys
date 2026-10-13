@@ -20,43 +20,47 @@
   </div>
 
   {% comment %}
-    فهرست همه‌ی اپیزودها برای پلیر شناور (منبعش: پست‌های دسته‌ی podcast، _data/podcasts.yml و _data/podcasts_feed.json).
+    فهرست همه‌ی اپیزودها برای پلیر شناور: اول اپیزودهای تازه‌ی فید (_data/podcasts_feed.json)، بعد پست‌های دسته‌ی podcast، بعد _data/podcasts.yml.
     اپیزودی که قبلاً با همین عنوان یا همین آدرس صوتی اومده باشه، دوباره اضافه نمی‌شه.
   {% endcomment %}
   {% assign noys_pl_known = "" | split: "" %}
-  {% capture noys_eps_json %}[
-  {%- assign noys_pl_n = 0 -%}
   {%- for p in site.posts -%}
     {%- if p.categories contains "podcast" and p.podcast_audio and p.podcast_audio != "" -%}
       {%- assign noys_pl_t = p.title | strip -%}
       {%- assign noys_pl_known = noys_pl_known | push: noys_pl_t | push: p.podcast_audio -%}
-      {%- if noys_pl_n > 0 -%},{%- endif -%}
-      {%- assign noys_pl_n = noys_pl_n | plus: 1 -%}
-      {"title":{{ noys_pl_t | jsonify }},"audio":{{ p.podcast_audio | jsonify }},"cover":{% if p.img %}{{ p.img | prepend: '/assets/img/' | relative_url | jsonify }}{% else %}""{% endif %},"date":{{ p.date | date: '%Y/%m/%d' | jsonify }}}
     {%- endif -%}
   {%- endfor -%}
   {%- for ep in site.data.podcasts -%}
-    {%- assign noys_pl_t = ep.title | strip -%}
-    {%- assign noys_pl_dup = false -%}
-    {%- if noys_pl_known contains noys_pl_t -%}{%- assign noys_pl_dup = true -%}{%- endif -%}
-    {%- if noys_pl_known contains ep.audio -%}{%- assign noys_pl_dup = true -%}{%- endif -%}
-    {%- if ep.audio and ep.audio != "" and noys_pl_dup == false -%}
+    {%- if ep.audio and ep.audio != "" -%}
+      {%- assign noys_pl_t = ep.title | strip -%}
       {%- assign noys_pl_known = noys_pl_known | push: noys_pl_t | push: ep.audio -%}
-      {%- if noys_pl_n > 0 -%},{%- endif -%}
-      {%- assign noys_pl_n = noys_pl_n | plus: 1 -%}
-      {"title":{{ noys_pl_t | jsonify }},"audio":{{ ep.audio | jsonify }},"cover":{% if ep.img %}{{ ep.img | prepend: '/assets/img/' | relative_url | jsonify }}{% else %}""{% endif %},"date":{{ ep.date | jsonify }}}
     {%- endif -%}
   {%- endfor -%}
+  {% capture noys_eps_json %}[
+  {%- assign noys_pl_n = 0 -%}
   {%- for ep in site.data.podcasts_feed -%}
     {%- assign noys_pl_t = ep.title | strip -%}
     {%- assign noys_pl_dup = false -%}
     {%- if noys_pl_known contains noys_pl_t -%}{%- assign noys_pl_dup = true -%}{%- endif -%}
     {%- if noys_pl_known contains ep.audio -%}{%- assign noys_pl_dup = true -%}{%- endif -%}
     {%- if ep.audio and ep.audio != "" and noys_pl_dup == false -%}
-      {%- assign noys_pl_known = noys_pl_known | push: noys_pl_t | push: ep.audio -%}
       {%- if noys_pl_n > 0 -%},{%- endif -%}
       {%- assign noys_pl_n = noys_pl_n | plus: 1 -%}
       {"title":{{ noys_pl_t | jsonify }},"audio":{{ ep.audio | jsonify }},"cover":{{ ep.img | default: "" | jsonify }},"date":{{ ep.date | jsonify }}}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- for p in site.posts -%}
+    {%- if p.categories contains "podcast" and p.podcast_audio and p.podcast_audio != "" -%}
+      {%- if noys_pl_n > 0 -%},{%- endif -%}
+      {%- assign noys_pl_n = noys_pl_n | plus: 1 -%}
+      {"title":{{ p.title | strip | jsonify }},"audio":{{ p.podcast_audio | jsonify }},"cover":{% if p.img %}{{ p.img | prepend: '/assets/img/' | relative_url | jsonify }}{% else %}""{% endif %},"date":{{ p.date | date: '%Y/%m/%d' | jsonify }}}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- for ep in site.data.podcasts -%}
+    {%- if ep.audio and ep.audio != "" -%}
+      {%- if noys_pl_n > 0 -%},{%- endif -%}
+      {%- assign noys_pl_n = noys_pl_n | plus: 1 -%}
+      {"title":{{ ep.title | strip | jsonify }},"audio":{{ ep.audio | jsonify }},"cover":{% if ep.img %}{{ ep.img | prepend: '/assets/img/' | relative_url | jsonify }}{% else %}""{% endif %},"date":{{ ep.date | jsonify }}}
     {%- endif -%}
   {%- endfor -%}
   ]{% endcapture %}
