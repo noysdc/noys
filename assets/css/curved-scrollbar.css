@@ -65,9 +65,9 @@ html[data-theme="dark"] .noys-curved-scrollbar-track {
   stroke: rgba(255, 255, 255, 0.12);
 }
 
-/* رنگ پیش‌فرض گرادینت (زرد لوگو → بنفش هارمونیک)، از طریق
+/* رنگ پیش‌فرض گرادینت (زرد لوگو → خاکستری خنثی)، از طریق
    متغیرهای CSS قابل override هست، هم سراسری هم روی هر باکس */
 :root {
   --noys-scrollbar-start: #fff200;
-  --noys-scrollbar-end: #3d1e8c;
+  --noys-scrollbar-end: #9a9a9a;
 }

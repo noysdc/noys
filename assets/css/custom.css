@@ -6,28 +6,24 @@
 :root {
   --noys-brand-color: 255, 242, 0; /* #FFF200 - رنگ لوگو */
 
-  /* حاشیه‌ی گرادیانتیِ «شاینی» - نسخه‌ی ظریف و استروک‌مانند
-     (به‌جای پرشدنِ کامل با رنگ، فقط یک خط نازکِ نیمه‌شفاف با
-     طیفِ برند: زرد -> بنفش، که خیلی آروم می‌چرخه) */
+  /* حاشیه‌ی گرادیانتیِ «شاینی» - زرد برند + خاکستریِ خنثی (بدون بنفش) */
   --noys-shine-gradient: linear-gradient(
     120deg,
     rgba(255, 242, 0, 0.85) 0%,
-    rgba(255, 214, 107, 0.7) 30%,
-    rgba(255, 255, 255, 0.55) 50%,
-    rgba(139, 108, 242, 0.7) 72%,
-    rgba(61, 30, 140, 0.85) 100%
+    rgba(255, 224, 80, 0.7) 30%,
+    rgba(225, 225, 225, 0.6) 55%,
+    rgba(170, 170, 170, 0.55) 75%,
+    rgba(255, 242, 0, 0.85) 100%
   );
 
-  /* نسخه‌ی پررنگ‌تر و کمتر شفاف - مخصوص المنت‌های کوچیک و مستقلی
-     مثل پلیر شناور، که روی زمینه‌ی سفید صفحه، نسخه‌ی نازک و
-     نیمه‌شفافِ بالا عملاً دیده نمی‌شه */
+  /* نسخه‌ی پررنگ‌تر - مخصوص پلیر شناور */
   --noys-shine-gradient-bold: linear-gradient(
     120deg,
     #fff200 0%,
     #ffd66b 28%,
-    #f3ecff 50%,
-    #8b6cf2 74%,
-    #3d1e8c 100%
+    #e6e6e6 55%,
+    #b5b5b5 78%,
+    #fff200 100%
   );
 }
 
@@ -1332,5 +1328,62 @@ html[data-theme="dark"] .podcast-card {
   .podcast-container,
   .noys-floating-player {
     animation: none !important;
+  }
+}
+
+
+/* =========================================================
+   اصلاحات رنگ و کاور (۲۰۲۶-۱۰-۱۳)
+   حذف بنفش، زوم نرم کاور مطلب، کپشن خواناتر
+   ========================================================= */
+
+/* ---- زوم خیلی نرم کاور بالای مطلب ----
+   از ویژگی مستقل «scale» استفاده شده تا با transform پارالاکس تداخل نکنه.
+   فریم (figure) overflow:hidden داره پس عکس از قاب بیرون نمی‌زنه. */
+.article-page .page-cover-image img {
+  transition: scale 1.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+              box-shadow 1.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: scale;
+}
+
+.article-page .page-cover-image img:hover {
+  scale: 1.045;
+  /* بالا رفتنِ قبلی (translateY) حذف شد؛ فقط زوم ملایم */
+  box-shadow: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-page .page-cover-image img {
+    transition: none;
+  }
+  .article-page .page-cover-image img:hover {
+    scale: 1;
+  }
+}
+
+/* ---- کپشن زیر عکس کاور: نوار مستقل با پس‌زمینه‌ی ساده ----
+   قبلاً کپشن روی گرادیانتِ قاب می‌افتاد و کم‌رنگ و ناخوانا بود. */
+.article-page .page-cover-image figure figcaption {
+  margin: 4px -4px -4px;
+  padding: 12px 16px;
+  background: #fff;
+  color: #2b2b2b;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 2;
+  border-radius: 0 0 18px 18px;
+}
+
+html[data-theme="dark"] .article-page .page-cover-image figure figcaption {
+  background: #1c1f24;
+  color: #e8e8e8;
+}
+
+@media (max-width: 768px) {
+  .article-page .page-cover-image figure figcaption {
+    margin: 3px -3px -3px;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 0 0 14px 14px;
   }
 }
