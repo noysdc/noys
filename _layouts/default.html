@@ -351,6 +351,10 @@
       msg.textContent = 'فایل صوتی این اپیزود الان در دسترس نیست. چند لحظه دیگه دوباره امتحان کن.';
       audioEl.addEventListener('error', function () { msg.hidden = false; });
       audioEl.addEventListener('playing', function () { msg.hidden = true; });
+      audioEl.addEventListener('play', function () {
+        var all = document.querySelectorAll('audio');
+        for (var i = 0; i < all.length; i++) { if (all[i] !== audioEl) all[i].pause(); }
+      });
 
       wrap.appendChild(audioEl);
       wrap.appendChild(msg);

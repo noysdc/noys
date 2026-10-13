@@ -55,6 +55,7 @@ layout: main
         <h3 class="embed-section-title">🎧 نسخه صوتی پادکست</h3>
         <div class="podcast-container">
           <audio
+            id="noysInlineAudio"
             controls
             controlsList="nodownload noplaybackrate"
             oncontextmenu="return false;"
@@ -62,8 +63,109 @@ layout: main
             src="{{ page.podcast_audio }}"
             style="width:100%;display:block;"
           >مرورگر شما پخش فایل صوتی را پشتیبانی نمی‌کند.</audio>
+          <div id="noysInlineTools"></div>
         </div>
       </div>
+
+      <script>
+      /* سرعت پخش و تایمر خواب برای پلیر داخل پست.
+         استایل‌ها (.noys-fp-*) توی default.html هستن و سرعت انتخاب‌شده
+         با پلیر شناور مشترکه (کلید noys-fp-speed). */
+      (function () {
+        var audio = document.getElementById('noysInlineAudio');
+        var host = document.getElementById('noysInlineTools');
+        if (!audio || !host) return;
+
+        var SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+        var SLEEP = [[0, 'خاموش'], [15, '۱۵ دقیقه'], [30, '۳۰ دقیقه'], [45, '۴۵ دقیقه'], [60, '۶۰ دقیقه'], [90, '۹۰ دقیقه']];
+        var speed = 1, sleepEnd = 0, tick = null, fade = null;
+        try {
+          var sv = parseFloat(localStorage.getItem('noys-fp-speed'));
+          if (SPEEDS.indexOf(sv) !== -1) speed = sv;
+        } catch (e) {}
+
+        host.className = 'noys-fp-tools';
+        host.innerHTML =
+          '<div class="noys-fp-group noys-fp-speedgroup" role="group" aria-label="سرعت پخش">' +
+            '<button type="button" class="noys-fp-tbtn" data-act="slower" aria-label="کندتر">−</button>' +
+            '<button type="button" class="noys-fp-speed" data-act="reset" title="بازگشت به سرعت عادی">1×</button>' +
+            '<button type="button" class="noys-fp-tbtn" data-act="faster" aria-label="تندتر">+</button>' +
+          '</div>' +
+          '<div class="noys-fp-group">' +
+            '<label class="noys-fp-sleep-label" for="noysInlineSleep">⏲ تایمر خواب</label>' +
+            '<select id="noysInlineSleep" class="noys-fp-select">' +
+              SLEEP.map(function (o) { return '<option value="' + o[0] + '">' + o[1] + '</option>'; }).join('') +
+            '</select>' +
+            '<span class="noys-fp-sleep-left"></span>' +
+          '</div>';
+
+        var speedEl = host.querySelector('.noys-fp-speed');
+        var selectEl = host.querySelector('.noys-fp-select');
+        var leftEl = host.querySelector('.noys-fp-sleep-left');
+
+        function applySpeed() {
+          audio.defaultPlaybackRate = speed;
+          audio.playbackRate = speed;
+          speedEl.textContent = String(speed) + '×';
+          try { localStorage.setItem('noys-fp-speed', String(speed)); } catch (e) {}
+        }
+        function step(dir) {
+          var i = SPEEDS.indexOf(speed);
+          if (i < 0) i = SPEEDS.indexOf(1);
+          speed = SPEEDS[Math.min(SPEEDS.length - 1, Math.max(0, i + dir))];
+          applySpeed();
+        }
+        function fmt(ms) {
+          var s = Math.max(0, Math.round(ms / 1000)), m = Math.floor(s / 60), r = s % 60;
+          return m + ':' + (r < 10 ? '0' : '') + r;
+        }
+        function clearSleep() {
+          sleepEnd = 0;
+          if (tick) { clearInterval(tick); tick = null; }
+          selectEl.value = '0';
+          leftEl.textContent = '';
+        }
+        function fadeOutAndPause() {
+          var v0 = audio.volume, n = 0, steps = 15;
+          if (fade) clearInterval(fade);
+          fade = setInterval(function () {
+            n++;
+            audio.volume = Math.max(0, v0 * (1 - n / steps));
+            if (n >= steps) { clearInterval(fade); fade = null; audio.pause(); audio.volume = v0; }
+          }, 200);
+        }
+        function setSleep(min) {
+          clearSleep();
+          if (!min) return;
+          sleepEnd = Date.now() + min * 60000;
+          selectEl.value = String(min);
+          leftEl.textContent = fmt(sleepEnd - Date.now());
+          tick = setInterval(function () {
+            if (Date.now() >= sleepEnd) { clearSleep(); fadeOutAndPause(); return; }
+            leftEl.textContent = fmt(sleepEnd - Date.now());
+          }, 1000);
+        }
+
+        host.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-act]');
+          if (!b) return;
+          var a = b.getAttribute('data-act');
+          if (a === 'slower') step(-1);
+          else if (a === 'faster') step(1);
+          else if (a === 'reset') { speed = 1; applySpeed(); }
+        });
+        selectEl.addEventListener('change', function () { setSleep(parseInt(selectEl.value, 10) || 0); });
+        audio.addEventListener('loadedmetadata', applySpeed);
+
+        // اگه پلیر شناور هم باز بود، همزمان دو صدا پخش نشه
+        audio.addEventListener('play', function () {
+          var all = document.querySelectorAll('audio');
+          for (var i = 0; i < all.length; i++) { if (all[i] !== audio) all[i].pause(); }
+        });
+
+        applySpeed();
+      })();
+      </script>
       {% endif %}
 
 
@@ -201,5 +303,10 @@ html[data-theme="dark"] .post-markdown-body blockquote code {
   background: #1a1c20 !important;
   color: #f1f2f4 !important;
 }
+
+/* کنترل‌های سرعت و تایمر زیر پلیر داخل پست: رنگ متن از صفحه گرفته بشه */
+.embed-section .noys-fp-tools { color: inherit; margin-top: 12px; }
+.embed-section .noys-fp-sleep-left { color: inherit; }
+html[data-theme="dark"] .embed-section .noys-fp-sleep-left { color: #fff200; }
 
 </style>
