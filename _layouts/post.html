@@ -257,15 +257,47 @@ layout: main
 <style>
 
 /* =========================================================
-   NOYS - جداکننده‌های داخل متن مجله (هم‌شکل جداکننده‌ی سربرگ، با رنگ برند)
+   NOYS - جداکننده‌های صفحه‌ی مجله (هم‌شکل جداکننده‌ی سربرگ، با رنگ برند)
+   هم <hr> داخل متن، هم خطی که زیر تاریخ و بالای «اشتراک‌گذاری» هست.
+   خط‌های قدیمی (border) خاموش می‌شن و گرادیان زرد جاشون رو می‌گیره.
    ========================================================= */
 
-.post-markdown-body hr {
-  height: 2px;
+.post-markdown-body hr,
+.wrap-content hr {
+  display: block;
+  height: 2px !important;
   margin: 34px auto;
   max-width: 900px;
-  border: 0;
-  background: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent);
+  border: 0 !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+  outline: 0;
+  background: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent) !important;
+}
+
+.post-markdown-body hr::before,
+.post-markdown-body hr::after,
+.wrap-content hr::before,
+.wrap-content hr::after {
+  display: none !important;
+}
+
+/* خط زیر عنوان و تاریخ */
+.header-page {
+  border-bottom: 0 !important;
+  background-image: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent);
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: bottom center;
+}
+
+/* خط بالای «اشتراک‌گذاری» و تگ‌ها */
+.page-footer {
+  border-top: 0 !important;
+  background-image: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent);
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: top center;
 }
 
 
