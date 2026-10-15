@@ -116,3 +116,11 @@ tags:
 - [NBC News: Iran sanctions see Pakistani kids, drug dealers turn to smuggling diesel](https://www.nbcnews.com/news/world/iran-sanctions-see-pakistani-kids-drug-dealers-turn-smuggling-diesel-flna1c9159516)
 - [GlobalSecurity.org: گزارش‌های متعدد IRGC درباره توقیف نفتکش‌های قاچاق](https://www.globalsecurity.org/wmd/library/news/iran/)
 - [MarketScreener/Reuters: More Iranian fuel being smuggled to Pakistan](https://www.marketscreener.com/quote/commodity/WTI-2355639/news/)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [پرونده کانتری کلاب بغداد: تجارت سایه در قلب منطقه سبز](https://noysdc.ir/bcc/)
+- [۸۵ میلیون دلار برای یک آهن‌پاره: شبکه‌ی رشوه‌ی ژنرال‌های عراقی و جیم مک‌کورمیک](https://noysdc.ir/ade651-baghdad-network/)
+- [بحران فنتانیل در جهان: چطور یک مسکّن آزمایشگاهی به مرگبارترین ماده‌ی مخدر تاریخ تبدیل شد](https://noysdc.ir/fentanyl-crisis-world/)

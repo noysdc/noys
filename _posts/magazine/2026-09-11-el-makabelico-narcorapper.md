@@ -56,3 +56,11 @@ tags:
 - [وزارت خزانه‌داری آمریکا — بیانیه‌ی ۶ اوت ۲۰۲۵](https://home.treasury.gov/news/press-releases/sb0219)
 - [Federal Register — اعلان رسمی تحریم (SDN) ریکاردو هرناندز مدرانو](https://public-inspection.federalregister.gov/2025-15113.pdf)
 - [Al Jazeera — تحریم‌های آمریکا علیه اعضای کارتل و ال ماکابلیکو](https://www.aljazeera.com/news/2025/8/6/us-sanctions-mexico-cartel-members-including-rapper-el-makabelico)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [نارکو رپ و نارکوکوریدو چیست؟ از آکاردئون‌های قدیمی تا ابزار پول‌شویی کارتل‌ها](https://noysdc.ir/narco-rap-narcocorrido/)
+- [کارتل دل نورسته (CDN) کجاست و چه می‌کند؟ از باقی‌مانده‌ی زتاس تا امپراطوری دیجیتال](https://noysdc.ir/cartel-del-noreste-cdn/)
+- [کارتل لوس زتاس چیست؟ کماندوهای فراری ارتش مکزیک که یک امپراطوری خون ساختند](https://noysdc.ir/los-zetas-cartel/)

@@ -142,3 +142,11 @@ tags:
 - [New Lines Magazine: A Libyan General Accused of Crimes Against Humanity Was Arrested in Turin. Why Did Italy Let Him Go?](https://newlinesmag.com/spotlight/a-libyan-general-accused-of-crimes-against-humanity-was-arrested-in-turin-why-did-italy-let-him-go/)
 - [ویکی‌پدیای فارسی: لیبی](https://fa.wikipedia.org/wiki/لیبی)
 - [ویکی‌پدیای فارسی: دادگاه بین‌المللی کیفری](https://fa.wikipedia.org/wiki/دادگاه_بین‌المللی_کیفری)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [گنجینه مدفون داعش؛ چگونه این گروه دارایی‌هایش را زیر خاک پنهان کرد و چه کسی آنها را پیدا می‌کند؟](https://noysdc.ir/isis-buried-treasure/)
+- [چرا سوریه به زنان آموزش می‌دهد تا از گردشگران محافظت کنند؟](https://noysdc.ir/syria-women-police/)
+- [قاچاق سوخت در مرز ایران و پاکستان؛ اقتصاد سایه‌ای که هر روز میلیون‌ها لیتر بنزین و گازوئیل را جابه‌جا می‌کند](https://noysdc.ir/fuel-smuggling-iran-pakistan-border/)

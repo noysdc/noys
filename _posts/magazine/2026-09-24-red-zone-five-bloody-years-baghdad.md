@@ -119,3 +119,11 @@ tags:
 - [Iraq Body Count](https://www.iraqbodycount.org/)
 
 ---
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [بدون افتخار حقیقی: روایتی از قلب نبرد فلوجه](https://noysdc.ir/no-true-glory-fallujah/)
+- [پرونده کانتری کلاب بغداد: تجارت سایه در قلب منطقه سبز](https://noysdc.ir/bcc/)
+- [«بغداد در آتش بود»؛ حاکم آمریکایی عراق در «سال من در عراق» چه می‌گوید؟](https://noysdc.ir/bremer-my-year-in-iraq-full/)

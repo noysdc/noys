@@ -4,4 +4,10 @@ sitemap: false
 User-agent: *
 Allow: /
 
+# مسیرهای داخلی Cloudflare (لینک email-protection در Search Console خطای 404 می‌داد)
+Disallow: /cdn-cgi/
+
+# فایل‌های کتاب (pdf/epub) صفحه نیستند و نباید ایندکس شوند
+Disallow: /assets/pdf/
+
 Sitemap: {{ site.url }}{{ site.baseurl }}/sitemap.xml

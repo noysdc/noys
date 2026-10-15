@@ -59,3 +59,11 @@ tags:
 - [وزارت خزانه‌داری آمریکا — تحریم دو فرمانده‌ی CDN (۲۱ مه ۲۰۲۵)](https://home.treasury.gov/news/press-releases/sb0146)
 - [Federal Register — اعلام CDN به‌عنوان سازمان تروریستی خارجی (۲۰ فوریه‌ی ۲۰۲۵)](https://www.govinfo.gov/content/pkg/FR-2025-02-20/html/2025-02873.htm)
 - [InSight Crime — تاریخچه‌ی زتاس و شکل‌گیری کارتل دل نورسته](https://insightcrime.org/groups-mexico/zetas)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [کارتل لوس زتاس چیست؟ کماندوهای فراری ارتش مکزیک که یک امپراطوری خون ساختند](https://noysdc.ir/los-zetas-cartel/)
+- [ال ماکابلیکو کیست؟ رپری که وزارت خزانه‌داری آمریکا او را «بازوی مالی» یک کارتل خواند](https://noysdc.ir/el-makabelico-narcorapper/)
+- [بحران فنتانیل در جهان: چطور یک مسکّن آزمایشگاهی به مرگبارترین ماده‌ی مخدر تاریخ تبدیل شد](https://noysdc.ir/fentanyl-crisis-world/)

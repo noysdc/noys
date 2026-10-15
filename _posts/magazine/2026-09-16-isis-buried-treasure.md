@@ -241,3 +241,11 @@ tags:
 - [New Lines Magazine: The Buried Treasure Left Behind by the Islamic State](https://newlinesmag.com/reportage/the-buried-treasure-left-behind-by-the-islamic-state/)
 - [ویکی‌پدیای فارسی: داعش](https://fa.wikipedia.org/wiki/داعش)
 - [ویکی‌پدیای فارسی: نیروهای دموکراتیک سوریه](https://fa.wikipedia.org/wiki/نیروهای_دموکراتیک_سوریه)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [چرا سوریه به زنان آموزش می‌دهد تا از گردشگران محافظت کنند؟](https://noysdc.ir/syria-women-police/)
+- [ژنرال لیبیایی متهم به جنایت علیه بشریت در تورین بازداشت شد؛ چرا ایتالیا او را آزاد کرد؟](https://noysdc.ir/libya-general-njeem/)
+- [«بغداد در آتش بود»؛ حاکم آمریکایی عراق در «سال من در عراق» چه می‌گوید؟](https://noysdc.ir/bremer-my-year-in-iraq-full/)

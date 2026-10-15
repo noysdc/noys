@@ -176,3 +176,10 @@ tags:
 ### منابع
 - [New Lines Magazine: Why Syria Is Training Women To Protect Its Tourists](https://newlinesmag.com/spotlight/why-syria-is-training-women-to-protect-its-tourists/)
 - [ویکی‌پدیای فارسی: سوریه](https://fa.wikipedia.org/wiki/سوریه)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [گنجینه مدفون داعش؛ چگونه این گروه دارایی‌هایش را زیر خاک پنهان کرد و چه کسی آنها را پیدا می‌کند؟](https://noysdc.ir/isis-buried-treasure/)
+- [ژنرال لیبیایی متهم به جنایت علیه بشریت در تورین بازداشت شد؛ چرا ایتالیا او را آزاد کرد؟](https://noysdc.ir/libya-general-njeem/)

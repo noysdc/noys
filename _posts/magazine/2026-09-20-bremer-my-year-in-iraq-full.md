@@ -208,6 +208,14 @@ tags:
 
 ---
 
+### 📚 بیشتر بخوانید
+
+- [امپراتوری KBR و هالیبرتون: غول‌های پشت صحنه و فاکتورهای سفید عراق](https://noysdc.ir/kbr/)
+- [منطقه‌ی سرخ؛ پنج سال خونین در بغداد از زبان خبرنگاری که آنجا زندگی کرد](https://noysdc.ir/red-zone-five-bloody-years-baghdad/)
+- [پیمان بغداد: اتحادی که هرگز به پیمانی واقعی بدل نشد](https://noysdc.ir/baghdad-pact-yesilbursa/)
+
+---
+
 ### 🔗 منابع و لینک‌های مرتبط
 
 - 🔗 [متن رسمی فرمان شماره‌ی ۲ اتحاد موقت ائتلاف (CPA Order 2) — آرشیو امنیت ملی](https://nsarchive2.gwu.edu/NSAEBB/NSAEBB418/docs/9b%20-%20Coalition%20Provisional%20Authority%20Order%20No%202%20-%208-23-03.pdf)

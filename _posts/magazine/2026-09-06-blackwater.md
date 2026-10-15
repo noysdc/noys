@@ -41,6 +41,14 @@ tags:
 
 ---
 
+### 📚 بیشتر بخوانید
+
+- [امپراتوری KBR و هالیبرتون: غول‌های پشت صحنه و فاکتورهای سفید عراق](https://noysdc.ir/kbr/)
+- [گورکاها در خاورمیانه؛ سربازانی که در سکوت می‌جنگند](https://noysdc.ir/gurkhas-in-iraq-and-afghanistan/)
+- [پرونده کانتری کلاب بغداد: تجارت سایه در قلب منطقه سبز](https://noysdc.ir/bcc/)
+
+---
+
 ### 🔗 منابع و لینک‌های مرتبط
 
 - 🔗 [CPA Order 17 — فرمان مصونیت پیمانکاران (ویکی‌پدیا)](https://en.wikipedia.org/wiki/Coalition_Provisional_Authority_Order_17)

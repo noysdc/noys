@@ -52,3 +52,11 @@ tags:
 - [InSight Crime — تاریخچه‌ی لوس زتاس](https://insightcrime.org/groups-mexico/zetas)
 - [InSight Crime — گفت‌وگو درباره‌ی ظهور و فروپاشی زتاس](https://insightcrime.org/news/analysis/mexico-zetas-criminal-powerhouse-fragmented-remnants/)
 - [وزارت خزانه‌داری آمریکا — CDN، «سابقاً لوس زتاس»](https://home.treasury.gov/news/press-releases/sb0219)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [کارتل دل نورسته (CDN) کجاست و چه می‌کند؟ از باقی‌مانده‌ی زتاس تا امپراطوری دیجیتال](https://noysdc.ir/cartel-del-noreste-cdn/)
+- [نارکو رپ و نارکوکوریدو چیست؟ از آکاردئون‌های قدیمی تا ابزار پول‌شویی کارتل‌ها](https://noysdc.ir/narco-rap-narcocorrido/)
+- [بحران فنتانیل در جهان: چطور یک مسکّن آزمایشگاهی به مرگبارترین ماده‌ی مخدر تاریخ تبدیل شد](https://noysdc.ir/fentanyl-crisis-world/)

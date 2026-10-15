@@ -264,3 +264,11 @@ tags:
 - [Illawarra Mercury: 'Catch Me If You Can' conwoman pleads guilty](https://www.illawarramercury.com.au/story/804009/catch-me-if-you-can-conwoman-pleads-guilty/)
 - [Take 5 / Now To Love: The story of Jody Harris, Australia's greatest con-woman](https://www.nowtolove.com.au/news/real-life/jody-harris-fraud-53846/)
 - [ویکی‌پدیا: استرالیا](https://fa.wikipedia.org/wiki/استرالیا)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [از توپ گلف تا میدان جنگ: ریشه‌های عجیب ADE 651، بمب‌یابی که هیچ‌وقت بمبی پیدا نکرد](https://noysdc.ir/ade651-origin/)
+- [چرا یک آنتنِ خالی «کار می‌کرد»؟ کالبدشکافیِ کمبریج و رازِ روانیِ یک کلاهبرداری جهانی](https://noysdc.ir/ade651-cambridge-science/)
+- [درباره من:یونس شجاعی هستم، راوی قصه‌های پادکست نویز](https://noysdc.ir/about-me/)

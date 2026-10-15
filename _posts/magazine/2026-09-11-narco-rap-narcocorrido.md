@@ -54,3 +54,11 @@ tags:
 - [نارکوکوریدو (ویکی‌پدیا)](https://en.wikipedia.org/wiki/Narcocorrido)
 - [POV — «ال والینته: چالینو سانچز»](https://archive.pov.org/alotrolado/el-valiente-chalino-sanchez/amp/)
 - [وزارت خزانه‌داری آمریکا — بیانیه درباره‌ی ال ماکابلیکو](https://home.treasury.gov/news/press-releases/sb0219)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [ال ماکابلیکو کیست؟ رپری که وزارت خزانه‌داری آمریکا او را «بازوی مالی» یک کارتل خواند](https://noysdc.ir/el-makabelico-narcorapper/)
+- [کارتل دل نورسته (CDN) کجاست و چه می‌کند؟ از باقی‌مانده‌ی زتاس تا امپراطوری دیجیتال](https://noysdc.ir/cartel-del-noreste-cdn/)
+- [کارتل لوس زتاس چیست؟ کماندوهای فراری ارتش مکزیک که یک امپراطوری خون ساختند](https://noysdc.ir/los-zetas-cartel/)

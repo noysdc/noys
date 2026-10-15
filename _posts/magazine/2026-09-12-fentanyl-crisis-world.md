@@ -54,3 +54,12 @@ tags:
 - [Reuters — مرگ‌های اوردوز در آمریکا در ۲۰۲۵ برای سومین سال متوالی کاهش یافت](https://www.marketscreener.com/news/us-drug-overdose-deaths-dropped-for-third-straight-year-in-2025-cdc-data-shows-ce7f5bdcdb80ff24)
 - [Federal Register — اعلام کارتل‌ها به‌عنوان سازمان تروریستی خارجی (۲۰۲۵)](https://www.govinfo.gov/content/pkg/FR-2025-02-20/html/2025-02873.htm)
 - [وزارت خزانه‌داری آمریکا — بیانیه‌ی ۶ اوت ۲۰۲۵](https://home.treasury.gov/news/press-releases/sb0219)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [کارتل دل نورسته (CDN) کجاست و چه می‌کند؟ از باقی‌مانده‌ی زتاس تا امپراطوری دیجیتال](https://noysdc.ir/cartel-del-noreste-cdn/)
+- [کارتل لوس زتاس چیست؟ کماندوهای فراری ارتش مکزیک که یک امپراطوری خون ساختند](https://noysdc.ir/los-zetas-cartel/)
+- [نارکو رپ و نارکوکوریدو چیست؟ از آکاردئون‌های قدیمی تا ابزار پول‌شویی کارتل‌ها](https://noysdc.ir/narco-rap-narcocorrido/)
+- [قاچاق سوخت در مرز ایران و پاکستان؛ اقتصاد سایه‌ای که هر روز میلیون‌ها لیتر بنزین و گازوئیل را جابه‌جا می‌کند](https://noysdc.ir/fuel-smuggling-iran-pakistan-border/)

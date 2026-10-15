@@ -92,3 +92,11 @@ tags: [کتاب, تاریخ نظامی, عراق, فلوجه]
 
 - [دانشگاه تفنگداران دریایی آمریکا — «Marines in Battle: Fallujah, November–December 2004»](https://www.usmcu.edu/Portals/218/FALLUJAH.pdf)
 - [نبرد دوم فلوجه (ویکی‌پدیا)](https://en.wikipedia.org/wiki/Second_Battle_of_Fallujah)
+
+---
+
+### 📚 بیشتر بخوانید
+
+- [منطقه‌ی سرخ؛ پنج سال خونین در بغداد از زبان خبرنگاری که آنجا زندگی کرد](https://noysdc.ir/red-zone-five-bloody-years-baghdad/)
+- [پرونده بلک‌واتر: تجار مرگ و ارتش‌های خصوصی در جنگ عراق](https://noysdc.ir/blackwater/)
+- [«بغداد در آتش بود»؛ حاکم آمریکایی عراق در «سال من در عراق» چه می‌گوید؟](https://noysdc.ir/bremer-my-year-in-iraq-full/)
