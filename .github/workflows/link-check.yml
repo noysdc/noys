@@ -8,18 +8,20 @@ on:
 jobs:
   links:
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_GEMFILE: ${{ github.workspace }}/Gemfile.ci
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.2"
       - name: Install Pages-compatible Jekyll
+        env:
+          BUNDLE_GEMFILE: ${{ github.workspace }}/Gemfile.ci
         run: |
           printf 'source "https://rubygems.org"\ngem "github-pages", group: :jekyll_plugins\ngem "webrick"\n' > Gemfile.ci
           bundle install --jobs 4
       - name: Build site
+        env:
+          BUNDLE_GEMFILE: ${{ github.workspace }}/Gemfile.ci
         run: bundle exec jekyll build
       - name: Check links in built site
         uses: lycheeverse/lychee-action@v2
