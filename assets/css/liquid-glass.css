@@ -1,0 +1,611 @@
+/* =========================================================
+   NOYS - Liquid Glass (شیشه‌ی مایع، الهام‌گرفته از iOS جدید)
+   این فایل باید آخرین stylesheet صفحه باشد (در default.html،
+   انتهای <body>) تا روی استایل‌های قبلی و CSS داخل صفحه‌ها غلبه کند.
+   برای حذف افکت: خط <link> این فایل را از default.html بردار.
+   ========================================================= */
+
+:root {
+  --lg-blur: 20px;
+  --lg-sat: 180%;
+  --lg-fill: rgba(255, 255, 255, 0.22);
+  --lg-fill-hover: rgba(255, 255, 255, 0.38);
+  --lg-fill-strong: rgba(255, 255, 255, 0.34);
+  --lg-edge: rgba(255, 255, 255, 0.7);
+  --lg-edge-soft: rgba(255, 255, 255, 0.35);
+  --lg-shine: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.08) 38%,
+    rgba(255, 255, 255, 0) 62%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  --lg-shadow:
+    0 10px 32px rgba(40, 44, 70, 0.12),
+    0 2px 6px rgba(40, 44, 70, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 0 22px rgba(255, 255, 255, 0.28);
+  --lg-shadow-hover:
+    0 18px 44px rgba(40, 44, 70, 0.18),
+    0 4px 10px rgba(40, 44, 70, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 26px rgba(255, 255, 255, 0.35);
+  --lg-accent-fill: rgba(255, 242, 0, 0.55);
+  --lg-accent-edge: rgba(255, 242, 0, 0.9);
+  --lg-text: #1c1c1e;
+  --lg-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+html[data-theme="dark"] {
+  --lg-fill: rgba(255, 255, 255, 0.07);
+  --lg-fill-hover: rgba(255, 255, 255, 0.14);
+  --lg-fill-strong: rgba(255, 255, 255, 0.12);
+  --lg-edge: rgba(255, 255, 255, 0.28);
+  --lg-edge-soft: rgba(255, 255, 255, 0.12);
+  --lg-shine: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.03) 38%,
+    rgba(255, 255, 255, 0) 62%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  --lg-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 22px rgba(255, 255, 255, 0.05);
+  --lg-shadow-hover:
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 26px rgba(255, 255, 255, 0.08);
+  --lg-accent-fill: rgba(255, 242, 0, 0.32);
+  --lg-accent-edge: rgba(255, 242, 0, 0.7);
+  --lg-text: #f2f2f2;
+}
+
+/* =========================================================
+   ۱) پس‌زمینه‌ی رنگی پشت شیشه‌ها
+   شیشه فقط وقتی «شیشه» دیده می‌شود که چیزی پشتش باشد؛
+   این لکه‌های نرم رنگ (زرد لوگو + خاکستری/آبی خنثی) پشت همه‌چیز می‌مانند.
+   ========================================================= */
+
+body {
+  background: transparent !important;
+}
+
+html {
+  background: #f3f4f7;
+}
+
+html[data-theme="dark"] {
+  background: #101216;
+}
+
+html[data-theme="dark"] body {
+  background: transparent !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 32% at 82% 12%, rgba(255, 242, 0, 0.55), transparent 70%),
+    radial-gradient(34% 30% at 12% 28%, rgba(120, 160, 230, 0.38), transparent 70%),
+    radial-gradient(40% 34% at 70% 70%, rgba(255, 196, 60, 0.4), transparent 70%),
+    radial-gradient(36% 30% at 20% 88%, rgba(150, 215, 200, 0.35), transparent 70%);
+  filter: blur(30px);
+  animation: lgDrift 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+html[data-theme="dark"] body::before {
+  background:
+    radial-gradient(38% 32% at 82% 12%, rgba(255, 242, 0, 0.26), transparent 70%),
+    radial-gradient(34% 30% at 12% 28%, rgba(70, 110, 190, 0.36), transparent 70%),
+    radial-gradient(40% 34% at 70% 70%, rgba(255, 170, 40, 0.2), transparent 70%),
+    radial-gradient(36% 30% at 20% 88%, rgba(60, 140, 130, 0.28), transparent 70%);
+}
+
+@keyframes lgDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-3%, 2.5%, 0) scale(1.06); }
+}
+
+/* =========================================================
+   ۲) پایه‌ی شیشه — روی همه‌ی باکس‌ها و دکمه‌ها
+   ========================================================= */
+
+/* --- باکس‌ها / کارت‌ها --- */
+.nh-box,
+.nh .nh-results,
+.posts-list > .post,
+.content-box > .post,
+.podcast-card,
+.podcast-container,
+.noys-hero-episode,
+.noys-start-card,
+.noys-series-card,
+.noys-series-box,
+.noys-series-nav-btn,
+.noys-related-card,
+.noys-world-section,
+.noys-search-result,
+.noys-floating-player,
+.article-page .wrap-content,
+.podcast-episode-shownotes,
+.disclaimer-section,
+.footer-subscription,
+.embed-section,
+.noys-quick-links a,
+.noys-search-form {
+  background: var(--lg-shine), var(--lg-fill) !important;
+  background-clip: border-box !important;
+  background-origin: padding-box !important;
+  background-size: auto !important;
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge) !important;
+  box-shadow: var(--lg-shadow) !important;
+  animation: none !important;
+}
+
+/* --- دکمه‌ها / چیپ‌ها / آیکون‌ها (شیشه‌ی کوچک‌تر) --- */
+.nh .nh-btn,
+.nh .nh-arrow,
+.nh .nh-nav a,
+.nh .nh-chip,
+.nh .nh-search #noysSearchInput,
+.nf .nf-links a,
+.nf .nf-support,
+.noys-btn,
+.podcast-play-btn,
+.noys-pagination-btn,
+.noys-pagination-count,
+.noys-arc-clock-pill,
+.noys-floating-player-btn,
+.noys-fp-tbtn,
+.noys-fp-speed,
+.noys-fp-select,
+.page-share a,
+.page-tag a,
+.tag-list a,
+.tag,
+.noys-theme-toggle {
+  background: var(--lg-shine), var(--lg-fill) !important;
+  background-clip: border-box !important;
+  background-size: auto !important;
+  -webkit-backdrop-filter: blur(14px) saturate(var(--lg-sat));
+  backdrop-filter: blur(14px) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge) !important;
+  color: var(--lg-text) !important;
+  box-shadow: var(--lg-shadow) !important;
+  transition:
+    transform 0.35s var(--lg-ease),
+    background-color 0.3s ease,
+    box-shadow 0.35s var(--lg-ease),
+    border-color 0.3s ease !important;
+}
+
+/* --- هاور: کمی روشن‌تر و بالاتر، مثل واکنش شیشه‌ی iOS --- */
+.nh .nh-btn:hover,
+.nh .nh-arrow:hover:not([disabled]),
+.nh .nh-nav a:hover,
+.nh .nh-chip:hover,
+.nf .nf-links a:hover,
+.nf .nf-support:hover,
+.noys-btn:hover,
+.podcast-play-btn:hover,
+.noys-pagination-btn:hover,
+.noys-floating-player-btn:hover,
+.noys-fp-tbtn:hover,
+.noys-fp-speed:hover,
+.page-share a:hover,
+.page-tag a:hover,
+.tag-list a:hover,
+.tag:hover,
+.noys-theme-toggle:hover {
+  background: var(--lg-shine), var(--lg-fill-hover) !important;
+  border-color: var(--lg-accent-edge) !important;
+  box-shadow:
+    var(--lg-shadow-hover),
+    0 0 0 3px rgba(255, 242, 0, 0.18) !important;
+  transform: translateY(-2px);
+}
+
+.nh .nh-btn:active,
+.nh .nh-nav a:active,
+.noys-btn:active,
+.podcast-play-btn:active,
+.noys-pagination-btn:active,
+.nf .nf-links a:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* --- حالت فعال (منوی فعلی، دکمه‌ی روشن): شیشه‌ی زرد --- */
+.nh .nh-btn.is-active,
+.nh .nh-nav a.is-active,
+.noys-btn-primary,
+.nf .nf-support,
+.podcast-episode-play-btn {
+  background:
+    var(--lg-shine),
+    var(--lg-accent-fill) !important;
+  border-color: var(--lg-accent-edge) !important;
+  color: #1c1c1e !important;
+  box-shadow:
+    0 10px 30px -8px rgba(255, 242, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.3) !important;
+}
+
+html[data-theme="dark"] .nh .nh-btn.is-active,
+html[data-theme="dark"] .nh .nh-nav a.is-active,
+html[data-theme="dark"] .noys-btn-primary,
+html[data-theme="dark"] .nf .nf-support,
+html[data-theme="dark"] .podcast-episode-play-btn {
+  color: #fffbd0 !important;
+}
+
+/* =========================================================
+   ۳) باکس منو (هدر ثابت) — حالا محتوا هنگام اسکرول زیرش دیده می‌شود
+   ========================================================= */
+
+.nh-box {
+  border-radius: 30px;
+}
+
+.nh.nh-sticky .nh-box {
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+  backdrop-filter: blur(26px) saturate(190%);
+}
+
+/* فیلد جستجو */
+.nh .nh-search #noysSearchInput {
+  box-shadow:
+    inset 0 2px 6px rgba(40, 44, 70, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+html[data-theme="dark"] .nh .nh-search #noysSearchInput {
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.nh .nh-search #noysSearchInput:focus {
+  border-color: var(--lg-accent-edge) !important;
+  box-shadow:
+    inset 0 2px 6px rgba(40, 44, 70, 0.06),
+    0 0 0 3px rgba(255, 242, 0, 0.3) !important;
+}
+
+.nh .nh-search #noysSearchInput::placeholder {
+  color: var(--lg-text);
+  opacity: 0.55;
+}
+
+/* لیست نتایج جستجو */
+.nh .nh-results {
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  backdrop-filter: blur(30px) saturate(190%);
+}
+
+.nh .nh-results .noys-search-result {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.nh .nh-results .noys-search-result:hover {
+  background: var(--lg-fill-hover) !important;
+}
+
+/* کاور داخل دکمه‌ها و چیپ‌ها: شمارنده‌ی زرد هم شیشه‌ای */
+.nh .nh-chip b {
+  background: var(--lg-accent-fill) !important;
+  border: 1px solid var(--lg-accent-edge);
+  color: var(--lg-text) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* دیوایدرها: ظریف‌تر روی شیشه */
+.nh-divider {
+  opacity: 0.8;
+}
+
+/* =========================================================
+   ۴) فوتر — آیکون‌های شبکه‌های اجتماعی
+   ========================================================= */
+
+.nf .nf-links a {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.nf .nf-links a i {
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.5));
+}
+
+html[data-theme="dark"] .nf .nf-links a i {
+  filter: none;
+}
+
+/* =========================================================
+   ۵) صفحه‌ی مجله — کارت پست‌ها، کاور، شماره صفحه
+   ========================================================= */
+
+.posts-list > .post {
+  border-radius: 26px;
+  transition:
+    transform 0.4s var(--lg-ease),
+    box-shadow 0.4s var(--lg-ease),
+    background-color 0.3s ease !important;
+}
+
+.posts-list > .post:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    var(--lg-shadow-hover),
+    0 20px 50px -18px rgba(255, 242, 0, 0.5) !important;
+}
+
+/* قاب کاور: به‌جای گرادیانت متحرک، لبه‌ی شیشه */
+.post-thumbnail-frame,
+.article-page .page-cover-image figure,
+.podcast-cover-wrap,
+.podcast-episode-cover-wrap {
+  background: var(--lg-shine), var(--lg-fill-strong) !important;
+  border: 1px solid var(--lg-edge) !important;
+  box-shadow: var(--lg-shadow) !important;
+  animation: none !important;
+}
+
+.noys-world-section {
+  border-radius: 28px;
+}
+
+.noys-pagination-btn,
+.noys-pagination-count {
+  border-radius: 999px;
+}
+
+.noys-pagination-count-num {
+  color: var(--lg-text) !important;
+}
+
+/* آیکون‌های تزئینی بین پست‌ها */
+.noys-decor {
+  filter: drop-shadow(0 8px 14px rgba(255, 242, 0, 0.25));
+}
+
+/* =========================================================
+   ۶) صفحه‌ی پادکست — باکس‌ها، دکمه‌ی پخش، ساعت قوسی
+   ========================================================= */
+
+.podcast-card {
+  border-radius: 26px;
+  transition:
+    transform 0.4s var(--lg-ease),
+    box-shadow 0.4s var(--lg-ease) !important;
+}
+
+.podcast-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    var(--lg-shadow-hover),
+    0 22px 50px -18px rgba(255, 242, 0, 0.55) !important;
+}
+
+.podcast-cover {
+  box-shadow: 0 6px 18px rgba(40, 44, 70, 0.18);
+}
+
+.podcast-cover-wrap:hover .podcast-cover {
+  box-shadow: 0 20px 45px rgba(255, 242, 0, 0.5) !important;
+}
+
+.podcast-play-btn {
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-weight: 700;
+}
+
+.noys-arc-clock-pill {
+  color: var(--lg-text) !important;
+}
+
+#noysArcThumbHalo {
+  fill: rgba(255, 255, 255, 0.75);
+}
+
+html[data-theme="dark"] #noysArcThumbHalo {
+  fill: rgba(255, 255, 255, 0.3);
+}
+
+/* =========================================================
+   ۷) پخش‌کننده‌ی شناور
+   ========================================================= */
+
+.noys-floating-player {
+  border-radius: 26px;
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+}
+
+.noys-floating-player.is-dragging {
+  box-shadow: var(--lg-shadow-hover) !important;
+}
+
+.noys-floating-player-bar {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 242, 0, 0.18),
+    rgba(255, 255, 255, 0.08)
+  ) !important;
+  color: var(--lg-text) !important;
+}
+
+.noys-floating-player-btn {
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.noys-fp-tbtn,
+.noys-fp-speed,
+.noys-fp-select {
+  border-radius: 999px;
+}
+
+.noys-fp-tools,
+.noys-fp-sleep-left {
+  color: var(--lg-text) !important;
+}
+
+.noys-fp-list {
+  border-top: 1px solid var(--lg-edge-soft) !important;
+}
+
+.noys-fp-list-title,
+.noys-fp-ep-title {
+  color: var(--lg-text) !important;
+}
+
+.noys-fp-ep-date {
+  color: var(--lg-text) !important;
+  opacity: 0.55;
+}
+
+.noys-fp-ep {
+  border-radius: 16px;
+  color: var(--lg-text) !important;
+}
+
+.noys-fp-ep:hover {
+  background: var(--lg-fill-hover) !important;
+}
+
+.noys-fp-ep.is-active {
+  background: var(--lg-accent-fill) !important;
+  border-color: var(--lg-accent-edge) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* خود نوار audio مرورگر */
+.noys-floating-player audio {
+  border-radius: 999px;
+}
+
+/* =========================================================
+   ۸) سایر باکس‌ها: پرونده‌ها، مطالب مرتبط، صفحه‌ی مقاله
+   ========================================================= */
+
+.noys-series-card,
+.noys-series-box,
+.noys-related-card,
+.noys-start-card,
+.noys-hero-episode {
+  border-radius: 24px;
+}
+
+.noys-start-card:hover,
+.noys-related-card:hover,
+.noys-series-nav-btn:hover,
+.noys-series-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--lg-shadow-hover) !important;
+}
+
+.article-page .wrap-content,
+.podcast-episode-shownotes {
+  border-radius: 28px;
+}
+
+/* متن مقاله روی شیشه خواناتر باشد (کمی غلیظ‌تر) */
+.article-page .wrap-content {
+  background: var(--lg-shine), rgba(255, 255, 255, 0.5) !important;
+}
+
+html[data-theme="dark"] .article-page .wrap-content {
+  background: var(--lg-shine), rgba(20, 22, 26, 0.55) !important;
+}
+
+/* حالت ریدینگ: شیشه خاموش، تمرکز روی متن */
+body.noys-reading-mode .article-page .wrap-content,
+body.noys-reading-mode .post-markdown-body {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* =========================================================
+   ۹) سازگاری
+   ========================================================= */
+
+/* مرورگرهایی که backdrop-filter ندارند: پس‌زمینه‌ی غلیظ‌تر تا متن خوانا بماند */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --lg-fill: rgba(255, 255, 255, 0.85);
+    --lg-fill-hover: rgba(255, 255, 255, 0.95);
+    --lg-fill-strong: rgba(255, 255, 255, 0.9);
+  }
+  html[data-theme="dark"] {
+    --lg-fill: rgba(32, 35, 41, 0.92);
+    --lg-fill-hover: rgba(44, 48, 56, 0.95);
+    --lg-fill-strong: rgba(40, 44, 52, 0.95);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --lg-blur: 16px;
+  }
+  .posts-list > .post,
+  .podcast-card {
+    border-radius: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+  .nh .nh-btn,
+  .nh .nh-nav a,
+  .noys-btn,
+  .podcast-play-btn,
+  .posts-list > .post,
+  .podcast-card {
+    transition: none !important;
+  }
+}
+
+/* دکمه‌های داخل یک باکس شیشه‌ای، خودشان blur جدا نمی‌گیرند
+   (blur تو‌در‌تو در بعضی مرورگرها باگ دارد و کند است؛ blur باکس پدر کافی است) */
+.nh-box .nh-btn,
+.nh-box .nh-arrow,
+.nh-box .nh-nav a,
+.nh-box .nh-chip,
+.nh-box #noysSearchInput,
+.noys-floating-player .noys-floating-player-btn,
+.noys-floating-player .noys-fp-tbtn,
+.noys-floating-player .noys-fp-speed,
+.noys-floating-player .noys-fp-select,
+.podcast-card .podcast-play-btn,
+.noys-hero-episode .noys-btn,
+.article-page .tag,
+.article-page .page-share a {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
