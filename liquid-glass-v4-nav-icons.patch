@@ -1,0 +1,73 @@
+From e6aa00f8831b7a753744c5776931838eb55ba646 Mon Sep 17 00:00:00 2001
+From: claude <noreply@anthropic.com>
+Date: Tue, 20 Oct 2026 05:09:16 +0000
+Subject: [PATCH] Add nav icons to desktop menu
+
+---
+ assets/css/liquid-glass.css | 20 ++++++++++++++++++++
+ assets/js/liquid-glass.js   | 16 ++++++++++------
+ 2 files changed, 30 insertions(+), 6 deletions(-)
+
+diff --git a/assets/css/liquid-glass.css b/assets/css/liquid-glass.css
+index 7e914c6..6d77d42 100644
+--- a/assets/css/liquid-glass.css
++++ b/assets/css/liquid-glass.css
+@@ -871,3 +871,23 @@ html[data-theme="dark"] .noys-floating-player audio::-webkit-media-controls-pane
+     width: min(300px, calc(100vw - 48px));
+   }
+ }
++
++/* =========================================================
++   ۱۲) آیکون کنار نام تب‌ها در منوی بالا (دسکتاپ)
++   ========================================================= */
++.nh .nh-nav a {
++  gap: 8px;
++}
++.nh .nh-nav a .lg-nav-ico {
++  font-size: 1.1rem;
++  line-height: 1;
++  opacity: 0.8;
++  transition: transform 0.35s var(--lg-ease), opacity 0.3s ease;
++}
++.nh .nh-nav a:hover .lg-nav-ico {
++  transform: scale(1.18) translateY(-1px);
++  opacity: 1;
++}
++.nh .nh-nav a.is-active .lg-nav-ico {
++  opacity: 1;
++}
+diff --git a/assets/js/liquid-glass.js b/assets/js/liquid-glass.js
+index 0b0357b..5a83c32 100644
+--- a/assets/js/liquid-glass.js
++++ b/assets/js/liquid-glass.js
+@@ -22,17 +22,21 @@
+     if (document.getElementById('lgTabbar')) return;
+     var src = document.querySelector('.nh-menu .nh-nav');
+     if (!src) return;
+-    var bar = src.cloneNode(true);
+-    bar.id = 'lgTabbar';
+-    bar.className = 'nh-nav lg-tabbar';
+-    bar.setAttribute('aria-label', 'ناوبری پایین');
++
++    /* آیکون تب‌ها: هم در منوی بالا (دسکتاپ) و هم در نوار پایین (موبایل) */
+     var icons = ['fa-newspaper-o', 'fa-podcast', 'fa-folder-open-o'];
+-    Array.prototype.forEach.call(bar.querySelectorAll('a'), function (a, i) {
++    Array.prototype.forEach.call(src.querySelectorAll('a'), function (a, i) {
++      if (a.querySelector('i.lg-nav-ico')) return;
+       var ic = document.createElement('i');
+-      ic.className = 'fa ' + (icons[i] || 'fa-circle-o');
++      ic.className = 'fa ' + (icons[i] || 'fa-circle-o') + ' lg-nav-ico';
+       ic.setAttribute('aria-hidden', 'true');
+       a.insertBefore(ic, a.firstChild);
+     });
++
++    var bar = src.cloneNode(true);
++    bar.id = 'lgTabbar';
++    bar.className = 'nh-nav lg-tabbar';
++    bar.setAttribute('aria-label', 'ناوبری پایین');
+     document.body.appendChild(bar);
+   }
+ 
+-- 
+2.43.0
+

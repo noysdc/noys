@@ -871,3 +871,23 @@ html[data-theme="dark"] .noys-floating-player audio::-webkit-media-controls-pane
     width: min(300px, calc(100vw - 48px));
   }
 }
+
+/* =========================================================
+   ۱۲) آیکون کنار نام تب‌ها در منوی بالا (دسکتاپ)
+   ========================================================= */
+.nh .nh-nav a {
+  gap: 8px;
+}
+.nh .nh-nav a .lg-nav-ico {
+  font-size: 1.1rem;
+  line-height: 1;
+  opacity: 0.8;
+  transition: transform 0.35s var(--lg-ease), opacity 0.3s ease;
+}
+.nh .nh-nav a:hover .lg-nav-ico {
+  transform: scale(1.18) translateY(-1px);
+  opacity: 1;
+}
+.nh .nh-nav a.is-active .lg-nav-ico {
+  opacity: 1;
+}

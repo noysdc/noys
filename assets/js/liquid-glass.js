@@ -22,17 +22,21 @@
     if (document.getElementById('lgTabbar')) return;
     var src = document.querySelector('.nh-menu .nh-nav');
     if (!src) return;
+
+    /* آیکون تب‌ها: هم در منوی بالا (دسکتاپ) و هم در نوار پایین (موبایل) */
+    var icons = ['fa-newspaper-o', 'fa-podcast', 'fa-folder-open-o'];
+    Array.prototype.forEach.call(src.querySelectorAll('a'), function (a, i) {
+      if (a.querySelector('i.lg-nav-ico')) return;
+      var ic = document.createElement('i');
+      ic.className = 'fa ' + (icons[i] || 'fa-circle-o') + ' lg-nav-ico';
+      ic.setAttribute('aria-hidden', 'true');
+      a.insertBefore(ic, a.firstChild);
+    });
+
     var bar = src.cloneNode(true);
     bar.id = 'lgTabbar';
     bar.className = 'nh-nav lg-tabbar';
     bar.setAttribute('aria-label', 'ناوبری پایین');
-    var icons = ['fa-newspaper-o', 'fa-podcast', 'fa-folder-open-o'];
-    Array.prototype.forEach.call(bar.querySelectorAll('a'), function (a, i) {
-      var ic = document.createElement('i');
-      ic.className = 'fa ' + (icons[i] || 'fa-circle-o');
-      ic.setAttribute('aria-hidden', 'true');
-      a.insertBefore(ic, a.firstChild);
-    });
     document.body.appendChild(bar);
   }
 
