@@ -1,0 +1,356 @@
+From bdcc3ae280fa59f3dbb8ec45e2808b3d00164ad9 Mon Sep 17 00:00:00 2001
+From: claude <noreply@anthropic.com>
+Date: Tue, 20 Oct 2026 04:53:16 +0000
+Subject: [PATCH] Liquid glass v2: mobile tabbar, mini player toggle, pointer
+ specular, contrast, reduced transparency, page transition
+
+---
+ _layouts/default.html       |   1 +
+ assets/css/liquid-glass.css | 211 ++++++++++++++++++++++++++++++++++++
+ assets/js/liquid-glass.js   | 104 ++++++++++++++++++
+ 3 files changed, 316 insertions(+)
+ create mode 100644 assets/js/liquid-glass.js
+
+diff --git a/_layouts/default.html b/_layouts/default.html
+index fcd4fcb..1b39055 100644
+--- a/_layouts/default.html
++++ b/_layouts/default.html
+@@ -900,5 +900,6 @@
+   </script>
+   <!-- Liquid Glass: باید آخرین stylesheet باشد تا روی CSS داخل صفحه‌ها غلبه کند -->
+   <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/liquid-glass.css">
++  <script src="{{ site.baseurl }}/assets/js/liquid-glass.js" defer></script>
+ </body>
+ </html>
+diff --git a/assets/css/liquid-glass.css b/assets/css/liquid-glass.css
+index 43e049d..9b90bc9 100644
+--- a/assets/css/liquid-glass.css
++++ b/assets/css/liquid-glass.css
+@@ -609,3 +609,214 @@ body.noys-reading-mode .post-markdown-body {
+   -webkit-backdrop-filter: none !important;
+   backdrop-filter: none !important;
+ }
++
++/* =========================================================
++   ۱۰) به‌روزرسانی ۲: نوار پایین موبایل، پلیر مینی، براق‌شدن با ماوس،
++   خوانایی، کاهش شفافیت، انتقال بین صفحه‌ها
++   (دکمه‌ها و رفتارها در liquid-glass.js ساخته می‌شوند)
++   ========================================================= */
++
++:root {
++  --lg-muted: #4b4f5c;
++  --lg-spot-c: rgba(255, 255, 255, 0.6);
++}
++html[data-theme="dark"] {
++  --lg-muted: #b9bec9;
++  --lg-spot-c: rgba(255, 255, 255, 0.22);
++}
++
++/* --- خوانایی متن‌های کم‌رنگ روی شیشه --- */
++.nh .nh-tag,
++.nf .nf-copy,
++.podcast-card-date,
++.podcast-page-desc,
++.post-date,
++.post-words,
++.post-meta-separator,
++.noys-fp-ep-date {
++  color: var(--lg-muted) !important;
++  opacity: 1 !important;
++}
++
++/* --- براق‌شدن لبه‌ها با حرکت ماوس (فقط دسکتاپ؛ مقدار --mx/--my را JS می‌دهد) --- */
++.nh .nh-btn,
++.nh .nh-nav a,
++.nh .nh-chip,
++.nh-box,
++.nf .nf-links a,
++.nf .nf-support,
++.noys-btn,
++.noys-btn-primary,
++.podcast-play-btn,
++.noys-pagination-btn,
++.posts-list > .post,
++.podcast-card,
++.noys-floating-player,
++.noys-hero-episode,
++.noys-start-card,
++.noys-related-card,
++.nh .nh-btn.is-active,
++.nh .nh-nav a.is-active,
++.podcast-episode-play-btn {
++  background-image:
++    radial-gradient(
++      160px circle at var(--mx, -999px) var(--my, -999px),
++      var(--lg-spot-c),
++      transparent 70%
++    ),
++    var(--lg-shine) !important;
++}
++
++/* --- پلیر شناور: نوار خود audio مرورگر شفاف شود --- */
++.noys-floating-player audio::-webkit-media-controls-enclosure {
++  background: transparent !important;
++  border-radius: 999px;
++}
++.noys-floating-player audio::-webkit-media-controls-panel {
++  background: rgba(255, 255, 255, 0.28) !important;
++}
++html[data-theme="dark"] .noys-floating-player audio {
++  color-scheme: dark;
++}
++html[data-theme="dark"] .noys-floating-player audio::-webkit-media-controls-panel {
++  background: rgba(255, 255, 255, 0.1) !important;
++}
++.noys-floating-player audio {
++  background: transparent;
++}
++
++/* --- پلیر مینی: وقتی کوچک می‌شود، کپسول شیشه‌ای با دکمه‌ی پخش/توقف --- */
++.noys-floating-player.is-minimized {
++  width: min(340px, calc(100vw - 28px));
++  border-radius: 999px;
++}
++.noys-floating-player.is-minimized .noys-floating-player-bar {
++  padding: 8px 12px;
++}
++.noys-floating-player-cover {
++  border-radius: 50%;
++}
++.lg-fp-toggle[hidden] {
++  display: none !important;
++}
++.lg-fp-toggle i {
++  font-size: 12px;
++  line-height: 1;
++}
++
++/* --- انتقال نرم هنگام عوض شدن صفحه --- */
++#noysWrapper.lg-enter {
++  animation: lgEnter 0.45s var(--lg-ease) both;
++}
++@keyframes lgEnter {
++  from { opacity: 0; transform: translateY(10px); }
++  to   { opacity: 1; transform: none; }
++}
++
++/* --- نوار شناور پایین (فقط موبایل؛ JS از روی منوی اصلی می‌سازد) --- */
++.lg-tabbar {
++  display: none;
++}
++
++@media (max-width: 640px) {
++  .nh-menu .nh-nav {
++    display: none;
++  }
++
++  .lg-tabbar {
++    display: flex;
++    gap: 4px;
++    position: fixed;
++    left: 50%;
++    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
++    transform: translateX(-50%);
++    z-index: 9000;
++    width: min(92vw, 420px);
++    padding: 6px;
++    border-radius: 999px;
++    background-image:
++      radial-gradient(160px circle at var(--mx, -999px) var(--my, -999px), var(--lg-spot-c), transparent 70%),
++      var(--lg-shine);
++    background-color: var(--lg-fill);
++    -webkit-backdrop-filter: blur(26px) saturate(190%);
++    backdrop-filter: blur(26px) saturate(190%);
++    border: 1px solid var(--lg-edge);
++    box-shadow: var(--lg-shadow);
++  }
++
++  .lg-tabbar a {
++    flex: 1;
++    min-width: 0;
++    height: 54px;
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    justify-content: center;
++    gap: 3px;
++    border-radius: 999px;
++    color: var(--lg-text);
++    text-decoration: none;
++    font-size: 0.72rem;
++    font-weight: 700;
++    white-space: nowrap;
++    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s var(--lg-ease);
++  }
++
++  .lg-tabbar a i {
++    font-size: 1.15rem;
++    line-height: 1;
++  }
++
++  .lg-tabbar a.is-active {
++    background: var(--lg-shine), var(--lg-accent-fill);
++    box-shadow:
++      0 6px 18px -6px rgba(255, 242, 0, 0.6),
++      inset 0 1px 0 rgba(255, 255, 255, 0.9),
++      inset 0 0 14px rgba(255, 255, 255, 0.3);
++    color: #1c1c1e;
++  }
++  html[data-theme="dark"] .lg-tabbar a.is-active {
++    color: #fffbd0;
++  }
++
++  .lg-tabbar a:active {
++    transform: scale(0.94);
++  }
++
++  /* جا برای نوار پایین */
++  body {
++    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
++  }
++
++  /* پلیر شناور بالای نوار پایین بماند (تا وقتی کاربر آن را جابه‌جا نکرده) */
++  .noys-floating-player:not([style*="top"]) {
++    bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
++  }
++}
++
++/* --- کاهش شفافیت (تنظیم دسترس‌پذیری سیستم‌عامل) --- */
++@media (prefers-reduced-transparency: reduce) {
++  :root {
++    --lg-fill: rgba(255, 255, 255, 0.95);
++    --lg-fill-hover: #ffffff;
++    --lg-fill-strong: rgba(255, 255, 255, 0.97);
++  }
++  html[data-theme="dark"] {
++    --lg-fill: rgba(30, 33, 39, 0.97);
++    --lg-fill-hover: rgba(44, 48, 56, 1);
++    --lg-fill-strong: rgba(38, 42, 50, 0.98);
++  }
++  * {
++    -webkit-backdrop-filter: none !important;
++    backdrop-filter: none !important;
++  }
++  body::before {
++    display: none;
++  }
++}
++
++@media (prefers-reduced-motion: reduce) {
++  #noysWrapper.lg-enter {
++    animation: none;
++  }
++}
+diff --git a/assets/js/liquid-glass.js b/assets/js/liquid-glass.js
+new file mode 100644
+index 0000000..8ef51c0
+--- /dev/null
++++ b/assets/js/liquid-glass.js
+@@ -0,0 +1,104 @@
++/* NOYS - Liquid Glass: رفتارهای کوچک
++   ۱) هماهنگ‌کردن رنگ نوار مرورگر با تم  ۲) نوار شناور پایین موبایل
++   ۳) دکمه‌ی پخش/توقف روی پلیر مینی  ۴) براق‌شدن لبه‌ها با ماوس
++   ۵) انتقال نرم بین صفحه‌ها (pjax) */
++(function () {
++  'use strict';
++  var root = document.documentElement;
++  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
++
++  /* ۱) theme-color */
++  function syncThemeColor() {
++    var dark = root.getAttribute('data-theme') === 'dark';
++    var m = document.querySelector('meta[name="theme-color"]');
++    if (m) m.setAttribute('content', dark ? '#101216' : '#f3f4f7');
++  }
++  syncThemeColor();
++  new MutationObserver(syncThemeColor).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
++
++  /* ۲) نوار پایین موبایل: کپی منوی اصلی (بیرون از باکس منو، چون backdrop-filter
++        روی پدر باعث می‌شود position:fixed فرزند به پدر بچسبد) */
++  function buildTabbar() {
++    if (document.getElementById('lgTabbar')) return;
++    var src = document.querySelector('.nh-menu .nh-nav');
++    if (!src) return;
++    var bar = src.cloneNode(true);
++    bar.id = 'lgTabbar';
++    bar.className = 'nh-nav lg-tabbar';
++    bar.setAttribute('aria-label', 'ناوبری پایین');
++    var icons = ['fa-newspaper-o', 'fa-podcast', 'fa-folder-open-o'];
++    Array.prototype.forEach.call(bar.querySelectorAll('a'), function (a, i) {
++      var ic = document.createElement('i');
++      ic.className = 'fa ' + (icons[i] || 'fa-circle-o');
++      ic.setAttribute('aria-hidden', 'true');
++      a.insertBefore(ic, a.firstChild);
++    });
++    document.body.appendChild(bar);
++  }
++
++  /* ۳) پخش/توقف روی نوار پلیر شناور */
++  function enhancePlayer() {
++    var fp = document.getElementById('noysFloatingPlayer');
++    if (!fp) return;
++    var bar = fp.querySelector('.noys-floating-player-bar');
++    var min = document.getElementById('noysFPMinimize');
++    if (!bar || !min || bar.querySelector('.lg-fp-toggle')) return;
++
++    var b = document.createElement('button');
++    b.type = 'button';
++    b.className = 'noys-floating-player-btn lg-fp-toggle';
++    b.setAttribute('aria-label', 'پخش / توقف');
++    b.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
++    bar.insertBefore(b, min);
++
++    function getAudio() { return fp.querySelector('audio'); }
++    function sync() {
++      var a = getAudio();
++      b.hidden = !a;
++      b.firstChild.className = 'fa ' + (a && !a.paused ? 'fa-pause' : 'fa-play');
++    }
++    b.addEventListener('click', function () {
++      var a = getAudio();
++      if (!a) return;
++      if (a.paused) { var p = a.play(); if (p && p.catch) p.catch(function () {}); }
++      else a.pause();
++    });
++    ['play', 'pause', 'ended', 'emptied', 'loadstart'].forEach(function (ev) {
++      document.addEventListener(ev, sync, true);
++    });
++    new MutationObserver(sync).observe(fp, { childList: true, subtree: true });
++    sync();
++  }
++
++  /* ۴) براق‌شدن با ماوس (فقط دستگاه‌هایی با ماوس) */
++  var SEL = '.nh-box,.posts-list>.post,.podcast-card,.noys-floating-player,.nh-btn,.nh-nav a,.nh-chip,' +
++            '.noys-btn,.podcast-play-btn,.nf-links a,.nf-support,.noys-pagination-btn,.lg-tabbar,' +
++            '.noys-start-card,.noys-related-card,.noys-hero-episode';
++  if (!reduced && window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
++    document.addEventListener('pointermove', function (e) {
++      var el = e.target && e.target.closest ? e.target.closest(SEL) : null;
++      if (!el) return;
++      var r = el.getBoundingClientRect();
++      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
++      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
++    }, { passive: true });
++  }
++
++  /* ۵) انتقال نرم بین صفحه‌ها: pjax محتوای #noysWrapper را عوض می‌کند */
++  function watchWrapper() {
++    var w = document.getElementById('noysWrapper');
++    if (!w || reduced) return;
++    new MutationObserver(function () {
++      w.classList.remove('lg-enter');
++      void w.offsetWidth;
++      w.classList.add('lg-enter');
++    }).observe(w, { childList: true });
++    w.addEventListener('animationend', function (e) {
++      if (e.target === w) w.classList.remove('lg-enter');
++    });
++  }
++
++  function init() { buildTabbar(); enhancePlayer(); watchWrapper(); }
++  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
++  else init();
++})();
+-- 
+2.43.0
+
