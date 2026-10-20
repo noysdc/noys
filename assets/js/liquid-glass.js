@@ -51,6 +51,9 @@
     b.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
     bar.insertBefore(b, min);
 
+    /* iOS: جلوگیری از اسکرول/کشیده‌شدن صفحه هنگام کشیدن نوار پلیر */
+    bar.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
+
     function getAudio() { return fp.querySelector('audio'); }
     function sync() {
       var a = getAudio();

@@ -1,0 +1,100 @@
+From d025ef67088eb75200a232eb5b0aa2fb18c02a56 Mon Sep 17 00:00:00 2001
+From: claude <noreply@anthropic.com>
+Date: Tue, 20 Oct 2026 05:04:03 +0000
+Subject: [PATCH] Fix floating player drag on mobile (stretching bug), add drag
+ handle
+
+---
+ assets/css/liquid-glass.css | 57 +++++++++++++++++++++++++++++++++++--
+ assets/js/liquid-glass.js   |  3 ++
+ 2 files changed, 57 insertions(+), 3 deletions(-)
+
+diff --git a/assets/css/liquid-glass.css b/assets/css/liquid-glass.css
+index 9b90bc9..7e914c6 100644
+--- a/assets/css/liquid-glass.css
++++ b/assets/css/liquid-glass.css
+@@ -788,9 +788,11 @@ html[data-theme="dark"] .noys-floating-player audio::-webkit-media-controls-pane
+     padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+   }
+ 
+-  /* پلیر شناور بالای نوار پایین بماند (تا وقتی کاربر آن را جابه‌جا نکرده) */
+-  .noys-floating-player:not([style*="top"]) {
+-    bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
++  /* پلیر شناور بالای نوار پایین بماند.
++     عمداً بدون !important: وقتی کاربر پلیر را می‌کشد، استایل درون‌خطیِ JS
++     (bottom:auto) باید برنده شود، وگرنه جعبه به‌جای حرکت، کشیده می‌شود. */
++  .noys-floating-player {
++    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+   }
+ }
+ 
+@@ -820,3 +822,52 @@ html[data-theme="dark"] .noys-floating-player audio::-webkit-media-controls-pane
+     animation: none;
+   }
+ }
++
++/* =========================================================
++   ۱۱) جابه‌جایی پلیر شناور روی موبایل
++   - عکس و عنوان رویداد لمس را نمی‌گیرند؛ همیشه خودِ نوار هدفِ لمس است
++     (در iOS لمسِ طولانی روی عکس منوی پیش‌نمایش باز می‌کند و درگ را قطع می‌کند)
++   - یک دستگیره‌ی کوچک نشان می‌دهد که پلیر قابل کشیدن است
++   - عرض پلیر روی موبایل کمی کمتر است تا جا برای حرکت افقی هم باشد
++   ========================================================= */
++
++.noys-floating-player-bar {
++  position: relative;
++  -webkit-touch-callout: none;
++  -webkit-user-select: none;
++  user-select: none;
++  touch-action: none;
++}
++
++.noys-floating-player-bar .noys-floating-player-cover,
++.noys-floating-player-bar .noys-floating-player-title {
++  pointer-events: none;
++  -webkit-user-drag: none;
++}
++
++.noys-floating-player-bar::before {
++  content: "";
++  position: absolute;
++  top: 4px;
++  left: 50%;
++  width: 34px;
++  height: 4px;
++  margin-left: -17px;
++  border-radius: 999px;
++  background: var(--lg-text);
++  opacity: 0.28;
++  pointer-events: none;
++}
++
++.noys-floating-player-bar {
++  padding-top: 12px !important;
++}
++
++@media (max-width: 640px) {
++  .noys-floating-player {
++    width: min(560px, calc(100vw - 48px));
++  }
++  .noys-floating-player.is-minimized {
++    width: min(300px, calc(100vw - 48px));
++  }
++}
+diff --git a/assets/js/liquid-glass.js b/assets/js/liquid-glass.js
+index 8ef51c0..0b0357b 100644
+--- a/assets/js/liquid-glass.js
++++ b/assets/js/liquid-glass.js
+@@ -51,6 +51,9 @@
+     b.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
+     bar.insertBefore(b, min);
+ 
++    /* iOS: جلوگیری از اسکرول/کشیده‌شدن صفحه هنگام کشیدن نوار پلیر */
++    bar.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
++
+     function getAudio() { return fp.querySelector('audio'); }
+     function sync() {
+       var a = getAudio();
+-- 
+2.43.0
+
