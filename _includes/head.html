@@ -68,7 +68,7 @@
 	<meta name="description" content="{{ meta-desc }}">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<!-- دسترس‌پذیری: maximum-scale=1 حذف شد تا کاربر بتونه با دو انگشت زوم کنه -->
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 	{% if page.noindex %}
 	<meta name="robots" content="noindex, follow">
@@ -92,11 +92,31 @@
 	<link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.baseurl }}/feed.xml">
 
 	<link rel="shortcut icon" href="{{ site.baseurl }}/assets/img/template/favicon/favicon.ico" type="image/x-icon">
-	<link rel="apple-touch-icon" href="{{ site.baseurl }}/assets/img/template/favicon/apple-touch-icon.png">
+	<link rel="apple-touch-icon" href="{{ site.baseurl }}/assets/img/pwa/apple-touch-icon.png">
 
-	<meta name="theme-color" content="#263959">
-	<meta name="msapplication-navbutton-color" content="#263959">
-	<meta name="apple-mobile-web-app-status-bar-style" content="#263959">
+	<meta name="theme-color" id="noysThemeColor" content="#f3f4f7">
+	
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="NOYS">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<style>
+	  /* پس‌زمینه‌ی خودِ html هم هم‌رنگ سایت باشه تا در اپ نصب‌شده هیچ نوار رنگی بالا/پایین دیده نشه */
+	  html{background:#f3f4f7}
+	  html[data-theme="dark"]{background:#101216}
+	</style>
+	<script>
+	  /* رنگ نوار وضعیت گوشی همیشه با تم روشن/تاریک سایت هماهنگ بشه */
+	  (function () {
+	    var m = document.getElementById('noysThemeColor');
+	    function sync() {
+	      if (!m) return;
+	      m.setAttribute('content', document.documentElement.getAttribute('data-theme') === 'dark' ? '#101216' : '#f3f4f7');
+	    }
+	    sync();
+	    new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+	  })();
+	</script>
 
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="{{ site.baseurl }}/assets/fonts/font-awesome/css/font-awesome.min.css">
