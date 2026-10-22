@@ -1,6 +1,6 @@
 // NOYS service worker — صفحات: اول شبکه | فایل‌های ثابت: اول کش | صوت: دست‌نخورده
 // اگه CSS/JS/فونت رو عوض کردی و تغییر دیده نشد، عدد نسخه رو بالا ببر (noys-v2, ...)
-const VERSION = 'noys-v1';
+const VERSION = 'noys-v2';
 const STATIC_CACHE = VERSION + '-static';
 const PAGE_CACHE = VERSION + '-pages';
 const OFFLINE_URL = '/offline.html';
