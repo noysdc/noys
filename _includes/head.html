@@ -96,7 +96,10 @@
 
 	<meta name="theme-color" content="#263959">
 	<meta name="msapplication-navbutton-color" content="#263959">
-	<meta name="apple-mobile-web-app-status-bar-style" content="#263959">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="NOYS">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="{{ site.baseurl }}/assets/fonts/font-awesome/css/font-awesome.min.css">
@@ -196,4 +199,11 @@
 	{% endif %}
 
 <link rel="manifest" href="{{ site.baseurl }}/manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('{{ site.baseurl }}/sw.js', { scope: '{{ site.baseurl }}/' }).catch(function () {});
+    });
+  }
+</script>
 </head>
