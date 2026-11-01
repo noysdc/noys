@@ -179,61 +179,89 @@ layout: main
 
 
 /* =========================================================
-   NOYS 3D - صفحه‌ی اصلی: حرکت آرام و دلنشین
-   خود کارت‌ها ثابت و بی‌حرکت می‌مونن؛ فقط عکس داخل قاب با اسکرول خیلی آهسته
-   لیز می‌خوره (عمق بدون تکون‌دادن کل صفحه). هاور هم نرم و کوتاهه.
+   NOYS 3D - صفحه‌ی اصلی: کارت‌ها از دوردست نزدیک می‌شن
+   هر کارت با اسکرول از عمق صفحه (کوچک، محو و کمی تار) جلو میاد و
+   وقتی به جای خودش رسید کاملاً ثابت و تیز می‌شه.
    ========================================================= */
 
-.posts-list > .post .post-thumbnail {
-  background-size: auto 118%;
-  background-position: 50% var(--py, 50%);
-  transition: background-size 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease !important;
+.posts-list > .post {
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-.posts-list > .post:hover .post-thumbnail {
-  background-size: auto 126%;
-}
-
-/* موبایل: عکس تمام‌عرضه؛ همون لغزش ملایم */
 @media (prefers-reduced-motion: reduce) {
-  .posts-list > .post .post-thumbnail {
-    background-size: cover;
-    background-position: center;
-  }
+  .posts-list > .post { transform: none !important; opacity: 1 !important; filter: none !important; }
 }
 
 </style>
 
 <script>
-/* NOYS 3D - لغزش آهسته‌ی عکس داخل قاب (فقط عکس، نه کل کارت) */
+/* NOYS 3D - نزدیک‌شدن کارت‌ها از دوردست با اسکرول */
 (function () {
   if (window.__noys3dOff) window.__noys3dOff();
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  var thumbs = [].slice.call(document.querySelectorAll('.posts-list > .post .post-thumbnail'));
-  if (!thumbs.length) return;
+  var list = document.querySelector('.posts-list');
+  if (!list) return;
+  var posts = [].slice.call(list.querySelectorAll(':scope > .post'));
+  if (!posts.length) return;
 
-  var target = [], current = [], raf = null;
+  // ===== تنظیمات حس حرکت =====
+  var RANGE  = 0.62;   // چه بخشی از ارتفاع صفحه طول می‌کشه تا کارت برسه (بیشتر = آرام‌تر)
+  var DEPTH  = 650;    // فاصله‌ی شروع (پیکسل)؛ بیشتر = از دورتر میاد
+  var RISE   = 70;     // از چند پیکسل پایین‌تر شروع کنه
+  var BLUR   = 6;      // تاری اولیه (پیکسل)؛ ۰ = بدون تاری
+  var SMOOTH = 0.14;   // نرمی دنبال‌کردن اسکرول (کمتر = نرم‌تر و دیرتر)
+  // ===========================
+
+  var mobile = window.innerWidth < 768;
+  if (mobile) { DEPTH = 380; RISE = 50; BLUR = 0; }
+
+  var tgt = [], cur = [], raf = null;
+
+  function ease(p) { var q = 1 - p; return 1 - q * q * q; }  // اول سریع، آخر آروم می‌شینه
 
   function measure() {
     var vh = window.innerHeight;
-    thumbs.forEach(function (el, i) {
-      var r = el.getBoundingClientRect();
-      var t = (r.top + r.height / 2) / vh;       // ۰ = بالای صفحه، ۱ = پایین صفحه
-      t = t < -0.2 ? -0.2 : t > 1.2 ? 1.2 : t;
-      target[i] = 15 + 70 * t;                   // درصد موقعیت عکس داخل قاب
-      if (current[i] === undefined) current[i] = target[i];
+    posts.forEach(function (el, i) {
+      var top = el.getBoundingClientRect().top;
+      var p = (vh - top) / (vh * RANGE);
+      p = p < 0 ? 0 : p > 1 ? 1 : p;
+      tgt[i] = ease(p);
+      if (cur[i] === undefined) cur[i] = tgt[i];
     });
   }
 
-  // حرکت با نرمی (easing): عکس کمی دیرتر از اسکرول می‌رسه، برای حس روان‌بودن
+  function apply(el, e) {
+    if (e >= 0.995) {
+      if (el.__far) {
+        el.__far = false;
+        el.classList.add('is-visible');          // سیستم ورود قبلی سایت رو راضی نگه می‌داره
+        el.style.removeProperty('transform');
+        el.style.removeProperty('opacity');
+        el.style.removeProperty('filter');
+        el.style.removeProperty('transition');
+        el.style.removeProperty('will-change');
+      }
+      return;
+    }
+    el.__far = true;
+    var k = 1 - e;
+    el.style.setProperty('transition', 'none', 'important');
+    el.style.willChange = 'transform, opacity';
+    el.style.transform = 'perspective(1100px) translate3d(0,' + (k * RISE).toFixed(1) + 'px,' + (-k * DEPTH).toFixed(1) + 'px)';
+    el.style.opacity = Math.min(1, e * 1.6).toFixed(3);
+    el.style.filter = BLUR ? 'blur(' + (k * k * BLUR).toFixed(2) + 'px)' : '';
+  }
+
   function tick() {
     var moving = false;
-    thumbs.forEach(function (el, i) {
-      var diff = target[i] - current[i];
-      if (Math.abs(diff) > 0.05) { current[i] += diff * 0.12; moving = true; }
-      else current[i] = target[i];
-      el.style.setProperty('--py', current[i].toFixed(2) + '%');
+    posts.forEach(function (el, i) {
+      var d = tgt[i] - cur[i];
+      if (Math.abs(d) > 0.002) { cur[i] += d * SMOOTH; moving = true; }
+      else cur[i] = tgt[i];
+      apply(el, cur[i]);
     });
     raf = moving ? requestAnimationFrame(tick) : null;
   }
@@ -249,8 +277,11 @@ layout: main
     window.removeEventListener('scroll', onScroll);
     window.removeEventListener('resize', onScroll);
     if (raf) cancelAnimationFrame(raf);
+    posts.forEach(function (el) { apply(el, 1); });
     window.__noys3dOff = null;
   };
-  onScroll();
+
+  measure();
+  posts.forEach(function (el, i) { apply(el, cur[i]); });
 })();
 </script>
