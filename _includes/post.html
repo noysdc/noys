@@ -344,70 +344,34 @@ html[data-theme="dark"] .embed-section .noys-fp-sleep-left { color: #fff200; }
 </style>
 
 <style>
-/* NOYS 3D - صفحه‌ی هر پست */
-.article-page .page-cover-image {
-  transform-origin: 50% 100%;
-  will-change: transform;
-  border-radius: 12px;
-}
-.post-markdown-body img,
-.post-markdown-body blockquote,
-.post-markdown-body pre,
-.post-markdown-body figure {
-  transform-origin: 50% 100%;
-}
-.post-markdown-body .noys3d-in {
+/* NOYS - صفحه‌ی هر پست: عکس‌ها و نقل‌قول‌ها آرام و کوتاه بالا میان */
+.post-markdown-body .noys-soft-in {
   opacity: 0;
-  transform: perspective(1000px) rotateX(12deg) translateY(36px) scale(0.965);
+  transform: translateY(22px);
 }
-.post-markdown-body .noys3d-in.is-in {
+.post-markdown-body .noys-soft-in.is-in {
   opacity: 1;
   transform: none;
-  transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 @media (prefers-reduced-motion: reduce) {
-  .post-markdown-body .noys3d-in { opacity: 1; transform: none; }
+  .post-markdown-body .noys-soft-in { opacity: 1; transform: none; }
 }
 </style>
 <script>
-/* NOYS 3D - کاور پست با اسکرول به عقب می‌خوابه؛ عکس‌ها/نقل‌قول‌ها با عمق وارد می‌شن */
 (function () {
   if (window.__noys3dPostOff) window.__noys3dPostOff();
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  var cover = document.querySelector('.article-page .page-cover-image');
-  var ticking = false;
-  function update() {
-    ticking = false;
-    if (!cover) return;
-    var h = cover.offsetHeight || 1;
-    var t = Math.min(1, Math.max(0, (window.scrollY || window.pageYOffset) / (h * 0.9)));
-    cover.style.transform = 'perspective(1200px) rotateX(' + (t * 9).toFixed(2) + 'deg) scale(' + (1 - t * 0.07).toFixed(3) + ') translateY(' + (t * 24).toFixed(1) + 'px)';
-    cover.style.opacity = (1 - t * 0.35).toFixed(3);
-  }
-  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
-  if (cover) {
-    window.addEventListener('scroll', onScroll, { passive: true });
-    update();
-  }
-
-  var io = null;
-  if ('IntersectionObserver' in window) {
-    io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
-      });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-    [].forEach.call(document.querySelectorAll('.post-markdown-body img, .post-markdown-body blockquote, .post-markdown-body pre, .post-markdown-body figure'), function (el) {
-      el.classList.add('noys3d-in');
-      io.observe(el);
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
     });
-  }
-
-  window.__noys3dPostOff = function () {
-    window.removeEventListener('scroll', onScroll);
-    if (io) io.disconnect();
-    window.__noys3dPostOff = null;
-  };
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+  [].forEach.call(document.querySelectorAll('.post-markdown-body img, .post-markdown-body blockquote, .post-markdown-body pre, .post-markdown-body figure'), function (el) {
+    el.classList.add('noys-soft-in');
+    io.observe(el);
+  });
+  window.__noys3dPostOff = function () { io.disconnect(); window.__noys3dPostOff = null; };
 })();
 </script>

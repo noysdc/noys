@@ -34,24 +34,71 @@
 </section>
 
 <style>
-/* NOYS 3D - قسمت‌های هر پرونده به شکل کارت‌های بادبزنی */
+/* =========================================================
+   NOYS 3D - صفحه‌ی پرونده‌ها
+   بدون «باکس در باکس»: هر پرونده یک تیتر وسط‌چین + کارت‌های بزرگ بادبزنی
+   ========================================================= */
+
+/* ظرف صفحه: وسط‌چین (قبلاً ۸۲۰px و چسبیده به راست بود) */
+.noys-series-page {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+.noys-series-page > h1,
+.noys-series-page .noys-series-page-lead {
+  text-align: center !important;
+}
+
+/* کادر بیرونیِ هر پرونده شفاف می‌شه تا فقط کارت‌ها دیده بشن */
+.noys-series-page .noys-series-card.has-fan {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 0 0;
+  margin: 0 0 56px;
+  border: 0 !important;
+  border-radius: 0;
+  background: none !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transform: none !important;
+  text-align: center;
+}
+.noys-series-page .noys-series-card.has-fan .noys-series-card-head h1,
+.noys-series-page .noys-series-card.has-fan .noys-series-card-head h2,
+.noys-series-page .noys-series-card.has-fan .noys-series-card-desc {
+  text-align: center !important;
+}
+.noys-series-page .noys-series-card.has-fan .noys-series-card-desc {
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.noys-series-page .noys-series-card.has-fan .noys-series-card-more {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+}
+
+/* بادبزن */
 .noys-series-card-list.is-fan {
   position: relative;
-  height: 330px;
-  perspective: 1200px;
+  height: 430px;
+  perspective: 1400px;
   overflow: hidden;
   touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
   outline: none;
-  margin: 6px 0 0;
+  margin: 10px 0 0;
 }
 .noys-series-card-list.is-fan > li {
   position: absolute;
-  top: 8px;
+  top: 10px;
   left: 50%;
-  width: 230px;
-  margin: 0 0 0 -115px;
+  width: 320px;
+  margin: 0 0 0 -160px !important;
   transform-origin: 50% 110%;
   transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
   will-change: transform;
@@ -59,62 +106,78 @@
 .noys-series-card-list.is-fan > li > a {
   position: relative;
   display: block;
-  padding: 10px 10px 14px;
-  border-radius: 16px;
-  border: 1px solid rgba(128, 128, 128, 0.3);
+  padding: 12px 12px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(128, 128, 128, 0.28);
   background: #fff;
-  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 22px 44px -22px rgba(0, 0, 0, 0.55);
+  text-align: right;
 }
-html[data-theme="dark"] .noys-series-card-list.is-fan > li > a { background: #22252b; }
-.noys-series-card .noys-series-card-list.is-fan > li > a img {
+html[data-theme="dark"] .noys-series-card-list.is-fan > li > a { background: #1d2027; }
+.noys-series-page .noys-series-card .noys-series-card-list.is-fan > li > a img {
   display: block;
   width: 100%;
-  height: 120px;
+  height: 185px;
   object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  border-radius: 12px;
+  margin: 0 0 12px;
 }
 .noys-series-card-list.is-fan > li > a::before {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 22px;
+  right: 22px;
   z-index: 2;
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
   background: #fff200;
   color: #111;
+  font-size: 15px;
 }
 .noys-series-card-list.is-fan .noys-series-card-item-title {
   display: block;
-  font-size: 14px;
-  line-height: 1.8;
-  text-align: right;
+  padding: 0 4px;
+  font-size: 15px;
+  line-height: 1.9;
 }
 .noys-series-fan-nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 14px;
-  margin-top: 8px;
+  gap: 16px;
+  margin-top: 6px;
   direction: ltr;
 }
 .noys-series-fan-nav button {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1px solid #ddd;
   background: #fff;
-  font-size: 18px;
+  font-size: 19px;
   line-height: 1;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
-.noys-series-fan-nav button:hover { background: #fff200; border-color: #fff200; }
-.noys-series-fan-nav button:disabled { opacity: 0.35; cursor: default; background: #fff; }
-.noys-series-fan-nav span { min-width: 56px; text-align: center; font-size: 13px; color: #888; }
+.noys-series-fan-nav button:hover { background: #fff200; border-color: #fff200; color: #111; }
+.noys-series-fan-nav button:disabled { opacity: 0.35; cursor: default; background: #fff; color: #111; }
+.noys-series-fan-nav span { min-width: 90px; text-align: center; font-size: 13px; color: #888; }
 html[data-theme="dark"] .noys-series-fan-nav button { background: #22252b; border-color: #3a3d43; color: #eee; }
+html[data-theme="dark"] .noys-series-fan-nav button:disabled { background: #22252b; color: #eee; }
+
+/* موبایل */
+@media (max-width: 640px) {
+  .noys-series-page .noys-series-card.has-fan { margin-bottom: 40px; }
+  .noys-series-card-list.is-fan { height: 380px; }
+  .noys-series-card-list.is-fan > li { width: 252px; margin-left: -126px !important; }
+  .noys-series-page .noys-series-card .noys-series-card-list.is-fan > li > a img { height: 142px; }
+  .noys-series-card-list.is-fan .noys-series-card-item-title { font-size: 14px; }
+}
 @media (prefers-reduced-motion: reduce) { .noys-series-card-list.is-fan > li { transition: none; } }
 </style>
 
 <script>
-/* NOYS 3D - قسمت‌های پرونده به شکل بادبزن (برای همه‌ی سری‌های صفحه) */
+/* NOYS 3D - قسمت‌های پرونده به شکل بادبزن */
 (function () {
   // ===== تنظیمات جهت =====
   var SIDE = -1; // قسمت‌های بعدی کدوم طرف بشینن؟  -1 = چپ (مثل خوندن فارسی)،  1 = راست
@@ -128,6 +191,8 @@ html[data-theme="dark"] .noys-series-fan-nav button { background: #22252b; borde
     ol.dataset.fan = '1';
     ol.classList.add('is-fan');
     ol.tabIndex = 0;
+    var card = ol.closest('.noys-series-card');
+    if (card) card.classList.add('has-fan');
     var cur = 0;
     var LEFT_DIR = SIDE === -1 ? 1 : -1;
 
@@ -143,14 +208,14 @@ html[data-theme="dark"] .noys-series-fan-nav button { background: #22252b; borde
 
     function render() {
       var l = Math.min(cur, 3), r = Math.min(n - 1 - cur, 3);
-      var shift = ((r - l) / 2) * 0.6;
+      var shift = ((r - l) / 2) * 0.6;   // وسط‌چین دیده‌شدن کل مجموعه
       items.forEach(function (li, i) {
         var d = i - cur, a = Math.abs(d);
         li.style.transform =
           'translateX(' + ((d - shift) * 58 * SIDE) + '%) ' +
           'translateZ(' + (-a * 90) + 'px) ' +
-          'rotateY(' + (d * 18 * SIDE) + 'deg) ' +
-          'rotateZ(' + (d * 4 * SIDE) + 'deg)';
+          'rotateY(' + (d * 16 * SIDE) + 'deg) ' +
+          'rotateZ(' + (d * 3 * SIDE) + 'deg)';
         li.style.zIndex = String(50 - a);
         li.style.opacity = a > 3 ? '0' : String(1 - a * 0.2);
         li.style.pointerEvents = a > 3 ? 'none' : 'auto';
@@ -177,7 +242,7 @@ html[data-theme="dark"] .noys-series-fan-nav button { background: #22252b; borde
     ol.addEventListener('pointermove', function (e) {
       if (sx === null) return;
       var dx = e.clientX - sx;
-      if (Math.abs(dx) > 60) { go(cur + (dx * SIDE * DRAG < 0 ? 1 : -1)); sx = e.clientX; moved = true; }
+      if (Math.abs(dx) > 50) { go(cur + (dx * SIDE * DRAG < 0 ? 1 : -1)); sx = e.clientX; moved = true; }
     });
     ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
       ol.addEventListener(ev, function () { sx = null; });

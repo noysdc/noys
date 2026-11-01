@@ -179,70 +179,78 @@ layout: main
 
 
 /* =========================================================
-   NOYS 3D - صفحه‌ی اصلی: پست‌ها مثل یک چرخ‌فلک عمودی
-   کارت وسط صفحه صاف و روشنه؛ هرچی از وسط دورتر بشه، به عقب خم می‌شه و کوچک‌تر می‌شه.
+   NOYS 3D - صفحه‌ی اصلی: حرکت آرام و دلنشین
+   خود کارت‌ها ثابت و بی‌حرکت می‌مونن؛ فقط عکس داخل قاب با اسکرول خیلی آهسته
+   لیز می‌خوره (عمق بدون تکون‌دادن کل صفحه). هاور هم نرم و کوتاهه.
    ========================================================= */
 
-.posts-list > .post {
-  transform: perspective(1100px) rotateX(var(--rx, 0deg)) scale(var(--sc, 1));
-  transform-origin: 50% 50%;
-  will-change: transform;
-  /* انتقال transform خاموش، تا کارت‌ها دقیقاً با اسکرول حرکت کنن */
-  transition: box-shadow 0.4s ease, background-color 0.3s ease !important;
+.posts-list > .post .post-thumbnail {
+  background-size: auto 118%;
+  background-position: 50% var(--py, 50%);
+  transition: background-size 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease !important;
 }
 
-.posts-list > .post:hover {
-  transform: perspective(1100px) rotateX(var(--rx, 0deg)) translateY(-4px) scale(var(--sc, 1));
+.posts-list > .post:hover .post-thumbnail {
+  background-size: auto 126%;
 }
 
+/* موبایل: عکس تمام‌عرضه؛ همون لغزش ملایم */
 @media (prefers-reduced-motion: reduce) {
-  .posts-list > .post,
-  .posts-list > .post:hover {
-    transform: none;
-    opacity: 1 !important;
+  .posts-list > .post .post-thumbnail {
+    background-size: cover;
+    background-position: center;
   }
 }
 
 </style>
 
 <script>
-/* NOYS 3D - چرخ‌فلک عمودی پست‌ها */
+/* NOYS 3D - لغزش آهسته‌ی عکس داخل قاب (فقط عکس، نه کل کارت) */
 (function () {
   if (window.__noys3dOff) window.__noys3dOff();
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  var list = document.querySelector('.posts-list');
-  if (!list) return;
-  var posts = [].slice.call(list.querySelectorAll(':scope > .post'));
-  if (!posts.length) return;
+  var thumbs = [].slice.call(document.querySelectorAll('.posts-list > .post .post-thumbnail'));
+  if (!thumbs.length) return;
 
-  var MAX_TILT = 14;     // حداکثر خم‌شدن (درجه)
-  var MAX_SHRINK = 0.07; // حداکثر کوچک‌شدن
-  var MIN_OPACITY = 0.45;
+  var target = [], current = [], raf = null;
 
-  var ticking = false;
-  function update() {
-    ticking = false;
-    var vh = window.innerHeight, mid = vh / 2;
-    posts.forEach(function (el) {
+  function measure() {
+    var vh = window.innerHeight;
+    thumbs.forEach(function (el, i) {
       var r = el.getBoundingClientRect();
-      var c = ((r.top + r.height / 2) - mid) / mid;       // ۰ = وسط صفحه، ±۱ = لبه‌ها
-      if (c > 1.4) c = 1.4; else if (c < -1.4) c = -1.4;
-      var a = Math.abs(c);
-      el.style.setProperty('--rx', (-c * MAX_TILT).toFixed(2) + 'deg');
-      el.style.setProperty('--sc', (1 - a * MAX_SHRINK).toFixed(3));
-      el.style.opacity = Math.max(MIN_OPACITY, 1 - a * a * 0.5).toFixed(3);
+      var t = (r.top + r.height / 2) / vh;       // ۰ = بالای صفحه، ۱ = پایین صفحه
+      t = t < -0.2 ? -0.2 : t > 1.2 ? 1.2 : t;
+      target[i] = 15 + 70 * t;                   // درصد موقعیت عکس داخل قاب
+      if (current[i] === undefined) current[i] = target[i];
     });
   }
-  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+
+  // حرکت با نرمی (easing): عکس کمی دیرتر از اسکرول می‌رسه، برای حس روان‌بودن
+  function tick() {
+    var moving = false;
+    thumbs.forEach(function (el, i) {
+      var diff = target[i] - current[i];
+      if (Math.abs(diff) > 0.05) { current[i] += diff * 0.12; moving = true; }
+      else current[i] = target[i];
+      el.style.setProperty('--py', current[i].toFixed(2) + '%');
+    });
+    raf = moving ? requestAnimationFrame(tick) : null;
+  }
+
+  function onScroll() {
+    measure();
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
 
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   window.__noys3dOff = function () {
     window.removeEventListener('scroll', onScroll);
     window.removeEventListener('resize', onScroll);
+    if (raf) cancelAnimationFrame(raf);
     window.__noys3dOff = null;
   };
-  update();
+  onScroll();
 })();
 </script>
