@@ -540,9 +540,29 @@ permalink: /podcast/
     if (b) go(cur + parseInt(b.getAttribute('data-dir'), 10));
   });
 
+  // عکس‌ها و لینک‌ها نذارن مرورگر «درگ» خودش رو شروع کنه (همین جلوی کشیدن رو می‌گرفت)
+  grid.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  [].forEach.call(grid.querySelectorAll('img'), function (im) {
+    im.draggable = false;
+    im.style.webkitUserDrag = 'none';
+    im.style.pointerEvents = 'none';
+  });
+
+  // اسکرول افقی تاچ‌پد
+  var wheelLock = false;
+  grid.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaX) < Math.abs(e.deltaY) || Math.abs(e.deltaX) < 20) return;
+    e.preventDefault();
+    if (wheelLock) return;
+    wheelLock = true;
+    go(cur + (e.deltaX > 0 ? 1 : -1));
+    setTimeout(function () { wheelLock = false; }, 350);
+  }, { passive: false });
+
   // کشیدن با موس/لمس
   var startX = null, moved = false;
   grid.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('.podcast-play-btn')) return; // دکمه‌ی پخش کشیدن رو شروع نکنه
     startX = e.clientX;
     moved = false;
   });
