@@ -437,6 +437,34 @@ permalink: /podcast/
     }
   }
 
+
+  /* --- اصلاح موبایل: گوشه‌ی کارت‌ها بیرون نزنه ---
+     «تاری شیشه‌ای» (backdrop-filter) روی کارتی که سه‌بعدی می‌چرخه، گوشه‌هاش رو
+     مربع و بیرون از کادر گرد نشون می‌داد. توی حالت بادبزن خاموشش کردم و
+     به‌جاش پس‌زمینه‌ی یک‌دست گذاشتم. */
+  .podcast-grid.is-fan .podcast-card {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    isolation: isolate;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  html[data-theme="dark"] .podcast-grid.is-fan .podcast-card {
+    background: #1d2027 !important;
+  }
+  .podcast-grid.is-fan .podcast-cover-wrap,
+  .podcast-grid.is-fan .podcast-cover-wrap .podcast-cover {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .podcast-grid.is-fan .podcast-cover-wrap {
+    overflow: hidden;
+    border-radius: 14px;
+  }
+
 </style>
 
 <script>

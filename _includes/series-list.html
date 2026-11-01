@@ -182,6 +182,20 @@ html[data-theme="dark"] .noys-series-fan-nav button:disabled { background: #2225
   background: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent);
 }
 
+/* --- اصلاح موبایل: گوشه‌ی کارت‌ها بیرون نزنه (تاری شیشه‌ای روی کارت سه‌بعدی خاموش) --- */
+.noys-series-card-list.is-fan > li,
+.noys-series-card-list.is-fan > li > a {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.noys-series-card-list.is-fan > li > a {
+  overflow: hidden;
+  isolation: isolate;
+  background-image: none !important;
+}
+
 /* موبایل */
 @media (max-width: 640px) {
   .noys-series-page .noys-series-card.has-fan { margin-bottom: 40px; }
