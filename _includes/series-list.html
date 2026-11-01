@@ -240,6 +240,10 @@ html[data-theme="dark"] .noys-series-fan-nav button:disabled { background: #2225
     function render() {
       var l = Math.min(cur, 3), r = Math.min(n - 1 - cur, 3);
       var shift = ((r - l) / 2) * 0.6;   // وسط‌چین دیده‌شدن کل مجموعه
+      // کارت فعال هیچ‌وقت نباید از کادر بیرون بزنه (موبایل)
+      var W = ol.clientWidth, cw = items[0].offsetWidth || 320;
+      var lim = Math.max(0, (W - cw) / 2 - 6) / (cw * 0.58);
+      shift = Math.max(-lim, Math.min(lim, shift));
       items.forEach(function (li, i) {
         var d = i - cur, a = Math.abs(d);
         li.style.transform =
@@ -298,6 +302,12 @@ html[data-theme="dark"] .noys-series-fan-nav button:disabled { background: #2225
       if (e.key === 'ArrowLeft')  { go(cur + LEFT_DIR); e.preventDefault(); }
       if (e.key === 'ArrowRight') { go(cur - LEFT_DIR); e.preventDefault(); }
     });
+
+    function onResize() {
+      if (!document.body.contains(ol)) { window.removeEventListener('resize', onResize); return; }
+      render();
+    }
+    window.addEventListener('resize', onResize);
 
     render();
   });
