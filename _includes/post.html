@@ -344,34 +344,13 @@ html[data-theme="dark"] .embed-section .noys-fp-sleep-left { color: #fff200; }
 </style>
 
 <style>
-/* NOYS - صفحه‌ی هر پست: عکس‌ها و نقل‌قول‌ها آرام و کوتاه بالا میان */
-.post-markdown-body .noys-soft-in {
-  opacity: 0;
-  transform: translateY(22px);
-}
-.post-markdown-body .noys-soft-in.is-in {
-  opacity: 1;
-  transform: none;
-  transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-@media (prefers-reduced-motion: reduce) {
-  .post-markdown-body .noys-soft-in { opacity: 1; transform: none; }
+/* NOYS - صفحه‌ی هر پست: متن‌ها موقع اسکرول هیچ حرکتی ندارن.
+   (افکت «بالا اومدن» عمومی سایت روی متن مقاله خاموش شده؛ متن از اول ثابت و کامل دیده می‌شه) */
+.post-markdown-body > .noys-reveal,
+.post-markdown-body > .noys-reveal.is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  will-change: auto !important;
 }
 </style>
-<script>
-(function () {
-  if (window.__noys3dPostOff) window.__noys3dPostOff();
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (!('IntersectionObserver' in window)) return;
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (en) {
-      if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
-    });
-  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
-  [].forEach.call(document.querySelectorAll('.post-markdown-body img, .post-markdown-body blockquote, .post-markdown-body pre, .post-markdown-body figure'), function (el) {
-    el.classList.add('noys-soft-in');
-    io.observe(el);
-  });
-  window.__noys3dPostOff = function () { io.disconnect(); window.__noys3dPostOff = null; };
-})();
-</script>

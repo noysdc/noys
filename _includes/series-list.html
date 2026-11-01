@@ -165,6 +165,23 @@ html[data-theme="dark"] .noys-series-card-list.is-fan > li > a { background: #1d
 html[data-theme="dark"] .noys-series-fan-nav button { background: #22252b; border-color: #3a3d43; color: #eee; }
 html[data-theme="dark"] .noys-series-fan-nav button:disabled { background: #22252b; color: #eee; }
 
+/* دیوایدر بین پرونده‌ها: همون خط طلایی که زیر هدر سایته (nh-divider) */
+.noys-series-page .noys-series-card.has-fan {
+  position: relative;
+}
+.noys-series-page .noys-series-card.has-fan + .noys-series-card.has-fan {
+  margin-top: 0;
+  padding-top: 34px;
+}
+.noys-series-page .noys-series-card.has-fan + .noys-series-card.has-fan::before {
+  content: "";
+  display: block;
+  height: 2px;
+  max-width: 900px;
+  margin: 0 auto 34px;
+  background: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent);
+}
+
 /* موبایل */
 @media (max-width: 640px) {
   .noys-series-page .noys-series-card.has-fan { margin-bottom: 40px; }

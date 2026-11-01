@@ -516,9 +516,10 @@ permalink: /podcast/
   var btns = [].slice.call(nav.querySelectorAll('.podcast-fan-btn'));
 
   function render() {
-    // برای وسط‌چین دیده‌شدن مجموعه‌ی کارت‌ها، کل گروه کمی به سمت کم‌کارت جابه‌جا می‌شه
+    // چیدمان راست‌به‌چپ: کارت فعال سمت راستِ مجموعه می‌شینه و بقیه به‌ترتیب به سمت چپ ادامه پیدا می‌کنن؛
+    // کل مجموعه هم وسط صفحه می‌مونه.
     var l = Math.min(cur, 3), r = Math.min(n - 1 - cur, 3);
-    var shift = ((r - l) / 2) * 0.6;
+    var shift = ((r - l) / 2) * 1.0;
     cards.forEach(function (c, i) {
       var d = i - cur, a = Math.abs(d);
       c.style.transform =
