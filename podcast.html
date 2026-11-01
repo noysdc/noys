@@ -325,6 +325,118 @@ permalink: /podcast/
   }
 
 
+
+  /* =========================================================
+     NOYS 3D - بادبزن کارت‌های اپیزود
+     ========================================================= */
+
+  .podcast-grid.is-fan {
+    position: relative;
+    display: block;
+    height: 490px;
+    perspective: 1400px;
+    touch-action: pan-y;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    outline: none;
+  }
+
+  .podcast-grid.is-fan .podcast-card {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 260px;
+    margin-left: -130px;
+    transform-origin: 50% 110%;
+    transition:
+      transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.4s ease,
+      box-shadow 0.3s ease !important;
+    cursor: pointer;
+    will-change: transform;
+  }
+
+  .podcast-grid.is-fan .podcast-card.is-active {
+    cursor: grab;
+  }
+
+  .podcast-grid.is-fan .podcast-card:not(.is-active) .podcast-play-btn {
+    pointer-events: none;
+  }
+
+  .podcast-grid.is-fan .podcast-cover-wrap:hover .podcast-cover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .podcast-fan-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin: 4px 0 34px;
+    direction: ltr;
+  }
+
+  .podcast-fan-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .podcast-fan-btn:hover {
+    background: #fff200;
+    border-color: #fff200;
+  }
+
+  .podcast-fan-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+    background: #fff;
+    border-color: #ddd;
+  }
+
+  .podcast-fan-count {
+    min-width: 64px;
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+  }
+
+  html[data-theme="dark"] .podcast-fan-btn {
+    background: #22252b;
+    border-color: #3a3d43;
+    color: #eee;
+  }
+
+  html[data-theme="dark"] .podcast-fan-btn:hover {
+    background: #fff200;
+    color: #222;
+  }
+
+  @media (max-width: 480px) {
+    .podcast-grid.is-fan {
+      height: 470px;
+    }
+    .podcast-grid.is-fan .podcast-card {
+      width: 230px;
+      margin-left: -115px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .podcast-grid.is-fan .podcast-card {
+      transition: none !important;
+    }
+  }
+
 </style>
 
 <script>
@@ -371,5 +483,96 @@ permalink: /podcast/
   tick();
   setInterval(tick, 15000);
   window.addEventListener('resize', tick);
+})();
+</script>
+
+<script>
+/* NOYS 3D - کارت‌های اپیزود به شکل بادبزن */
+(function () {
+  var grid = document.querySelector('.podcast-grid');
+  if (!grid || grid.dataset.fan) return;
+  var cards = [].slice.call(grid.querySelectorAll(':scope > .podcast-card'));
+  if (cards.length < 2) return;
+  grid.dataset.fan = '1';
+  grid.classList.add('is-fan');
+  grid.tabIndex = 0;
+
+  var cur = 0;
+
+  // دکمه‌های قبلی/بعدی + شمارنده
+  var nav = document.createElement('div');
+  nav.className = 'podcast-fan-nav';
+  nav.innerHTML =
+    '<button type="button" class="podcast-fan-btn" data-dir="-1" aria-label="قبلی">‹</button>' +
+    '<span class="podcast-fan-count"></span>' +
+    '<button type="button" class="podcast-fan-btn" data-dir="1" aria-label="بعدی">›</button>';
+  grid.parentNode.insertBefore(nav, grid.nextSibling);
+  var count = nav.querySelector('.podcast-fan-count');
+  var btnPrev = nav.querySelector('[data-dir="-1"]');
+  var btnNext = nav.querySelector('[data-dir="1"]');
+
+  function render() {
+    cards.forEach(function (c, i) {
+      var d = i - cur, a = Math.abs(d);
+      // سایت راست‌به‌چپه: اپیزودهای بعدی (قدیمی‌تر) سمت چپ میان
+      c.style.transform =
+        'translateX(' + (-d * 55) + '%) ' +
+        'translateZ(' + (-a * 90) + 'px) ' +
+        'rotateY(' + (-d * 18) + 'deg) ' +
+        'rotateZ(' + (-d * 4) + 'deg)';
+      c.style.zIndex = String(100 - a);
+      c.style.opacity = a > 3 ? '0' : String(1 - a * 0.18);
+      c.style.pointerEvents = a > 3 ? 'none' : 'auto';
+      c.classList.toggle('is-active', d === 0);
+    });
+    count.textContent = (cur + 1) + ' / ' + cards.length;
+    btnPrev.disabled = cur === 0;
+    btnNext.disabled = cur === cards.length - 1;
+  }
+
+  function go(n) {
+    cur = Math.max(0, Math.min(cards.length - 1, n));
+    render();
+  }
+
+  nav.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-dir]');
+    if (b) go(cur + parseInt(b.getAttribute('data-dir'), 10));
+  });
+
+  // کشیدن با موس/لمس
+  var startX = null, moved = false;
+  grid.addEventListener('pointerdown', function (e) {
+    startX = e.clientX;
+    moved = false;
+  });
+  grid.addEventListener('pointermove', function (e) {
+    if (startX === null) return;
+    var dx = e.clientX - startX;
+    if (Math.abs(dx) > 60) {
+      go(cur + (dx < 0 ? 1 : -1)); // کشیدن به چپ = اپیزود بعدی
+      startX = e.clientX;
+      moved = true;
+    }
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
+    grid.addEventListener(ev, function () { startX = null; });
+  });
+
+  // کلیک روی کارت کناری = بیاد وسط
+  cards.forEach(function (c, i) {
+    c.addEventListener('click', function (e) {
+      if (moved) { e.preventDefault(); moved = false; return; }
+      if (i !== cur) { e.preventDefault(); go(i); }
+    });
+  });
+
+  // کیبورد
+  grid.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft')  { go(cur + 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { go(cur - 1); e.preventDefault(); }
+  });
+
+  render();
 })();
 </script>

@@ -176,4 +176,186 @@ html[data-theme="dark"] .tag.category-toggle:hover {
   cursor: pointer;
 }
 
+
+/* =========================================================
+   NOYS 3D - حلقه‌ی چرخان طبقه‌بندی‌ها
+   ========================================================= */
+
+.blog-tags-stage {
+  perspective: 1100px;
+  overflow: hidden;
+  padding: 26px 0 10px;
+}
+
+.blog-tags .tags.is-ring {
+  position: relative;
+  display: block;
+  width: 170px;
+  height: 84px;
+  margin: 10px auto 30px;
+  padding: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.blog-tags .tags.is-ring li {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: opacity 0.4s ease;
+}
+
+.blog-tags .tags.is-ring li .tag.category-toggle {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.blog-tags-ring-nav {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 26px;
+  direction: ltr;
+}
+
+.blog-tags-ring-nav button {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-tags-ring-nav button:hover {
+  background: #fff200;
+  border-color: #fff200;
+}
+
+html[data-theme="dark"] .blog-tags-ring-nav button {
+  background: #22252b;
+  border-color: #3a3d43;
+  color: #eee;
+}
+
+html[data-theme="dark"] .blog-tags-ring-nav button:hover {
+  background: #fff200;
+  color: #222;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-tags .tags.is-ring { transition: none; }
+}
+
 </style>
+
+<script>
+/* NOYS 3D - طبقه‌بندی‌ها به شکل حلقه‌ی چرخان */
+(function () {
+  var ul = document.querySelector('.blog-tags .tags');
+  if (!ul || ul.dataset.ring) return;
+  var items = [].slice.call(ul.children);
+  var n = items.length;
+  if (n < 4) return; // با کمتر از ۴ تا، حلقه خالی به نظر میاد
+
+  ul.dataset.ring = '1';
+  var stage = document.createElement('div');
+  stage.className = 'blog-tags-stage';
+  ul.parentNode.insertBefore(stage, ul);
+  stage.appendChild(ul);
+  ul.classList.add('is-ring');
+
+  var nav = document.createElement('div');
+  nav.className = 'blog-tags-ring-nav';
+  nav.innerHTML =
+    '<button type="button" data-dir="-1" aria-label="قبلی">‹</button>' +
+    '<button type="button" data-dir="1" aria-label="بعدی">›</button>';
+  stage.parentNode.insertBefore(nav, stage.nextSibling);
+
+  var step = 360 / n;
+  var itemW = 170;
+  var R = Math.max(230, Math.round((itemW / 2 + 14) / Math.tan(Math.PI / n)));
+  var rot = 0, sx = null, moved = false;
+
+  items.forEach(function (li, i) {
+    li.style.transform = 'rotateY(' + (i * step) + 'deg) translateZ(' + R + 'px)';
+  });
+
+  function draw() {
+    ul.style.transform = 'translateZ(' + (-R) + 'px) rotateY(' + rot + 'deg)';
+    items.forEach(function (li, i) {
+      var a = ((i * step + rot) % 360 + 540) % 360 - 180; // بین -۱۸۰ تا ۱۸۰
+      var k = Math.cos(a * Math.PI / 180);                // ۱ = روبه‌رو
+      li.style.opacity = String(Math.max(0.25, 0.25 + 0.75 * k));
+    });
+  }
+
+  function snap() {
+    rot = Math.round(rot / step) * step;
+    ul.style.transition = '';
+    draw();
+  }
+
+  function spin(dir) { rot += dir * -step; snap(); }
+
+  nav.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-dir]');
+    if (b) spin(parseInt(b.getAttribute('data-dir'), 10));
+  });
+
+  stage.addEventListener('pointerdown', function (e) {
+    sx = e.clientX;
+    moved = false;
+  });
+  stage.addEventListener('pointermove', function (e) {
+    if (sx === null) return;
+    var dx = e.clientX - sx;
+    if (Math.abs(dx) > 4) moved = true;
+    rot += dx * 0.35;
+    sx = e.clientX;
+    ul.style.transition = 'none';
+    draw();
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
+    stage.addEventListener(ev, function () {
+      if (sx === null) return;
+      sx = null;
+      snap();
+    });
+  });
+
+  // اگه کاربر کشید، کلیک حساب نشه (قبل از کد باز شدن بخش‌ها)
+  ul.addEventListener('click', function (e) {
+    if (moved) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      moved = false;
+    }
+  }, true);
+
+  // کلیک روی آیتم کناری، اون رو میاره جلو
+  items.forEach(function (li, i) {
+    li.addEventListener('click', function () {
+      var target = -i * step;
+      rot = target + 360 * Math.round((rot - target) / 360);
+      snap();
+    });
+  });
+
+  draw();
+})();
+</script>
