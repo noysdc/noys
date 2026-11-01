@@ -514,12 +514,12 @@ permalink: /podcast/
   function render() {
     cards.forEach(function (c, i) {
       var d = i - cur, a = Math.abs(d);
-      // سایت راست‌به‌چپه: اپیزودهای بعدی (قدیمی‌تر) سمت چپ میان
+      // اپیزودهای بعدی (قدیمی‌تر) سمت راست میان؛ با کشیدن به چپ میان وسط
       c.style.transform =
-        'translateX(' + (-d * 55) + '%) ' +
+        'translateX(' + (d * 55) + '%) ' +
         'translateZ(' + (-a * 90) + 'px) ' +
-        'rotateY(' + (-d * 18) + 'deg) ' +
-        'rotateZ(' + (-d * 4) + 'deg)';
+        'rotateY(' + (d * 18) + 'deg) ' +
+        'rotateZ(' + (d * 4) + 'deg)';
       c.style.zIndex = String(100 - a);
       c.style.opacity = a > 3 ? '0' : String(1 - a * 0.18);
       c.style.pointerEvents = a > 3 ? 'none' : 'auto';
@@ -569,8 +569,8 @@ permalink: /podcast/
 
   // کیبورد
   grid.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowLeft')  { go(cur + 1); e.preventDefault(); }
-    if (e.key === 'ArrowRight') { go(cur - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { go(cur + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { go(cur - 1); e.preventDefault(); }
   });
 
   render();

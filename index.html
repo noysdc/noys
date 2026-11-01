@@ -179,39 +179,96 @@ layout: main
 
 
 /* =========================================================
-   NOYS 3D - اسکرول سه‌بعدی (فقط مرورگرهایی که پشتیبانی می‌کنن)
+   NOYS 3D - اسکرول سه‌بعدی پست‌ها (با جاوااسکریپت؛ در همه‌ی مرورگرها)
    ========================================================= */
 
-@supports (animation-timeline: view()) {
-
-  .posts-list {
-    perspective: 1200px;
-  }
-
-  .posts-list > .post {
-    transform-origin: 50% 100%;
-    animation: noys-tilt linear backwards;
-    animation-timeline: view();
-    animation-range: entry 0% cover 35%;
-  }
-
-  @keyframes noys-tilt {
-    from {
-      opacity: 0.15;
-      transform: rotateX(28deg) translateY(70px) scale(0.93);
-    }
-    to {
-      opacity: 1;
-      transform: rotateX(0) translateY(0) scale(1);
-    }
-  }
-
+.posts-list {
+  perspective: 1100px;
+  perspective-origin: 50% 40%;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .posts-list > .post {
-    animation: none;
-  }
+.posts-list > .post {
+  transform-origin: 50% 100%;
+  backface-visibility: hidden;
 }
 
 </style>
+
+<script>
+/* NOYS 3D - پست‌ها موقع ورود به صفحه کج می‌شن و صاف می‌شن؛ موقع خروج از بالا هم کمی به عقب می‌خوابن */
+(function () {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // اگه از قبل (قبل از جابه‌جایی pjax) یه شنونده‌ی اسکرول ثبت شده بود، برش دار
+  if (window.__noysTiltOff) window.__noysTiltOff();
+
+  var list = document.querySelector('.posts-list');
+  if (!list) return;
+  var posts = [].slice.call(list.querySelectorAll(':scope > .post'));
+  if (!posts.length) return;
+
+  var ticking = false;
+
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+
+  function clear(el) {
+    if (!el.__noysTilted) return;
+    el.__noysTilted = false;
+    el.style.removeProperty('transform');
+    el.style.removeProperty('opacity');
+    el.style.removeProperty('transition');
+  }
+
+  function update() {
+    ticking = false;
+    var vh = window.innerHeight;
+    posts.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+
+      // ورود از پایین: وقتی بالای کارت از ۱۰٪ پایین صفحه تا ۶۰٪ ارتفاع صفحه میاد
+      var enter = clamp((vh * 0.95 - r.top) / (vh * 0.45));
+      // خروج از بالا: وقتی پایین کارت به ۲۵٪ بالای صفحه می‌رسه
+      var exit = clamp((vh * 0.25 - r.bottom) / (vh * 0.25) * -1 + 1);
+      exit = r.bottom < vh * 0.25 ? clamp(1 - r.bottom / (vh * 0.25)) : 0;
+
+      if (enter >= 1 && exit <= 0) { clear(el); return; }
+
+      var rx, ty, sc, op;
+      if (enter < 1) {
+        var k = 1 - enter;
+        rx = 32 * k;            // کج به عقب
+        ty = 90 * k;
+        sc = 1 - 0.08 * k;
+        op = 0.1 + 0.9 * enter;
+      } else {
+        rx = -22 * exit;        // موقع خروج رو به جلو می‌خوابه
+        ty = -30 * exit;
+        sc = 1 - 0.06 * exit;
+        op = 1 - 0.6 * exit;
+      }
+
+      el.__noysTilted = true;
+      el.style.setProperty('transition', 'none', 'important');
+      el.style.transform = 'rotateX(' + rx.toFixed(2) + 'deg) translateY(' + ty.toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
+      el.style.opacity = op.toFixed(3);
+    });
+  }
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  window.__noysTiltOff = function () {
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('resize', onScroll);
+    posts.forEach(clear);
+    window.__noysTiltOff = null;
+  };
+
+  update();
+})();
+</script>
