@@ -32,3 +32,162 @@
   <a class="noys-series-card-more" href="{{ '/series/' | append: noys_s.id | append: '/' | relative_url }}">مشاهده‌ی کل پرونده ←</a>
   {% endif %}
 </section>
+
+<style>
+/* NOYS 3D - قسمت‌های هر پرونده به شکل کارت‌های بادبزنی */
+.noys-series-card-list.is-fan {
+  position: relative;
+  height: 330px;
+  perspective: 1200px;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+  margin: 6px 0 0;
+}
+.noys-series-card-list.is-fan > li {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 230px;
+  margin: 0 0 0 -115px;
+  transform-origin: 50% 110%;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
+  will-change: transform;
+}
+.noys-series-card-list.is-fan > li > a {
+  position: relative;
+  display: block;
+  padding: 10px 10px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  background: #fff;
+  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.35);
+}
+html[data-theme="dark"] .noys-series-card-list.is-fan > li > a { background: #22252b; }
+.noys-series-card .noys-series-card-list.is-fan > li > a img {
+  display: block;
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.noys-series-card-list.is-fan > li > a::before {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  background: #fff200;
+  color: #111;
+}
+.noys-series-card-list.is-fan .noys-series-card-item-title {
+  display: block;
+  font-size: 14px;
+  line-height: 1.8;
+  text-align: right;
+}
+.noys-series-fan-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  direction: ltr;
+}
+.noys-series-fan-nav button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.noys-series-fan-nav button:hover { background: #fff200; border-color: #fff200; }
+.noys-series-fan-nav button:disabled { opacity: 0.35; cursor: default; background: #fff; }
+.noys-series-fan-nav span { min-width: 56px; text-align: center; font-size: 13px; color: #888; }
+html[data-theme="dark"] .noys-series-fan-nav button { background: #22252b; border-color: #3a3d43; color: #eee; }
+@media (prefers-reduced-motion: reduce) { .noys-series-card-list.is-fan > li { transition: none; } }
+</style>
+
+<script>
+/* NOYS 3D - قسمت‌های پرونده به شکل بادبزن (برای همه‌ی سری‌های صفحه) */
+(function () {
+  [].forEach.call(document.querySelectorAll('.noys-series-card-list:not([data-fan])'), function (ol) {
+    var items = [].slice.call(ol.children);
+    if (items.length < 2) return;
+    ol.dataset.fan = '1';
+    ol.classList.add('is-fan');
+    ol.tabIndex = 0;
+    var cur = 0;
+
+    var nav = document.createElement('div');
+    nav.className = 'noys-series-fan-nav';
+    nav.innerHTML = '<button type="button" data-dir="-1" aria-label="قبلی">‹</button><span></span><button type="button" data-dir="1" aria-label="بعدی">›</button>';
+    ol.parentNode.insertBefore(nav, ol.nextSibling);
+    var label = nav.querySelector('span');
+    var prev = nav.querySelector('[data-dir="-1"]');
+    var next = nav.querySelector('[data-dir="1"]');
+
+    function render() {
+      items.forEach(function (li, i) {
+        var d = i - cur, a = Math.abs(d);
+        li.style.transform = 'translateX(' + (d * 58) + '%) translateZ(' + (-a * 90) + 'px) rotateY(' + (d * 18) + 'deg) rotateZ(' + (d * 4) + 'deg)';
+        li.style.zIndex = String(50 - a);
+        li.style.opacity = a > 3 ? '0' : String(1 - a * 0.2);
+        li.style.pointerEvents = a > 3 ? 'none' : 'auto';
+        li.classList.toggle('is-active', d === 0);
+      });
+      label.textContent = 'قسمت ' + (cur + 1) + ' از ' + items.length;
+      prev.disabled = cur === 0;
+      next.disabled = cur === items.length - 1;
+    }
+    function go(n) { cur = Math.max(0, Math.min(items.length - 1, n)); render(); }
+
+    nav.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-dir]');
+      if (b) go(cur + parseInt(b.getAttribute('data-dir'), 10));
+    });
+
+    ol.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    [].forEach.call(ol.querySelectorAll('img'), function (im) { im.draggable = false; im.style.pointerEvents = 'none'; });
+
+    var sx = null, moved = false;
+    ol.addEventListener('pointerdown', function (e) { sx = e.clientX; moved = false; });
+    ol.addEventListener('pointermove', function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx;
+      if (Math.abs(dx) > 60) { go(cur + (dx < 0 ? 1 : -1)); sx = e.clientX; moved = true; }
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
+      ol.addEventListener(ev, function () { sx = null; });
+    });
+
+    var wl = false;
+    ol.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaX) < Math.abs(e.deltaY) || Math.abs(e.deltaX) < 20) return;
+      e.preventDefault();
+      if (wl) return;
+      wl = true; go(cur + (e.deltaX > 0 ? 1 : -1)); setTimeout(function () { wl = false; }, 350);
+    }, { passive: false });
+
+    // کارت کناری: اول میاد وسط؛ کارت وسط: به قسمت می‌ره
+    items.forEach(function (li, i) {
+      li.addEventListener('click', function (e) {
+        if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
+        if (i !== cur) { e.preventDefault(); e.stopPropagation(); go(i); }
+      }, true);
+    });
+
+    ol.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { go(cur + 1); e.preventDefault(); }
+      if (e.key === 'ArrowLeft')  { go(cur - 1); e.preventDefault(); }
+    });
+
+    render();
+  });
+})();
+</script>
