@@ -1,0 +1,413 @@
+---
+layout: main
+---
+
+<article class="article-page">
+
+  <div class="page-content">
+
+    {% if page.img %}
+    <div class="page-cover-image">
+      <figure>
+        <img
+          class="page-image"
+          data-noys-parallax
+          src="{{ page.img | prepend: '/assets/img/' | relative_url }}"
+          alt="{{ page.title }}"
+        >
+
+        {% if page.fig-caption %}
+        <figcaption>
+          {{ page.fig-caption }}
+        </figcaption>
+        {% endif %}
+      </figure>
+    </div>
+    {% endif %}
+
+
+    <div class="wrap-content">
+
+      <header class="header-page">
+
+        <h1 class="page-title">
+          {{ page.title }}
+        </h1>
+
+        <div class="page-date">
+          <span>
+            {{ page.date | date: '%Y/%m/%d' }}
+          </span>
+        </div>
+
+      </header>
+
+      {% include series-box.html %}
+
+
+      <div class="post-markdown-body">
+        {{ content }}
+      </div>
+
+
+      {% if page.podcast_audio and page.podcast_audio != "" %}
+      <div class="embed-section">
+        <h3 class="embed-section-title">🎧 نسخه صوتی پادکست</h3>
+        <div class="podcast-container">
+          <audio
+            id="noysInlineAudio"
+            controls
+            controlsList="nodownload noplaybackrate"
+            oncontextmenu="return false;"
+            preload="none"
+            src="{{ page.podcast_audio }}"
+            style="width:100%;display:block;"
+          >مرورگر شما پخش فایل صوتی را پشتیبانی نمی‌کند.</audio>
+          <div id="noysInlineTools"></div>
+        </div>
+      </div>
+
+      <script>
+      /* سرعت پخش و تایمر خواب برای پلیر داخل پست.
+         استایل‌ها (.noys-fp-*) توی default.html هستن و سرعت انتخاب‌شده
+         با پلیر شناور مشترکه (کلید noys-fp-speed). */
+      (function () {
+        var audio = document.getElementById('noysInlineAudio');
+        var host = document.getElementById('noysInlineTools');
+        if (!audio || !host) return;
+
+        var SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+        var SLEEP = [[0, 'خاموش'], [15, '۱۵ دقیقه'], [30, '۳۰ دقیقه'], [45, '۴۵ دقیقه'], [60, '۶۰ دقیقه'], [90, '۹۰ دقیقه']];
+        var speed = 1, sleepEnd = 0, tick = null, fade = null;
+        try {
+          var sv = parseFloat(localStorage.getItem('noys-fp-speed'));
+          if (SPEEDS.indexOf(sv) !== -1) speed = sv;
+        } catch (e) {}
+
+        host.className = 'noys-fp-tools';
+        host.innerHTML =
+          '<div class="noys-fp-group noys-fp-speedgroup" role="group" aria-label="سرعت پخش">' +
+            '<button type="button" class="noys-fp-tbtn" data-act="slower" aria-label="کندتر">−</button>' +
+            '<button type="button" class="noys-fp-speed" data-act="reset" title="بازگشت به سرعت عادی">1×</button>' +
+            '<button type="button" class="noys-fp-tbtn" data-act="faster" aria-label="تندتر">+</button>' +
+          '</div>' +
+          '<div class="noys-fp-group">' +
+            '<label class="noys-fp-sleep-label" for="noysInlineSleep">⏲ تایمر خواب</label>' +
+            '<select id="noysInlineSleep" class="noys-fp-select">' +
+              SLEEP.map(function (o) { return '<option value="' + o[0] + '">' + o[1] + '</option>'; }).join('') +
+            '</select>' +
+            '<span class="noys-fp-sleep-left"></span>' +
+          '</div>';
+
+        var speedEl = host.querySelector('.noys-fp-speed');
+        var selectEl = host.querySelector('.noys-fp-select');
+        var leftEl = host.querySelector('.noys-fp-sleep-left');
+
+        function applySpeed() {
+          audio.defaultPlaybackRate = speed;
+          audio.playbackRate = speed;
+          speedEl.textContent = String(speed) + '×';
+          try { localStorage.setItem('noys-fp-speed', String(speed)); } catch (e) {}
+        }
+        function step(dir) {
+          var i = SPEEDS.indexOf(speed);
+          if (i < 0) i = SPEEDS.indexOf(1);
+          speed = SPEEDS[Math.min(SPEEDS.length - 1, Math.max(0, i + dir))];
+          applySpeed();
+        }
+        function fmt(ms) {
+          var s = Math.max(0, Math.round(ms / 1000)), m = Math.floor(s / 60), r = s % 60;
+          return m + ':' + (r < 10 ? '0' : '') + r;
+        }
+        function clearSleep() {
+          sleepEnd = 0;
+          if (tick) { clearInterval(tick); tick = null; }
+          selectEl.value = '0';
+          leftEl.textContent = '';
+        }
+        function fadeOutAndPause() {
+          var v0 = audio.volume, n = 0, steps = 15;
+          if (fade) clearInterval(fade);
+          fade = setInterval(function () {
+            n++;
+            audio.volume = Math.max(0, v0 * (1 - n / steps));
+            if (n >= steps) { clearInterval(fade); fade = null; audio.pause(); audio.volume = v0; }
+          }, 200);
+        }
+        function setSleep(min) {
+          clearSleep();
+          if (!min) return;
+          sleepEnd = Date.now() + min * 60000;
+          selectEl.value = String(min);
+          leftEl.textContent = fmt(sleepEnd - Date.now());
+          tick = setInterval(function () {
+            if (Date.now() >= sleepEnd) { clearSleep(); fadeOutAndPause(); return; }
+            leftEl.textContent = fmt(sleepEnd - Date.now());
+          }, 1000);
+        }
+
+        host.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-act]');
+          if (!b) return;
+          var a = b.getAttribute('data-act');
+          if (a === 'slower') step(-1);
+          else if (a === 'faster') step(1);
+          else if (a === 'reset') { speed = 1; applySpeed(); }
+        });
+        selectEl.addEventListener('change', function () { setSleep(parseInt(selectEl.value, 10) || 0); });
+        audio.addEventListener('loadedmetadata', applySpeed);
+
+        // اگه پلیر شناور هم باز بود، همزمان دو صدا پخش نشه
+        audio.addEventListener('play', function () {
+          var all = document.querySelectorAll('audio');
+          for (var i = 0; i < all.length; i++) { if (all[i] !== audio) all[i].pause(); }
+        });
+
+        applySpeed();
+      })();
+      </script>
+      {% endif %}
+
+
+      <div class="page-footer">
+
+        <div class="page-share">
+
+          <span>
+            اشتراک‌گذاری:
+          </span>
+
+          <a
+            href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&url={{ site.url }}{{ site.baseurl }}{{ page.url }}"
+            title="توییتر"
+            rel="nofollow"
+            target="_blank"
+          >
+            <i class="fa fa-twitter"></i>
+          </a>
+
+          <a
+            href="https://telegram.me/share/url?url={{ site.url }}{{ site.baseurl }}{{ page.url }}&text={{ page.title | url_encode }}"
+            title="تلگرام"
+            rel="nofollow"
+            target="_blank"
+          >
+            <i class="fa fa-paper-plane"></i>
+          </a>
+
+        </div>
+
+
+        <div class="page-tag">
+
+          {% for cat in page.categories %}
+
+          <a
+            href="{{ site.baseurl }}/categories#{{ cat }}"
+            class="tag"
+          >
+            <span class="tag-hash">&#35;</span> {{ cat }}
+          </a>
+
+          {% endfor %}
+
+        </div>
+
+      </div>
+
+
+      {% include series-nav.html %}
+
+      {% include related-posts.html %}
+
+
+      {% unless page.hide-newsletter %}
+      <div class="footer-subscription">
+
+        <h3>عضویت در خبرنامه NOYS</h3>
+
+        <p class="newsletter-description">
+          داستان‌ها و پرونده‌های جدید را مستقیم در ایمیل‌تان دریافت کنید.
+        </p>
+
+        <div class="substack-wrapper">
+          <iframe
+            src="https://noysdc.substack.com/embed"
+            width="480"
+            height="320"
+            style="border: 1px solid #EEE; background: white;"
+            frameborder="0"
+            scrolling="no"
+            title="عضویت در خبرنامه NOYS"
+          ></iframe>
+        </div>
+
+      </div>
+      {% endunless %}
+
+
+      {% include disqus.html %}
+
+    </div>
+
+  </div>
+
+</article>
+
+<style>
+
+/* =========================================================
+   NOYS - جداکننده‌های صفحه‌ی مجله (هم‌شکل جداکننده‌ی سربرگ، با رنگ برند)
+   هم <hr> داخل متن، هم خطی که زیر تاریخ و بالای «اشتراک‌گذاری» هست.
+   خط‌های قدیمی (border) خاموش می‌شن و گرادیان زرد جاشون رو می‌گیره.
+   ========================================================= */
+
+.post-markdown-body hr,
+.wrap-content hr {
+  display: block;
+  height: 2px !important;
+  margin: 34px auto;
+  max-width: 900px;
+  border: 0 !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+  outline: 0;
+  background: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent) !important;
+}
+
+.post-markdown-body hr::before,
+.post-markdown-body hr::after,
+.wrap-content hr::before,
+.wrap-content hr::after {
+  display: none !important;
+}
+
+/* خط زیر عنوان و تاریخ */
+.header-page {
+  border-bottom: 0 !important;
+  background-image: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent);
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: bottom center;
+}
+
+/* خط بالای «اشتراک‌گذاری» و تگ‌ها */
+.page-footer {
+  border-top: 0 !important;
+  background-image: linear-gradient(90deg, transparent, var(--nh-accent, #fff200) 50%, transparent);
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: top center;
+}
+
+
+/* =========================================================
+   NOYS - نقل‌قول (Blockquote) در حالت شب
+   پس‌زمینه‌ی تیره و متن روشن تا خوانا باشه؛ حالت روز دست‌نخورده می‌مونه
+   ========================================================= */
+
+html[data-theme="dark"] .post-markdown-body blockquote {
+  background: #262a31 !important;
+  color: #e4e6ea !important;
+  border: 0 !important;
+  border-right: 4px solid var(--nh-accent, #fff200) !important;
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+html[data-theme="dark"] .post-markdown-body blockquote p,
+html[data-theme="dark"] .post-markdown-body blockquote li,
+html[data-theme="dark"] .post-markdown-body blockquote span,
+html[data-theme="dark"] .post-markdown-body blockquote em {
+  color: #e4e6ea !important;
+}
+
+html[data-theme="dark"] .post-markdown-body blockquote strong,
+html[data-theme="dark"] .post-markdown-body blockquote b {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .post-markdown-body blockquote a {
+  color: #fff200 !important;
+}
+
+html[data-theme="dark"] .post-markdown-body blockquote code {
+  background: #1a1c20 !important;
+  color: #f1f2f4 !important;
+}
+
+/* کنترل‌های سرعت و تایمر زیر پلیر داخل پست: رنگ متن از صفحه گرفته بشه */
+.embed-section .noys-fp-tools { color: inherit; margin-top: 12px; }
+.embed-section .noys-fp-sleep-left { color: inherit; }
+html[data-theme="dark"] .embed-section .noys-fp-sleep-left { color: #fff200; }
+
+</style>
+
+<style>
+/* NOYS 3D - صفحه‌ی هر پست */
+.article-page .page-cover-image {
+  transform-origin: 50% 100%;
+  will-change: transform;
+  border-radius: 12px;
+}
+.post-markdown-body img,
+.post-markdown-body blockquote,
+.post-markdown-body pre,
+.post-markdown-body figure {
+  transform-origin: 50% 100%;
+}
+.post-markdown-body .noys3d-in {
+  opacity: 0;
+  transform: perspective(1000px) rotateX(12deg) translateY(36px) scale(0.965);
+}
+.post-markdown-body .noys3d-in.is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .post-markdown-body .noys3d-in { opacity: 1; transform: none; }
+}
+</style>
+<script>
+/* NOYS 3D - کاور پست با اسکرول به عقب می‌خوابه؛ عکس‌ها/نقل‌قول‌ها با عمق وارد می‌شن */
+(function () {
+  if (window.__noys3dPostOff) window.__noys3dPostOff();
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var cover = document.querySelector('.article-page .page-cover-image');
+  var ticking = false;
+  function update() {
+    ticking = false;
+    if (!cover) return;
+    var h = cover.offsetHeight || 1;
+    var t = Math.min(1, Math.max(0, (window.scrollY || window.pageYOffset) / (h * 0.9)));
+    cover.style.transform = 'perspective(1200px) rotateX(' + (t * 9).toFixed(2) + 'deg) scale(' + (1 - t * 0.07).toFixed(3) + ') translateY(' + (t * 24).toFixed(1) + 'px)';
+    cover.style.opacity = (1 - t * 0.35).toFixed(3);
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  if (cover) {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+  }
+
+  var io = null;
+  if ('IntersectionObserver' in window) {
+    io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    [].forEach.call(document.querySelectorAll('.post-markdown-body img, .post-markdown-body blockquote, .post-markdown-body pre, .post-markdown-body figure'), function (el) {
+      el.classList.add('noys3d-in');
+      io.observe(el);
+    });
+  }
+
+  window.__noys3dPostOff = function () {
+    window.removeEventListener('scroll', onScroll);
+    if (io) io.disconnect();
+    window.__noys3dPostOff = null;
+  };
+})();
+</script>

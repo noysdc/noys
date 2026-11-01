@@ -81,7 +81,8 @@
   var SEL = '.nh-box,.posts-list>.post,.podcast-card,.noys-floating-player,.nh-btn,.nh-nav a,.nh-chip,' +
             '.noys-btn,.podcast-play-btn,.nf-links a,.nf-support,.noys-pagination-btn,.lg-tabbar,' +
             '.noys-start-card,.noys-related-card,.noys-hero-episode';
-  if (!reduced && window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  var NOYS_MOUSE_GLOW = false; // نور دنبال‌کننده‌ی ماوس خاموشه؛ برای روشن کردن true بذار
+  if (NOYS_MOUSE_GLOW && !reduced && window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     document.addEventListener('pointermove', function (e) {
       var el = e.target && e.target.closest ? e.target.closest(SEL) : null;
       if (!el) return;

@@ -179,96 +179,70 @@ layout: main
 
 
 /* =========================================================
-   NOYS 3D - اسکرول سه‌بعدی پست‌ها (با جاوااسکریپت؛ در همه‌ی مرورگرها)
+   NOYS 3D - صفحه‌ی اصلی: پست‌ها مثل یک چرخ‌فلک عمودی
+   کارت وسط صفحه صاف و روشنه؛ هرچی از وسط دورتر بشه، به عقب خم می‌شه و کوچک‌تر می‌شه.
    ========================================================= */
 
-.posts-list {
-  perspective: 1100px;
-  perspective-origin: 50% 40%;
+.posts-list > .post {
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) scale(var(--sc, 1));
+  transform-origin: 50% 50%;
+  will-change: transform;
+  /* انتقال transform خاموش، تا کارت‌ها دقیقاً با اسکرول حرکت کنن */
+  transition: box-shadow 0.4s ease, background-color 0.3s ease !important;
 }
 
-.posts-list > .post {
-  transform-origin: 50% 100%;
-  backface-visibility: hidden;
+.posts-list > .post:hover {
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) translateY(-4px) scale(var(--sc, 1));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .posts-list > .post,
+  .posts-list > .post:hover {
+    transform: none;
+    opacity: 1 !important;
+  }
 }
 
 </style>
 
 <script>
-/* NOYS 3D - پست‌ها موقع ورود به صفحه کج می‌شن و صاف می‌شن؛ موقع خروج از بالا هم کمی به عقب می‌خوابن */
+/* NOYS 3D - چرخ‌فلک عمودی پست‌ها */
 (function () {
+  if (window.__noys3dOff) window.__noys3dOff();
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  // اگه از قبل (قبل از جابه‌جایی pjax) یه شنونده‌ی اسکرول ثبت شده بود، برش دار
-  if (window.__noysTiltOff) window.__noysTiltOff();
 
   var list = document.querySelector('.posts-list');
   if (!list) return;
   var posts = [].slice.call(list.querySelectorAll(':scope > .post'));
   if (!posts.length) return;
 
+  var MAX_TILT = 14;     // حداکثر خم‌شدن (درجه)
+  var MAX_SHRINK = 0.07; // حداکثر کوچک‌شدن
+  var MIN_OPACITY = 0.45;
+
   var ticking = false;
-
-  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
-
-  function clear(el) {
-    if (!el.__noysTilted) return;
-    el.__noysTilted = false;
-    el.style.removeProperty('transform');
-    el.style.removeProperty('opacity');
-    el.style.removeProperty('transition');
-  }
-
   function update() {
     ticking = false;
-    var vh = window.innerHeight;
+    var vh = window.innerHeight, mid = vh / 2;
     posts.forEach(function (el) {
       var r = el.getBoundingClientRect();
-
-      // ورود از پایین: وقتی بالای کارت از ۱۰٪ پایین صفحه تا ۶۰٪ ارتفاع صفحه میاد
-      var enter = clamp((vh * 0.95 - r.top) / (vh * 0.45));
-      // خروج از بالا: وقتی پایین کارت به ۲۵٪ بالای صفحه می‌رسه
-      var exit = clamp((vh * 0.25 - r.bottom) / (vh * 0.25) * -1 + 1);
-      exit = r.bottom < vh * 0.25 ? clamp(1 - r.bottom / (vh * 0.25)) : 0;
-
-      if (enter >= 1 && exit <= 0) { clear(el); return; }
-
-      var rx, ty, sc, op;
-      if (enter < 1) {
-        var k = 1 - enter;
-        rx = 32 * k;            // کج به عقب
-        ty = 90 * k;
-        sc = 1 - 0.08 * k;
-        op = 0.1 + 0.9 * enter;
-      } else {
-        rx = -22 * exit;        // موقع خروج رو به جلو می‌خوابه
-        ty = -30 * exit;
-        sc = 1 - 0.06 * exit;
-        op = 1 - 0.6 * exit;
-      }
-
-      el.__noysTilted = true;
-      el.style.setProperty('transition', 'none', 'important');
-      el.style.transform = 'rotateX(' + rx.toFixed(2) + 'deg) translateY(' + ty.toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
-      el.style.opacity = op.toFixed(3);
+      var c = ((r.top + r.height / 2) - mid) / mid;       // ۰ = وسط صفحه، ±۱ = لبه‌ها
+      if (c > 1.4) c = 1.4; else if (c < -1.4) c = -1.4;
+      var a = Math.abs(c);
+      el.style.setProperty('--rx', (-c * MAX_TILT).toFixed(2) + 'deg');
+      el.style.setProperty('--sc', (1 - a * MAX_SHRINK).toFixed(3));
+      el.style.opacity = Math.max(MIN_OPACITY, 1 - a * a * 0.5).toFixed(3);
     });
   }
-
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(update);
-  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
 
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
-  window.__noysTiltOff = function () {
+  window.__noys3dOff = function () {
     window.removeEventListener('scroll', onScroll);
     window.removeEventListener('resize', onScroll);
-    posts.forEach(clear);
-    window.__noysTiltOff = null;
+    window.__noys3dOff = null;
   };
-
   update();
 })();
 </script>

@@ -489,6 +489,11 @@ permalink: /podcast/
 <script>
 /* NOYS 3D - کارت‌های اپیزود به شکل بادبزن */
 (function () {
+  // ===== تنظیمات جهت =====
+  var SIDE = -1; // اپیزودهای بعدی (قدیمی‌تر) کدوم طرف بشینن؟  -1 = چپ (مثل خوندن فارسی)،  1 = راست
+  var DRAG = 1;  // جهت کشیدن:  1 = طبیعی (کارتی که سمت کشیدنه میاد وسط)،  -1 = برعکس
+  // =======================
+
   var grid = document.querySelector('.podcast-grid');
   if (!grid || grid.dataset.fan) return;
   var cards = [].slice.call(grid.querySelectorAll(':scope > .podcast-card'));
@@ -497,50 +502,48 @@ permalink: /podcast/
   grid.classList.add('is-fan');
   grid.tabIndex = 0;
 
-  var cur = 0;
+  var cur = 0, n = cards.length;
+  var LEFT_DIR = SIDE === -1 ? 1 : -1;   // دکمه‌ی چپ، کارتِ سمت چپ رو میاره وسط
 
-  // دکمه‌های قبلی/بعدی + شمارنده
   var nav = document.createElement('div');
   nav.className = 'podcast-fan-nav';
   nav.innerHTML =
-    '<button type="button" class="podcast-fan-btn" data-dir="-1" aria-label="قبلی">‹</button>' +
+    '<button type="button" class="podcast-fan-btn" data-dir="' + LEFT_DIR + '" aria-label="چپ">‹</button>' +
     '<span class="podcast-fan-count"></span>' +
-    '<button type="button" class="podcast-fan-btn" data-dir="1" aria-label="بعدی">›</button>';
+    '<button type="button" class="podcast-fan-btn" data-dir="' + (-LEFT_DIR) + '" aria-label="راست">›</button>';
   grid.parentNode.insertBefore(nav, grid.nextSibling);
   var count = nav.querySelector('.podcast-fan-count');
-  var btnPrev = nav.querySelector('[data-dir="-1"]');
-  var btnNext = nav.querySelector('[data-dir="1"]');
+  var btns = [].slice.call(nav.querySelectorAll('.podcast-fan-btn'));
 
   function render() {
+    // برای وسط‌چین دیده‌شدن مجموعه‌ی کارت‌ها، کل گروه کمی به سمت کم‌کارت جابه‌جا می‌شه
+    var l = Math.min(cur, 3), r = Math.min(n - 1 - cur, 3);
+    var shift = ((r - l) / 2) * 0.6;
     cards.forEach(function (c, i) {
       var d = i - cur, a = Math.abs(d);
-      // اپیزودهای بعدی (قدیمی‌تر) سمت راست میان؛ با کشیدن به چپ میان وسط
       c.style.transform =
-        'translateX(' + (d * 55) + '%) ' +
+        'translateX(' + ((d - shift) * 55 * SIDE) + '%) ' +
         'translateZ(' + (-a * 90) + 'px) ' +
-        'rotateY(' + (d * 18) + 'deg) ' +
-        'rotateZ(' + (d * 4) + 'deg)';
+        'rotateY(' + (d * 18 * SIDE) + 'deg) ' +
+        'rotateZ(' + (d * 4 * SIDE) + 'deg)';
       c.style.zIndex = String(100 - a);
       c.style.opacity = a > 3 ? '0' : String(1 - a * 0.18);
       c.style.pointerEvents = a > 3 ? 'none' : 'auto';
       c.classList.toggle('is-active', d === 0);
     });
-    count.textContent = (cur + 1) + ' / ' + cards.length;
-    btnPrev.disabled = cur === 0;
-    btnNext.disabled = cur === cards.length - 1;
+    count.textContent = (cur + 1) + ' / ' + n;
+    btns.forEach(function (b) {
+      var nx = cur + parseInt(b.getAttribute('data-dir'), 10);
+      b.disabled = nx < 0 || nx > n - 1;
+    });
   }
-
-  function go(n) {
-    cur = Math.max(0, Math.min(cards.length - 1, n));
-    render();
-  }
+  function go(k) { cur = Math.max(0, Math.min(n - 1, k)); render(); }
 
   nav.addEventListener('click', function (e) {
     var b = e.target.closest('[data-dir]');
     if (b) go(cur + parseInt(b.getAttribute('data-dir'), 10));
   });
 
-  // عکس‌ها و لینک‌ها نذارن مرورگر «درگ» خودش رو شروع کنه (همین جلوی کشیدن رو می‌گرفت)
   grid.addEventListener('dragstart', function (e) { e.preventDefault(); });
   [].forEach.call(grid.querySelectorAll('img'), function (im) {
     im.draggable = false;
@@ -548,21 +551,21 @@ permalink: /podcast/
     im.style.pointerEvents = 'none';
   });
 
-  // اسکرول افقی تاچ‌پد
+  // تاچ‌پد
   var wheelLock = false;
   grid.addEventListener('wheel', function (e) {
     if (Math.abs(e.deltaX) < Math.abs(e.deltaY) || Math.abs(e.deltaX) < 20) return;
     e.preventDefault();
     if (wheelLock) return;
     wheelLock = true;
-    go(cur + (e.deltaX > 0 ? 1 : -1));
+    go(cur + (e.deltaX * SIDE * DRAG > 0 ? 1 : -1));
     setTimeout(function () { wheelLock = false; }, 350);
   }, { passive: false });
 
   // کشیدن با موس/لمس
   var startX = null, moved = false;
   grid.addEventListener('pointerdown', function (e) {
-    if (e.target.closest('.podcast-play-btn')) return; // دکمه‌ی پخش کشیدن رو شروع نکنه
+    if (e.target.closest('.podcast-play-btn')) return;
     startX = e.clientX;
     moved = false;
   });
@@ -570,7 +573,7 @@ permalink: /podcast/
     if (startX === null) return;
     var dx = e.clientX - startX;
     if (Math.abs(dx) > 60) {
-      go(cur + (dx < 0 ? 1 : -1)); // کشیدن به چپ = اپیزود بعدی
+      go(cur + (dx * SIDE * DRAG < 0 ? 1 : -1));
       startX = e.clientX;
       moved = true;
     }
@@ -579,7 +582,6 @@ permalink: /podcast/
     grid.addEventListener(ev, function () { startX = null; });
   });
 
-  // کلیک روی کارت کناری = بیاد وسط
   cards.forEach(function (c, i) {
     c.addEventListener('click', function (e) {
       if (moved) { e.preventDefault(); moved = false; return; }
@@ -587,10 +589,10 @@ permalink: /podcast/
     });
   });
 
-  // کیبورد
   grid.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight') { go(cur + 1); e.preventDefault(); }
-    if (e.key === 'ArrowLeft')  { go(cur - 1); e.preventDefault(); }
+    // کلید چپ = کارتِ سمت چپ میاد وسط
+    if (e.key === 'ArrowLeft')  { go(cur + LEFT_DIR); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { go(cur - LEFT_DIR); e.preventDefault(); }
   });
 
   render();
