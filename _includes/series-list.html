@@ -169,11 +169,11 @@ html[data-theme="dark"] .noys-series-fan-nav button:disabled { background: #2225
 .noys-series-page .noys-series-card.has-fan {
   position: relative;
 }
-.noys-series-page .noys-series-card.has-fan + .noys-series-card.has-fan {
+.noys-series-page .noys-series-card.has-fan ~ .noys-series-card.has-fan {
   margin-top: 0;
   padding-top: 34px;
 }
-.noys-series-page .noys-series-card.has-fan + .noys-series-card.has-fan::before {
+.noys-series-page .noys-series-card.has-fan ~ .noys-series-card.has-fan::before {
   content: "";
   display: block;
   height: 2px;
