@@ -6,6 +6,7 @@ layout: main
 
   {% assign decorCounter = 0 %}
   {% assign visibleCounter = 0 %}
+  {% assign imageCounter = 0 %}
   {% for post in paginator.posts %}
   {% unless post.categories contains "podcast" %}
 
@@ -26,14 +27,25 @@ layout: main
   <article class="post {% unless post.img %}post-text-only{% endunless %}">
 
     {% if post.img %}
+      {% assign imageCounter = imageCounter | plus: 1 %}
 
       <span class="post-thumbnail-frame">
         <a
           class="post-thumbnail"
           href="{{ post.url | prepend: site.baseurl }}"
-          style="background-image: url('{{ "/assets/img/" | prepend: site.baseurl | append: post.img }}');"
           aria-label="{{ post.title }}"
-        ></a>
+        >
+          <img
+            class="post-thumbnail-image"
+            src="{{ "/assets/img/" | prepend: site.baseurl | append: post.img }}"
+            alt=""
+            width="1920"
+            height="1080"
+            decoding="async"
+            loading="{% if imageCounter == 1 %}eager{% else %}lazy{% endif %}"
+            {% if imageCounter == 1 %}fetchpriority="high"{% endif %}
+          >
+        </a>
       </span>
 
     {% endif %}
@@ -112,6 +124,18 @@ layout: main
   display: flex;
   flex-direction: column;
   gap: 22px;
+}
+
+/* Native image elements allow the browser to lazy-load cards below the fold. */
+.post-thumbnail {
+  overflow: hidden;
+}
+
+.post-thumbnail-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 
@@ -209,10 +233,10 @@ layout: main
 
   // ===== تنظیمات حس حرکت =====
   var RANGE  = 0.95;   // چه بخشی از ارتفاع صفحه طول می‌کشه تا کارت برسه (بیشتر = آرام‌تر؛ حداکثر ۱)
-  var DEPTH  = 420;    // فاصله‌ی شروع (پیکسل)؛ بیشتر = از دورتر میاد
+  var DEPTH  = 300;    // فاصله‌ی شروع (پیکسل)؛ بیشتر = از دورتر میاد
   var RISE   = 40;     // از چند پیکسل پایین‌تر شروع کنه
-  var BLUR   = 6;      // تاری اولیه (پیکسل)؛ ۰ = بدون تاری
-  var SMOOTH = 0.055;  // نرمی دنبال‌کردن اسکرول (کمتر = نرم‌تر و دیرتر)
+  var BLUR   = 0;      // تاری اولیه (پیکسل)؛ ۰ = بدون تاری
+  var SMOOTH = 0.12;  // نرمی دنبال‌کردن اسکرول (کمتر = نرم‌تر و دیرتر)
   // ===========================
 
   var mobile = window.innerWidth < 768;
