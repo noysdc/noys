@@ -187,16 +187,25 @@ function noysInitWorldMap(root) {
       });
   }
 
-  // نکته‌ی مهم: قبلاً اینجا یه IntersectionObserver بود که فقط
-  // وقتی کاربر به نزدیکیِ این بخش اسکرول می‌کرد، فایل SVG رو لود
-  // می‌کرد (برای صرفه‌جویی توی بار اول لود صفحه). ولی این روش خودش
-  // باعث یه مشکل جدید شد: بعد از برگشتن از یک پست (pjax)، یا وقتی
-  // کاربر دقیقاً به همون نقطه اسکرول نمی‌کرد، observer درست
-  // trigger نمی‌شد و پیام «در حال آماده‌سازی نقشه» می‌موند.
-  // برای اینکه این مشکل قطعی حل بشه، دیگه به اسکرول وابسته نیستیم:
-  // همین که این تابع صدا زده بشه (چه موقع لود اول صفحه، چه بعد از
-  // pjax)، بلافاصله نقشه رو لود می‌کنیم.
-  loadMapSvg();
+  // نقشه در پایین صفحه است و SVG آن نسبتاً حجیم است؛ فقط کمی پیش از
+  // رسیدن کاربر به آن دانلودش می‌کنیم. هر بار اجرای تابع، observer
+  // مخصوص همان DOM جدید ساخته می‌شود؛ بنابراین در جابه‌جایی‌های PJAX
+  // هم نقشه‌ی صفحه‌ی تازه به‌درستی فعال می‌شود.
+  if ('IntersectionObserver' in window) {
+    var mapObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          mapObserver.disconnect();
+          loadMapSvg();
+        }
+      });
+    }, { rootMargin: '600px 0px' });
+
+    mapObserver.observe(wrap);
+  } else {
+    // مرورگرهای قدیمی: رفتار امنِ قبلی حفظ می‌شود.
+    loadMapSvg();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
