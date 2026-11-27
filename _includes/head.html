@@ -25,7 +25,7 @@
 	{% elsif page.title %}
 	  {% capture noys_page_title %}{{ page.title }} | NOYS{% endcapture %}
 	{% endif %}
-	<title>{{ noys_page_title | strip }}</title>
+	<title>{{ noys_page_title | strip | escape }}</title>
 
 	<!-- توضیح اختصاصی برای صفحه اصلی و آرشیو پادکست؛ برای مقاله‌ها از توضیح دست‌نویس یا خلاصه استفاده می‌شود. -->
 	{% if page.url == "/" %}
@@ -46,10 +46,10 @@
 
 	{% capture noys_og_image %}{% if page.img %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img | uri_escape }}{% elsif site.social-image %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.social-image | uri_escape }}{% elsif site.author-img %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.author-img | uri_escape }}{% endif %}{% endcapture %}
 
-	<meta content="{{ site.title }}" property="og:site_name">
-	<meta content="{{ noys_page_title | strip }}" property="og:title">
+	<meta content="{{ site.title | escape }}" property="og:site_name">
+	<meta content="{{ noys_page_title | strip | escape }}" property="og:title">
 	<meta content="{% if noys_is_article %}article{% else %}website{% endif %}" property="og:type">
-	<meta content="{{ meta-desc }}" property="og:description">
+	<meta content="{{ meta-desc | escape }}" property="og:description">
 	<meta content="fa_IR" property="og:locale">
 	{% if page.url %}
 		<meta content="{{ site.url }}{{ site.baseurl }}{{ page.url }}" property="og:url">
@@ -62,13 +62,13 @@
 	{% endif %}
 
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="{{ noys_page_title | strip }}">
-	<meta name="twitter:description" content="{{ meta-desc }}">
+	<meta name="twitter:title" content="{{ noys_page_title | strip | escape }}">
+	<meta name="twitter:description" content="{{ meta-desc | escape }}">
 	{% if noys_og_image != "" %}
 		<meta name="twitter:image" content="{{ noys_og_image }}">
 	{% endif %}
 
-	<meta name="description" content="{{ meta-desc }}">
+	<meta name="description" content="{{ meta-desc | escape }}">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<!-- دسترس‌پذیری: maximum-scale=1 حذف شد تا کاربر بتونه با دو انگشت زوم کنه -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
