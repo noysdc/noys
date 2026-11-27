@@ -38,7 +38,7 @@ layout: main
           <img
             class="post-thumbnail-image"
             src="{{ "/assets/img/" | prepend: site.baseurl | append: post.img }}"
-            alt=""
+            alt="{{ post.title | escape }}"
             width="1920"
             height="1080"
             decoding="async"
