@@ -29,9 +29,9 @@
 
 	<!-- توضیح اختصاصی برای صفحه اصلی و آرشیو پادکست؛ برای مقاله‌ها از توضیح دست‌نویس یا خلاصه استفاده می‌شود. -->
 	{% if page.url == "/" %}
-	  {% assign meta-desc = site.description %}
+	  {% assign meta-desc = site.description | strip_newlines | strip | truncate: 160 %}
 	{% elsif page.url == "/podcast/" %}
-	  {% assign meta-desc = "اپیزودهای پادکست نویز (NOYS) را بشنوید؛ روایت‌های مستند فارسی از پرونده‌های جنایی واقعی، کلاهبرداری‌های بزرگ، کسب‌وکارهای سایه و اقتصاد پنهان." %}
+	  {% assign meta-desc = "اپیزودهای پادکست نویز (NOYS) را بشنوید؛ روایت‌های مستند فارسی از پرونده‌های جنایی واقعی، کلاهبرداری‌های بزرگ، کسب‌وکارهای سایه و اقتصاد پنهان." | truncate: 160 %}
 	{% else %}
 	  {% assign noys_desc = page.description | default: page.excerpt | strip_html | strip_newlines | strip %}
 	  {% if page.title and noys_desc contains page.title %}
@@ -183,7 +183,7 @@
 	  "@id": "{{ site.url }}/#person",
 	  "name": {{ site.author | jsonify }},
 	  "url": "{{ site.url }}{{ site.baseurl }}/about-me/",
-	  "worksFor": { "@id": "{{ site.url }}/#organization" },
+	  "worksFor": { "@id": "{{ site.url }}/#organization" }
 	}
 	</script>
 	{% elsif page.url == "/podcast/" %}
