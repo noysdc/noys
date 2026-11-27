@@ -50,7 +50,7 @@ layout: main
   "datePublished": "{{ page.date | date: '%Y-%m-%d' }}",
   "url": "{{ page.url | prepend: site.baseurl | prepend: site.url }}",
   "image": "{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img | uri_escape }}",
-  "description": {{ page.content | strip_html | truncatewords: 40 | jsonify }},
+  "description": {{ meta-desc | jsonify }},
   "inLanguage": "fa",
   "partOfSeries": { "@id": "{{ site.url }}/podcast/#series" },
   "author": { "@id": "{{ site.url }}/#person" },
