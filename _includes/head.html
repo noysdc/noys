@@ -128,21 +128,8 @@
 	  "datePublished": "{{ page.date | date_to_xmlschema }}",
 	  "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
 	  "inLanguage": "fa",
-	  "author": {
-	    "@type": "Person",
-	    "name": {{ site.author | jsonify }},
-	    "url": "{{ site.url }}{{ site.baseurl }}/",
-	    "sameAs": {{ noys_same_as | jsonify }}
-	  },
-	  "publisher": {
-	    "@type": "Organization",
-	    "name": {{ site.brand | default: site.title | jsonify }},
-	    "url": "{{ site.url }}{{ site.baseurl }}/"{% if site.author-img %},
-	    "logo": {
-	      "@type": "ImageObject",
-	      "url": "{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.author-img | uri_escape }}"
-	    }{% endif %}
-	  },
+	  "author": { "@id": "{{ site.url }}/#person" },
+	  "publisher": { "@id": "{{ site.url }}/#organization" },
 	  "description": {{ meta-desc | jsonify }},
 	  {% if page.img %}"image": ["{{ noys_og_image }}"],{% endif %}
 	  "mainEntityOfPage": "{{ site.url }}{{ site.baseurl }}{{ page.url }}"
@@ -197,7 +184,6 @@
 	  "name": {{ site.author | jsonify }},
 	  "url": "{{ site.url }}{{ site.baseurl }}/about-me/",
 	  "worksFor": { "@id": "{{ site.url }}/#organization" },
-	  "sameAs": {{ noys_same_as | jsonify }}
 	}
 	</script>
 	{% elsif page.url == "/podcast/" %}
