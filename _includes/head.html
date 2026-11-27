@@ -149,19 +149,7 @@
 	</script>
 	{% endif %}
 
-	<!-- داده‌های ساختاریافته‌ی هویت سایت و پادکست -->
-	{% if page.url == "/" %}
-	<script type="application/ld+json">
-	{
-	  "@context": "https://schema.org",
-	  "@type": "WebSite",
-	  "@id": "{{ site.url }}/#website",
-	  "name": {{ site.brand | default: "NOYS" | jsonify }},
-	  "url": "{{ site.url }}{{ site.baseurl }}/",
-	  "inLanguage": "fa",
-	  "publisher": { "@id": "{{ site.url }}/#organization" }
-	}
-	</script>
+	<!-- هویت برند، نویسنده و ناشر در همه‌ی صفحات برای اتصال یکپارچه‌ی داده‌ها -->
 	<script type="application/ld+json">
 	{
 	  "@context": "https://schema.org",
@@ -184,6 +172,20 @@
 	  "name": {{ site.author | jsonify }},
 	  "url": "{{ site.url }}{{ site.baseurl }}/about-me/",
 	  "worksFor": { "@id": "{{ site.url }}/#organization" }
+	}
+	</script>
+
+	<!-- داده‌های اختصاصی هر نوع صفحه -->
+	{% if page.url == "/" %}
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "WebSite",
+	  "@id": "{{ site.url }}/#website",
+	  "name": {{ site.brand | default: "NOYS" | jsonify }},
+	  "url": "{{ site.url }}{{ site.baseurl }}/",
+	  "inLanguage": "fa",
+	  "publisher": { "@id": "{{ site.url }}/#organization" }
 	}
 	</script>
 	{% elsif page.url == "/podcast/" %}
