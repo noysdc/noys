@@ -49,7 +49,7 @@ layout: main
   "name": {{ page.title | jsonify }},
   "datePublished": "{{ page.date | date: '%Y-%m-%d' }}",
   "url": "{{ page.url | prepend: site.baseurl | prepend: site.url }}",
-  "image": "{{ page.img | prepend: '/assets/img/' | prepend: site.url | relative_url }}",
+  "image": "{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img | uri_escape }}",
   "description": {{ page.content | strip_html | truncatewords: 40 | jsonify }},
   "partOfSeries": {
     "@type": "PodcastSeries",
