@@ -51,11 +51,10 @@ layout: main
   "url": "{{ page.url | prepend: site.baseurl | prepend: site.url }}",
   "image": "{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img | uri_escape }}",
   "description": {{ page.content | strip_html | truncatewords: 40 | jsonify }},
-  "partOfSeries": {
-    "@type": "PodcastSeries",
-    "name": "NOYS",
-    "url": "{{ site.url }}{{ site.baseurl }}/podcast/"
-  }{% if page.podcast_audio and page.podcast_audio != "" %},
+  "inLanguage": "fa",
+  "partOfSeries": { "@id": "{{ site.url }}/podcast/#series" },
+  "author": { "@id": "{{ site.url }}/#person" },
+  "publisher": { "@id": "{{ site.url }}/#organization" }{% if page.podcast_audio and page.podcast_audio != "" %},
   "associatedMedia": {
     "@type": "MediaObject",
     "contentUrl": {{ page.podcast_audio | jsonify }},
