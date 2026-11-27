@@ -16,35 +16,38 @@
 	  })();
 	</script>
 
-	<!-- SEO: عنوان صفحه اصلی جدا از بقیه صفحاته (کامل‌تر و شامل کلمات کلیدی هدف).
-	     برای پست‌ها و صفحات دیگه فقط «عنوان - NOYS» نشون داده میشه. -->
+	<!-- عنوان مستقل برای صفحه اصلی، آرشیو پادکست و سایر صفحات -->
+	{% assign noys_page_title = site.title %}
 	{% if page.url == "/" %}
-	<title>{{ site.home-title | default: site.title }}</title>
+	  {% assign noys_page_title = site.home-title | default: site.title %}
+	{% elsif page.url == "/podcast/" %}
+	  {% assign noys_page_title = "پادکست نویز (NOYS)؛ شنیدن اپیزودهای مستند فارسی" %}
 	{% elsif page.title %}
-	<title>{{ page.title }} - {{ site.title }}</title>
-	{% else %}
-	<title>{{ site.title }}</title>
+	  {% capture noys_page_title %}{{ page.title }} | NOYS{% endcapture %}
 	{% endif %}
+	<title>{{ noys_page_title | strip }}</title>
 
-	<!-- SEO: توضیح متا.
-	     اولویت ۱: فیلد description در فرانت‌متر پست (توصیه‌شده، دست‌نویس)
-	     اولویت ۲: خلاصه‌ی خودکار پست؛ اگه خلاصه با تیتر شروع بشه، تیتر از اولش حذف میشه
-	     (قبلاً تیتر دو بار توی توضیح گوگل می‌اومد)
-	     اولویت ۳: توضیح کلی سایت -->
-	{% assign noys_desc = page.description | default: page.excerpt | strip_html | strip_newlines | strip %}
-	{% if page.title and noys_desc contains page.title %}
-	  {% assign noys_desc = noys_desc | remove_first: page.title | strip %}
+	<!-- توضیح اختصاصی برای صفحه اصلی و آرشیو پادکست؛ برای مقاله‌ها از توضیح دست‌نویس یا خلاصه استفاده می‌شود. -->
+	{% if page.url == "/" %}
+	  {% assign meta-desc = site.description %}
+	{% elsif page.url == "/podcast/" %}
+	  {% assign meta-desc = "اپیزودهای پادکست نویز (NOYS) را بشنوید؛ روایت‌های مستند فارسی از پرونده‌های جنایی واقعی، کلاهبرداری‌های بزرگ، کسب‌وکارهای سایه و اقتصاد پنهان." %}
+	{% else %}
+	  {% assign noys_desc = page.description | default: page.excerpt | strip_html | strip_newlines | strip %}
+	  {% if page.title and noys_desc contains page.title %}
+	    {% assign noys_desc = noys_desc | remove_first: page.title | strip %}
+	  {% endif %}
+	  {% assign noys_desc = noys_desc | truncate: 160 %}
+	  {% assign meta-desc = noys_desc | default: site.description %}
 	{% endif %}
-	{% assign noys_desc = noys_desc | truncate: 160 %}
-	{% assign meta-desc = noys_desc | default: site.description %}
 
 	{% assign noys_is_article = false %}
 	{% if page.layout == 'post' or page.layout == 'podcast-post' %}{% assign noys_is_article = true %}{% endif %}
 
-	{% capture noys_og_image %}{% if page.img %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img | uri_escape }}{% elsif site.author-img %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.author-img | uri_escape }}{% endif %}{% endcapture %}
+	{% capture noys_og_image %}{% if page.img %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ page.img | uri_escape }}{% elsif site.social-image %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.social-image | uri_escape }}{% elsif site.author-img %}{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.author-img | uri_escape }}{% endif %}{% endcapture %}
 
 	<meta content="{{ site.title }}" property="og:site_name">
-	<meta content="{% if page.url == '/' %}{{ site.home-title | default: site.title }}{% elsif page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}" property="og:title">
+	<meta content="{{ noys_page_title | strip }}" property="og:title">
 	<meta content="{% if noys_is_article %}article{% else %}website{% endif %}" property="og:type">
 	<meta content="{{ meta-desc }}" property="og:description">
 	<meta content="fa_IR" property="og:locale">
@@ -59,7 +62,7 @@
 	{% endif %}
 
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
+	<meta name="twitter:title" content="{{ noys_page_title | strip }}">
 	<meta name="twitter:description" content="{{ meta-desc }}">
 	{% if noys_og_image != "" %}
 		<meta name="twitter:image" content="{{ noys_og_image }}">
@@ -112,6 +115,8 @@
 	{% if site.social-instagram %}{% assign noys_same_as = noys_same_as | push: site.social-instagram %}{% endif %}
 	{% if site.social-youtube %}{% assign noys_same_as = noys_same_as | push: site.social-youtube %}{% endif %}
 	{% if site.social-telegram %}{% assign noys_same_as = noys_same_as | push: site.social-telegram %}{% endif %}
+	{% if site.social-castbox %}{% assign noys_same_as = noys_same_as | push: site.social-castbox %}{% endif %}
+	{% if site.social-apple-podcasts %}{% assign noys_same_as = noys_same_as | push: site.social-apple-podcasts %}{% endif %}
 
 	<!-- Structured Data (JSON-LD) برای صفحه پست -->
 	{% if page.layout == 'post' %}
@@ -157,43 +162,62 @@
 	</script>
 	{% endif %}
 
-	<!-- Structured Data (JSON-LD) برای صفحه اصلی: پادکست + باکس جست‌وجوی سایت -->
+	<!-- داده‌های ساختاریافته‌ی هویت سایت و پادکست -->
 	{% if page.url == "/" %}
 	<script type="application/ld+json">
 	{
 	  "@context": "https://schema.org",
-	  "@type": "PodcastSeries",
-	  "name": "نویز - پادکست فارسی جنایی و ترو کرایم",
-	  "url": "{{ site.url }}{{ site.baseurl }}/podcast/",
-	  "description": {{ site.description | jsonify }},
+	  "@type": "WebSite",
+	  "@id": "{{ site.url }}/#website",
+	  "name": {{ site.brand | default: "NOYS" | jsonify }},
+	  "url": "{{ site.url }}{{ site.baseurl }}/",
 	  "inLanguage": "fa",
-	  "webFeed": "{{ site.url }}{{ site.baseurl }}/feed.xml",
-	  "author": {
-	    "@type": "Person",
-	    "name": {{ site.author | jsonify }},
-	    "sameAs": {{ noys_same_as | jsonify }}
-	  },
-	  "publisher": {
-	    "@type": "Organization",
-	    "name": {{ site.brand | default: site.title | jsonify }}
-	  }
+	  "publisher": { "@id": "{{ site.url }}/#organization" }
 	}
 	</script>
 	<script type="application/ld+json">
 	{
 	  "@context": "https://schema.org",
-	  "@type": "WebSite",
-	  "name": {{ site.title | jsonify }},
+	  "@type": "Organization",
+	  "@id": "{{ site.url }}/#organization",
+	  "name": {{ site.brand | default: "NOYS" | jsonify }},
 	  "url": "{{ site.url }}{{ site.baseurl }}/",
+	  "logo": {
+	    "@type": "ImageObject",
+	    "url": "{{ site.url }}{{ site.baseurl }}/assets/img/{{ site.author-img | uri_escape }}"
+	  },
+	  "sameAs": {{ noys_same_as | jsonify }}
+	}
+	</script>
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "Person",
+	  "@id": "{{ site.url }}/#person",
+	  "name": {{ site.author | jsonify }},
+	  "url": "{{ site.url }}{{ site.baseurl }}/about-me/",
+	  "worksFor": { "@id": "{{ site.url }}/#organization" },
+	  "sameAs": {{ noys_same_as | jsonify }}
+	}
+	</script>
+	{% elsif page.url == "/podcast/" %}
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "PodcastSeries",
+	  "@id": "{{ site.url }}/podcast/#series",
+	  "name": "نویز (NOYS)",
+	  "alternateName": "پادکست نویز",
+	  "url": "{{ site.url }}{{ site.baseurl }}/podcast/",
+	  "description": {{ meta-desc | jsonify }},
 	  "inLanguage": "fa",
-	  "potentialAction": {
-	    "@type": "SearchAction",
-	    "target": "{{ site.url }}{{ site.baseurl }}/search/?q={search_term_string}",
-	    "query-input": "required name=search_term_string"
-	  }
+	  "webFeed": "{{ site.url }}{{ site.baseurl }}/feed.xml",
+	  "image": "{{ noys_og_image | strip }}",
+	  "author": { "@id": "{{ site.url }}/#person" },
+	  "publisher": { "@id": "{{ site.url }}/#organization" },
+	  "sameAs": {{ noys_same_as | jsonify }}
 	}
 	</script>
 	{% endif %}
-
 <link rel="manifest" href="{{ site.baseurl }}/manifest.json">
 </head>
